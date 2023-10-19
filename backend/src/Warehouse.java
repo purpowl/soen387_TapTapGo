@@ -1,4 +1,4 @@
-package backend;
+package src;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,7 @@ public class Warehouse {
      * @param amount the amount of the product to add
      * @return False if product already exists in the warehouse. Else, return True on success
      */
-    public static boolean addProduct(Product new_product, int amount){
+    public boolean addProduct(Product new_product, int amount){
         if (warehouse_instance.product_list.get(new_product) == null){
             warehouse_instance.product_list.put(new_product, amount);
             return true;
@@ -44,7 +44,7 @@ public class Warehouse {
      * @param amount the amount to add for this product
      * @return False if product doesn't exist in warehouse. Else, return True on success.
      */
-    public static boolean incrementProduct(Product product, int amount) {
+    public boolean incrementProduct(Product product, int amount) {
         Integer amount_avail = warehouse_instance.product_list.get(product);
 
         if (amount_avail == null) {
@@ -62,7 +62,7 @@ public class Warehouse {
      * @param SKU the identifier for the product
      * @return the product object found. Null if the product is not found.
      */
-    public static Product findProductBySKU(String SKU){
+    public Product findProductBySKU(String SKU){
         for(Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()){
             Product product = product_entry.getKey();
             if(product.getSKU().equals(SKU)) {
@@ -79,7 +79,7 @@ public class Warehouse {
      * @param slug the identifier for the product
      * @return the product object found. Null if the product is not found.
      */
-    public static Product findProductBySlug(String slug){
+    public Product findProductBySlug(String slug){
         for (Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()){
             Product product = product_entry.getKey();
             if (product.getSlug().equals(slug)){
@@ -97,7 +97,7 @@ public class Warehouse {
      * @param amount the amount that you want to remove
      * @return False if there is not enough product left to remove or product is not found. Else, return True on success.
      */
-    public static boolean removeProductBySKU(String SKU, int amount){
+    public boolean removeProductBySKU(String SKU, int amount){
         for (Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()) {
             Product product = product_entry.getKey();
             if (product.getSKU().equals(SKU)) {
@@ -123,7 +123,7 @@ public class Warehouse {
      * @param amount the amount that you want to remove
      * @return False if there is not enough product left to remove or product is not found. Else, return True on success.
      */
-    public static boolean removeProductBySlug(String slug, int amount){
+    public boolean removeProductBySlug(String slug, int amount){
         for (Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()) {
             Product product = product_entry.getKey();
             if (product.getSlug().equals(slug)) {
@@ -149,7 +149,7 @@ public class Warehouse {
      * @param amount the amount of product that you want to remove
      * @return False if the product is not found or there is not enough product left to remove. Else, return True on success.
      */
-    public static boolean removeProduct(Product product, int amount){
+    public boolean removeProduct(Product product, int amount){
         Integer amount_avail = warehouse_instance.product_list.get(product);
 
         if (amount_avail == null) {
@@ -169,7 +169,7 @@ public class Warehouse {
      * @param SKU the identifier for the product you want to delete
      * @return False if product is not found. Else, return True on success.
      */
-    public static boolean deleteProductBySKU(String SKU) {
+    public boolean deleteProductBySKU(String SKU) {
         for (Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()) {
             Product product = product_entry.getKey();
             if (product.getSKU().equals(SKU)) {
@@ -187,7 +187,7 @@ public class Warehouse {
      * @param product the product to be deleted
      * @return True if the operation succeed. False if the product was not found.
      */
-    public static boolean deleteProduct(Product product) {
+    public boolean deleteProduct(Product product) {
         Integer result = warehouse_instance.product_list.remove(product);
 
         if (result == null){
