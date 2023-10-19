@@ -21,6 +21,10 @@ public class Warehouse {
         return warehouse_instance;
     }
 
+    public HashMap<Product, Integer> getProductList() {
+        return product_list;
+    }
+
     /**
      * Adds a new product to the warehouse, with a specified amount
      * 
@@ -67,6 +71,23 @@ public class Warehouse {
             Product product = product_entry.getKey();
             if(product.getSKU().equals(SKU)) {
                 return product;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Looks for amount of a product in the warehouse based on its SKU
+     * 
+     * @param SKU the identifier for the product
+     * @return the product object found. Null if the product is not found.
+     */
+    public static Integer findProductInventoryBySKU(String SKU){
+        for(Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()){
+            Product product = product_entry.getKey();
+            if(product.getSKU().equals(SKU)) {
+                return product_entry.getValue();
             }
         }
 
