@@ -1,4 +1,4 @@
-package backend.Exceptions;
+package src.Exceptions;
 
 public class ProductNotFoundException extends Exception {
     public ProductNotFoundException() {

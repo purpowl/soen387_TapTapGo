@@ -1,9 +1,11 @@
-package backend;
+package src;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import Exceptions.InvalidParameterException;
-import Exceptions.ProductNotFoundException;
+
+import src.Exceptions.InvalidParameterException;
+import src.Exceptions.ProductNotFoundException;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,7 +18,6 @@ import java.util.Map.Entry;
 public class Staff extends User{
     private static AtomicInteger staffID = new AtomicInteger(0);
 
-
     public Staff(String username, String password) {
         super(username, password);
         staffID.incrementAndGet();
@@ -26,15 +27,13 @@ public class Staff extends User{
         // generate random price between $0.99 and $1000
         Random random = new Random();
         double randomValue = 0.99 + (1000 - 0.99) * random.nextDouble();
-        Warehouse.addProduct(new Product(SKU, name, Math.round(randomValue * 100.0) / 100.0), 0);
+        Warehouse.getInstance().addProduct(new Product(SKU, name, Math.round(randomValue * 100.0) / 100.0), 0);
     }
 
     public void updateProduct(String SKU, HashMap<String, Object> fieldsToUpdate) throws ProductNotFoundException, InvalidParameterException {
-        Product productToUpdate = Warehouse.findProductBySKU(SKU);
+        Product productToUpdate = Warehouse.getInstance().findProductBySKU(SKU);
         // check if product exists in warehouse
-        if (productToUpdate == null) {
-            throw new ProductNotFoundException();
-        }
+        if (productToUpdate == null) throw new ProductNotFoundException();
         else {
             // if product exists, check the fields to update and update them
             for (Entry<String, Object> field : fieldsToUpdate.entrySet()) {
@@ -70,7 +69,7 @@ public class Staff extends User{
         
         // create CSV data, with headers and information of each product in product list
         // and their quantities in warehouse
-        File csvOutputFile = new File("Product_List");
+        File csvOutputFile = new File("Product_List.csv");
         List<String[]> dataLines = new ArrayList<>();
         dataLines.add(headers);
 
@@ -89,11 +88,14 @@ public class Staff extends User{
     }
 
     private String escapeSpecialCharacters(String data) {
-        String escapedData = data.replaceAll("\\R", " ");
-        if (data.contains(",") || data.contains("\"") || data.contains("'")) {
-            data = data.replace("\"", "\"\"");
-            escapedData = "\"" + data + "\"";
+        if (data != null) {
+            String escapedData = data.replaceAll("\\R", " ");
+            if (data.contains(",") || data.contains("\"") || data.contains("'")) {
+                data = data.replace("\"", "\"\"");
+                escapedData = "\"" + data + "\"";
+            }
+            return escapedData;
         }
-        return escapedData;
+        else return data;
     }
 }
