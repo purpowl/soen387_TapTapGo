@@ -109,3 +109,4 @@ $RECYCLE.BIN/
 
 ### Set-up based script ####
 deploy.sh
+*.class
