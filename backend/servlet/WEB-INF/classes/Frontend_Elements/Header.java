@@ -1,4 +1,4 @@
-package servlet.Frontend_Elements;
+package Frontend_Elements;
 
 /**
  * Header content for HTML returned

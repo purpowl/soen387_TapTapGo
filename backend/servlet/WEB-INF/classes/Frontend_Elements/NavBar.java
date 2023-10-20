@@ -1,4 +1,4 @@
-package servlet.Frontend_Elements;
+package Frontend_Elements;
 
 public class NavBar {
     private String content;
