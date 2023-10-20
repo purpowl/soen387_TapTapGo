@@ -1,4 +1,4 @@
-package backend.Exceptions;
+package src.main.java.Exceptions;
 
 public class InsufficientInventoryException extends Exception {
     public InsufficientInventoryException() {

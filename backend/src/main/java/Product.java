@@ -1,4 +1,4 @@
-package backend;
+package src.main.java;
 
 /**
  * Product
