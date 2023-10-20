@@ -105,3 +105,7 @@ $RECYCLE.BIN/
 # Visual Studio Code - https://code.visualstudio.com/
 .settings/
 .vscode/
+
+
+### Set-up based script ####
+deploy.sh
