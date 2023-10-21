@@ -1,4 +1,4 @@
-package backend;
+package com.taptapgo;
 
 public abstract class User {
     protected String username;
@@ -14,14 +14,15 @@ public abstract class User {
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
+    public boolean changeUsername(String oldUsername, String newUsername, String password){
+        if (oldUsername == null || newUsername == null) return false;
+        else if (oldUsername.equals(newUsername)) return false;
+        else if (this.username.equals(oldUsername) && this.password.equals(password)) {
+            this.username = newUsername;
+            return true;
+        }
+        else return false;
     }
-
-    public boolean changeUsername(String newUsername){
-        this.username = newUsername;
-        return true;
-    };
 
     public boolean changePassword(String username, String oldPassword, String newPassword){
         if (this.password != null && authenticate(username, oldPassword)) {
@@ -31,9 +32,9 @@ public abstract class User {
         else return false;
     };
 
+    // if the user has a password, authenticate them
     public boolean authenticate(String username, String inputPassword) {
         if (this.username.equals(username) && inputPassword != null) return (inputPassword.equals(password));
-        else if (this.username.equals(username) && inputPassword == null) return true;
         else return false;
     };
 }

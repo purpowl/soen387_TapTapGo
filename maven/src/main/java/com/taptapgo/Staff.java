@@ -1,9 +1,10 @@
-package backend;
+package com.taptapgo;
+
+import com.taptapgo.exceptions.InvalidParameterException;
+import com.taptapgo.exceptions.ProductNotFoundException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import Exceptions.InvalidParameterException;
-import Exceptions.ProductNotFoundException;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,7 +16,6 @@ import java.util.Map.Entry;
 
 public class Staff extends User{
     private static AtomicInteger staffID = new AtomicInteger(0);
-
 
     public Staff(String username, String password) {
         super(username, password);
@@ -32,9 +32,7 @@ public class Staff extends User{
     public void updateProduct(String SKU, HashMap<String, Object> fieldsToUpdate) throws ProductNotFoundException, InvalidParameterException {
         Product productToUpdate = Warehouse.findProductBySKU(SKU);
         // check if product exists in warehouse
-        if (productToUpdate == null) {
-            throw new ProductNotFoundException();
-        }
+        if (productToUpdate == null) throw new ProductNotFoundException();
         else {
             // if product exists, check the fields to update and update them
             for (Entry<String, Object> field : fieldsToUpdate.entrySet()) {
@@ -67,17 +65,17 @@ public class Staff extends User{
 
         // headers for CSV file
         String[] headers = {"SKU", "name", "vendor", "URL_slug", "price", "description", "quantity"};
-        
+
         // create CSV data, with headers and information of each product in product list
         // and their quantities in warehouse
-        File csvOutputFile = new File("Product_List");
+        File csvOutputFile = new File("Product_List.csv");
         List<String[]> dataLines = new ArrayList<>();
         dataLines.add(headers);
 
         for (Entry<Product, Integer> product : productList.entrySet()) {
             dataLines.add(new String[] {product.getKey().getSKU(), product.getKey().getName(), product.getKey().getVendor(), product.getKey().getSlug(), String.valueOf(product.getKey().getPrice()), product.getKey().getDescription(), String.valueOf(product.getValue()) });
         }
-        
+
         // escape special chars and write to file
         try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
             dataLines.stream().map(this::convertToCSV).forEach(pw::println);
@@ -89,11 +87,14 @@ public class Staff extends User{
     }
 
     private String escapeSpecialCharacters(String data) {
-        String escapedData = data.replaceAll("\\R", " ");
-        if (data.contains(",") || data.contains("\"") || data.contains("'")) {
-            data = data.replace("\"", "\"\"");
-            escapedData = "\"" + data + "\"";
+        if (data != null) {
+            String escapedData = data.replaceAll("\\R", " ");
+            if (data.contains(",") || data.contains("\"") || data.contains("'")) {
+                data = data.replace("\"", "\"\"");
+                escapedData = "\"" + data + "\"";
+            }
+            return escapedData;
         }
-        return escapedData;
+        else return data;
     }
 }

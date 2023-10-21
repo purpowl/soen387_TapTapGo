@@ -1,4 +1,5 @@
-package src;
+package com.taptapgo;
+
 /**
  * Product
  */
@@ -84,11 +85,11 @@ public class Product {
     public void setPrice(double price) {
         this.price = price;
     }
-    
+
     /**
      * Compare between two products to determine if they are the same product.
      * Comparison is made based on name, SKU, URL slug, and price.
-     * 
+     *
      * @param anotherObject the product that we want to compare to
      * @return True if it is the same product. Else, return False.
      */
@@ -99,7 +100,7 @@ public class Product {
         }
 
         Product anotherProduct = (Product) anotherObject;
-        
+
         if (!this.name.equals(anotherProduct.name) || !this.SKU.equals(anotherProduct.SKU) || !this.URL_slug.equals(anotherProduct.URL_slug) || this.price != anotherProduct.price) {
             return false;
         } else {

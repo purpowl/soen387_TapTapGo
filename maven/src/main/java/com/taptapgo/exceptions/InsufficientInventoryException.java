@@ -1,4 +1,4 @@
-package backend.Exceptions;
+package com.taptapgo.exceptions;
 
 public class InsufficientInventoryException extends Exception {
     public InsufficientInventoryException() {

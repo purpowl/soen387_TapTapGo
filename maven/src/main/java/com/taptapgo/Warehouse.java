@@ -1,4 +1,4 @@
-package src;
+package com.taptapgo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,11 +7,9 @@ public class Warehouse {
     private static Warehouse warehouse_instance = null;
     private HashMap<Product, Integer> product_list;
 
-
     private Warehouse() {
         product_list = new HashMap<Product, Integer>();
     }
-
 
     public static synchronized Warehouse getInstance() {
         if (warehouse_instance == null){
@@ -27,7 +25,7 @@ public class Warehouse {
 
     /**
      * Adds a new product to the warehouse, with a specified amount
-     * 
+     *
      * @param new_product the product to be added to warehouse
      * @param amount the amount of the product to add
      * @return False if product already exists in the warehouse. Else, return True on success
@@ -37,13 +35,13 @@ public class Warehouse {
             warehouse_instance.product_list.put(new_product, amount);
             return true;
         }
-        
+
         return false;
     }
 
     /**
      * Increment the amount of an existing product in the warehouse.
-     * 
+     *
      * @param product the product to increment/stock-up
      * @param amount the amount to add for this product
      * @return False if product doesn't exist in warehouse. Else, return True on success.
@@ -62,7 +60,7 @@ public class Warehouse {
 
     /**
      * Looks for a product in the warehouse based on its SKU
-     * 
+     *
      * @param SKU the identifier for the product
      * @return the product object found. Null if the product is not found.
      */
@@ -79,7 +77,7 @@ public class Warehouse {
 
     /**
      * Looks for amount of a product in the warehouse based on its SKU
-     * 
+     *
      * @param SKU the identifier for the product
      * @return the product object found. Null if the product is not found.
      */
@@ -96,7 +94,7 @@ public class Warehouse {
 
     /**
      * Looks for a product in the warehouse based on its slug
-     * 
+     *
      * @param slug the identifier for the product
      * @return the product object found. Null if the product is not found.
      */
@@ -113,7 +111,7 @@ public class Warehouse {
 
     /**
      * Removes a certain amount of a product (specified by its SKU) from the warehouse
-     * 
+     *
      * @param SKU the identifier for the product you want to remove
      * @param amount the amount that you want to remove
      * @return False if there is not enough product left to remove or product is not found. Else, return True on success.
@@ -139,7 +137,7 @@ public class Warehouse {
 
     /**
      * Removes a certain amount of a product (specified by its slug) from the warehouse
-     * 
+     *
      * @param slug the identifier for the product you want to remove
      * @param amount the amount that you want to remove
      * @return False if there is not enough product left to remove or product is not found. Else, return True on success.
@@ -165,7 +163,7 @@ public class Warehouse {
 
     /**
      * Removes a certain amount of a product (specified by Product object) from the warehouse
-     * 
+     *
      * @param product the product to be removed
      * @param amount the amount of product that you want to remove
      * @return False if the product is not found or there is not enough product left to remove. Else, return True on success.
@@ -186,7 +184,7 @@ public class Warehouse {
 
     /**
      * Completely deletes a product from the warehouse, regardless of the amount left
-     * 
+     *
      * @param SKU the identifier for the product you want to delete
      * @return False if product is not found. Else, return True on success.
      */
@@ -204,7 +202,7 @@ public class Warehouse {
 
     /**
      * Completely deletes a product from the warehouse, regardless of the amount left
-     * 
+     *
      * @param product the product to be deleted
      * @return True if the operation succeed. False if the product was not found.
      */

@@ -1,4 +1,4 @@
-package backend.Exceptions;
+package com.taptapgo.exceptions;
 
 public class ProductNotFoundException extends Exception {
     public ProductNotFoundException() {
