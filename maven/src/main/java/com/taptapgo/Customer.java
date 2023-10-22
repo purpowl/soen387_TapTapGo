@@ -42,18 +42,18 @@ public class Customer extends User {
         if (amount <= 0) throw new InvalidParameterException("Product amount must be greater than 0.");
 
         // check that the product exists in the warehouse
-        Product product = Warehouse.findProductBySKU(SKU);
+        Product product = Warehouse.getInstance().findProductBySKU(SKU);
         if (product == null) {
             throw new ProductNotFoundException();
         }
         // if product exists, check that the amount to add does not exceed warehouse inventory
         else {
             Product productInCart = findCartProductEntryBySKU(SKU);
-            Integer amountInWarehouse = Warehouse.findProductInventoryBySKU(SKU);
+            Integer amountInWarehouse = Warehouse.getInstance().getProductInventoryBySKU(SKU);
             if ((productInCart != null && cart.get(productInCart)+amount <= amountInWarehouse) || (productInCart == null && amount <= amountInWarehouse)) {
                 // add to cart
                 if (productInCart != null) cart.merge(productInCart, amount, (oldAmount, newAmount) -> oldAmount + newAmount);
-                else cart.put(Warehouse.findProductBySKU(SKU), amount);
+                else cart.put(Warehouse.getInstance().findProductBySKU(SKU), amount);
             }
             else throw new InsufficientInventoryException();
 
@@ -82,7 +82,7 @@ public class Customer extends User {
             if (productInCart == null) throw new ProductNotFoundException("Product not found in cart.");
             else {
                 // check if the new amount does not exceed warehouse inventory
-                Integer amountInWarehouse = Warehouse.findProductInventoryBySKU(SKU);
+                Integer amountInWarehouse = Warehouse.getInstance().getProductInventoryBySKU(SKU);
                 if (amount > amountInWarehouse) throw new InsufficientInventoryException();
                 else cart.put(productInCart, amount);
             }

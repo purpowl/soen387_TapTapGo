@@ -11,19 +11,65 @@
     <servlet>
         <servlet-name>tapTapServlet</servlet-name>
         <servlet-class>com.taptapgo.servlets.TapTapServlet</servlet-class>
-        <load-on-startup/>
+        <load-on-startup>0</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>logoutServlet</servlet-name>
         <servlet-class>com.taptapgo.servlets.LogoutServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>cartServlet</servlet-name>
+        <servlet-class>com.taptapgo.servlets.CartServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>createProductServlet</servlet-name>
+        <servlet-class>com.taptapgo.servlets.CreateProductServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>productDetailServlet</servlet-name>
+        <servlet-class>com.taptapgo.servlets.ProductDetailServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>modifyCartServlet</servlet-name>
+        <servlet-class>com.taptapgo.servlets.ModifyCartServlet</servlet-class>
+    </servlet>
+
 
     <servlet-mapping>
         <servlet-name>tapTapServlet</servlet-name>
-        <url-pattern/>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>logoutServlet</servlet-name>
         <url-pattern>/logout</url-pattern>
     </servlet-mapping>
+    <!-- <servlet-mapping>
+        <servlet-name>cartServlet</servlet-name>
+        <url-pattern>/cart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>createProductServlet</servlet-name>
+        <url-pattern>/create-product</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>productDetailServlet</servlet-name>
+        <url-pattern>/product/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>modifyCartServlet</servlet-name>
+        <url-pattern>/cart/*</url-pattern>
+    </servlet-mapping> -->
+
+    <mime-mapping>
+        <extension>jpeg</extension>
+        <mime-type>image/jpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>jpg</extension>
+        <mime-type>image/jpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>svg</extension>
+        <mime-type>image/svg+xml</mime-type>
+    </mime-mapping>
 </web-app>

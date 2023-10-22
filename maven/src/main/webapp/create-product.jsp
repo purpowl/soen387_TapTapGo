@@ -25,6 +25,12 @@
                     <input type="text" class="form-control" id="sku" name="sku" placeholder="Product SKU">
                     <label for="name">Product Name</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Product Name">
+                    <label for="price">Price</label>
+                    <input type="text" class="form-control" id="price" name="price" placeholder="Product Price">
+                    <label for="desc">Description</label>
+                    <input type="text" class="form-control" id="desc" name="desc" placeholder="Product Description">
+                    <label for="vendor">Vendor</label>
+                    <input type="text" class="form-control" id="vendor" name="vendor" placeholder="Product Vendor">
                 </div>
                 <div class="text-center mb-3">
                     <button type="submit" class="btn btn-primary">Create</button>

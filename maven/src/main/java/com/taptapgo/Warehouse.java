@@ -1,7 +1,14 @@
 package com.taptapgo;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class Warehouse {
     private static Warehouse warehouse_instance = null;
@@ -30,7 +37,7 @@ public class Warehouse {
      * @param amount the amount of the product to add
      * @return False if product already exists in the warehouse. Else, return True on success
      */
-    public static boolean addProduct(Product new_product, int amount){
+    public boolean addProduct(Product new_product, int amount){
         if (warehouse_instance.product_list.get(new_product) == null){
             warehouse_instance.product_list.put(new_product, amount);
             return true;
@@ -46,7 +53,7 @@ public class Warehouse {
      * @param amount the amount to add for this product
      * @return False if product doesn't exist in warehouse. Else, return True on success.
      */
-    public static boolean incrementProduct(Product product, int amount) {
+    public boolean incrementProduct(Product product, int amount) {
         Integer amount_avail = warehouse_instance.product_list.get(product);
 
         if (amount_avail == null) {
@@ -64,7 +71,7 @@ public class Warehouse {
      * @param SKU the identifier for the product
      * @return the product object found. Null if the product is not found.
      */
-    public static Product findProductBySKU(String SKU){
+    public Product findProductBySKU(String SKU){
         for(Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()){
             Product product = product_entry.getKey();
             if(product.getSKU().equals(SKU)) {
@@ -81,10 +88,27 @@ public class Warehouse {
      * @param SKU the identifier for the product
      * @return the product object found. Null if the product is not found.
      */
-    public static Integer findProductInventoryBySKU(String SKU){
+    public Integer getProductInventoryBySKU(String SKU){
         for(Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()){
             Product product = product_entry.getKey();
             if(product.getSKU().equals(SKU)) {
+                return product_entry.getValue();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Looks for amount of a product in the warehouse based on its slug
+     *
+     * @param SKU the identifier for the product
+     * @return the product object found. Null if the product is not found.
+     */
+    public Integer getProductInventoryBySlug(String slug){
+        for(Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()){
+            Product product = product_entry.getKey();
+            if(product.getSlug().equals(slug)) {
                 return product_entry.getValue();
             }
         }
@@ -98,7 +122,7 @@ public class Warehouse {
      * @param slug the identifier for the product
      * @return the product object found. Null if the product is not found.
      */
-    public static Product findProductBySlug(String slug){
+    public Product findProductBySlug(String slug){
         for (Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()){
             Product product = product_entry.getKey();
             if (product.getSlug().equals(slug)){
@@ -116,7 +140,7 @@ public class Warehouse {
      * @param amount the amount that you want to remove
      * @return False if there is not enough product left to remove or product is not found. Else, return True on success.
      */
-    public static boolean removeProductBySKU(String SKU, int amount){
+    public boolean removeProductBySKU(String SKU, int amount){
         for (Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()) {
             Product product = product_entry.getKey();
             if (product.getSKU().equals(SKU)) {
@@ -142,7 +166,7 @@ public class Warehouse {
      * @param amount the amount that you want to remove
      * @return False if there is not enough product left to remove or product is not found. Else, return True on success.
      */
-    public static boolean removeProductBySlug(String slug, int amount){
+    public boolean removeProductBySlug(String slug, int amount){
         for (Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()) {
             Product product = product_entry.getKey();
             if (product.getSlug().equals(slug)) {
@@ -168,7 +192,7 @@ public class Warehouse {
      * @param amount the amount of product that you want to remove
      * @return False if the product is not found or there is not enough product left to remove. Else, return True on success.
      */
-    public static boolean removeProduct(Product product, int amount){
+    public boolean removeProduct(Product product, int amount){
         Integer amount_avail = warehouse_instance.product_list.get(product);
 
         if (amount_avail == null) {
@@ -188,7 +212,7 @@ public class Warehouse {
      * @param SKU the identifier for the product you want to delete
      * @return False if product is not found. Else, return True on success.
      */
-    public static boolean deleteProductBySKU(String SKU) {
+    public boolean deleteProductBySKU(String SKU) {
         for (Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()) {
             Product product = product_entry.getKey();
             if (product.getSKU().equals(SKU)) {
@@ -206,7 +230,7 @@ public class Warehouse {
      * @param product the product to be deleted
      * @return True if the operation succeed. False if the product was not found.
      */
-    public static boolean deleteProduct(Product product) {
+    public boolean deleteProduct(Product product) {
         Integer result = warehouse_instance.product_list.remove(product);
 
         if (result == null){
@@ -214,5 +238,65 @@ public class Warehouse {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Store products data from memory into JSON file
+     * @throws IOException
+     */
+    public static void archiveProducts() throws IOException {
+        JSONArray database = new JSONArray();
+
+        for (Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()) {
+            Product product = product_entry.getKey();
+            int amount = product_entry.getValue();
+            JSONObject database_entry = new JSONObject();
+
+            // Put the data of each object onto the json object
+            database_entry.put("name", product.getName());
+            database_entry.put("description", product.getDescription());
+            database_entry.put("vendor", product.getVendor());
+            database_entry.put("sku", product.getSKU());
+            database_entry.put("slug", product.getSlug());
+            database_entry.put("price", Double.toString(product.getPrice()));
+            database_entry.put("amount", Integer.toString(amount));
+
+            // Write to database
+            database.put(database_entry);
+        }
+
+        FileWriter output = new FileWriter("data.json");
+        output.write(database.toString());
+        output.close();
+    }
+
+    /**
+     * Load product data from JSON file into memory
+     */
+    public void loadDatabase() {
+        String content = "";
+        try {
+            Scanner reader = new Scanner(new File("data.json"));
+            while (reader.hasNextLine()) {
+                content += reader.nextLine() + "\n";
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(!content.isEmpty()){
+            JSONArray database = new JSONArray(content);
+
+            for (int i = 0; i < database.length(); i++){
+                JSONObject db_entry = database.getJSONObject(i);
+                
+                Product current_product = new Product(db_entry.getString("sku"), db_entry.getString("name"), db_entry.getString("description"), db_entry.getString("vendor"), db_entry.getString("slug"), Double.parseDouble(db_entry.getString("price")));
+                Integer amount = Integer.parseInt(db_entry.getString("amount"));
+
+                warehouse_instance.addProduct(current_product, amount);
+            }
+        }
+        
     }
 }
