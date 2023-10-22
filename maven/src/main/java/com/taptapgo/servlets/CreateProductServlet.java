@@ -17,13 +17,15 @@ public class CreateProductServlet extends HttpServlet {
         // get request parameters for product sku and name
         String SKU = request.getParameter("sku");
         String name = request.getParameter("name");
-        String result = request.getParameter("result");
+        String price = request.getParameter("price");
+        String desc = request.getParameter("desc");
+        String vendor = request.getParameter("vendor");
 
         // get staff attribute to create new product
         ServletContext context = getServletContext();
         Staff staff = (Staff) context.getAttribute("staff");
         try{
-            staff.createProduct(SKU, name);
+            staff.createProduct(SKU, name, price, vendor, desc);
         }
         catch (Exception e) {
             // output message if there's an issue creating product and reset page

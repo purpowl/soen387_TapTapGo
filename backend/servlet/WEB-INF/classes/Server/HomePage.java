@@ -3,11 +3,13 @@ package Server;
 import java.io.IOException;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class ServletHandler extends HttpServlet{
+@WebServlet("/")
+public class HomePage extends HttpServlet{
     public void init() throws ServletException{
         // Place for any initialization (load data into memory)
     }

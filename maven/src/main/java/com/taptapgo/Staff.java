@@ -11,7 +11,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 import java.util.Map.Entry;
 
 public class Staff extends User{
@@ -22,15 +21,14 @@ public class Staff extends User{
         staffID.incrementAndGet();
     }
 
-    public void createProduct(String SKU, String name) {
-        // generate random price between $0.99 and $1000
-        Random random = new Random();
-        double randomValue = 0.99 + (1000 - 0.99) * random.nextDouble();
-        Warehouse.addProduct(new Product(SKU, name, Math.round(randomValue * 100.0) / 100.0), 0);
+    public void createProduct(String SKU, String name, String price, String vendor, String desc) {
+        double product_price = Double.parseDouble(price);
+        String slug = name.split(" ")[0] + "_" + SKU;
+        Warehouse.getInstance().addProduct(new Product(SKU, name, desc, vendor, slug, product_price), 0);
     }
 
     public void updateProduct(String SKU, HashMap<String, Object> fieldsToUpdate) throws ProductNotFoundException, InvalidParameterException {
-        Product productToUpdate = Warehouse.findProductBySKU(SKU);
+        Product productToUpdate = Warehouse.getInstance().findProductBySKU(SKU);
         // check if product exists in warehouse
         if (productToUpdate == null) throw new ProductNotFoundException();
         else {

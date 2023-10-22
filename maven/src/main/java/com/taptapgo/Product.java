@@ -20,13 +20,13 @@ public class Product {
         this.price = -1;
     }
 
-    public Product(String sku, String name, double price){
+    public Product(String sku, String name, double price, String slug){
         this.SKU = sku;
         this.name = name;
         this.price = price;
-        this.description = null;
-        this.vendor = null;
-        this.URL_slug = null;
+        this.description = "";
+        this.vendor = "";
+        this.URL_slug = slug;
     }
 
     public Product(String sku, String name, String description, String vendor, String url_slug, double price){

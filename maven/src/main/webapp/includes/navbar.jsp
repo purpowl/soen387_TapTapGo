@@ -1,6 +1,6 @@
 <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Taptapgo navigation bar">
     <div class="container">
-        <a class="navbar-brand" href="index.jsp">TapTapGo</a>
+        <a class="navbar-brand" href="<%=request.getContextPath()%>/index.jsp">TapTapGo</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsTaptapgo" aria-controls="navbarsTaptapgo" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -19,8 +19,8 @@
                     <li><a class="nav-link" href="logout">Log Out</a></li>
                 <% } else { %>
                     <!-- customers see login button and cart -->
-                    <li><a class="nav-link" href="login.jsp?from=${pageContext.request.requestURI}"><img src="images/user.svg" alt="user icon"></a></li>
-                    <li><a class="nav-link" href="cart.jsp"><img src="images/cart.svg" alt="cart icon"></a></li>
+                    <li><a class="nav-link" href="login.jsp?from=${pageContext.request.requestURI}"><img src="<%=request.getContextPath()%>/images/user.svg" alt="user icon"></a></li>
+                    <li><a class="nav-link" href="<%=request.getContextPath()%>/cart.jsp"><img src="<%=request.getContextPath()%>/images/cart.svg" alt="cart icon"></a></li>
                 <% } %>
             </ul>
         </div>

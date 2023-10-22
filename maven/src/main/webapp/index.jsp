@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,7 +19,7 @@
             <p><a href="products.jsp" class="btn btn-secondary me-2">Shop Now</a></p>
         </article>
         <article className="img-container">
-            <img src="./images/hero-bcg.jpeg" alt="green keyboard" className="main-img" />
+            <img src="/taptapgo/images/hero-bcg.jpeg" alt="green keyboard" className="main-img" />
         </article>
     </div>
 </div>

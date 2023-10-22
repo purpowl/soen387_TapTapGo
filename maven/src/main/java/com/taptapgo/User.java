@@ -1,6 +1,7 @@
 package com.taptapgo;
 
 public abstract class User {
+    public static final int USER_COOKIE_DURATION_SEC = 300;
     protected String username;
     protected String password;
 
