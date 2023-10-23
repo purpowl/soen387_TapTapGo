@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet(name = "modifyCartServlet", value = "/cart/*")
 public class ModifyCartServlet extends HttpServlet{
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        // Extract the product information (productId) from the path
         String action = request.getPathInfo().substring(1);
         String slug = request.getParameter("slug");
 

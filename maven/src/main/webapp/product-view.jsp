@@ -8,7 +8,7 @@
     <body>
         <%@include file="includes/navbar.jsp" %>
 
-        <div class="container-fluid mx-4 my-5">
+        <div class="container-fluid mx-4 my-5" style="min-height: 1000px;">
             <div class="row">
                 <div class="col">
                     <img src="images/epomaker_alice.jpg" alt="keyboard">

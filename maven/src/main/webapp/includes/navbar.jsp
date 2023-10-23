@@ -6,11 +6,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarsTaptapgo">
             <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-                <li class="nav-item active"><a class="nav-link" href="index.jsp">Home</a></li>
-                <li><a class="nav-link" href="products.jsp">Products</a></li>
+                <li class="nav-item active"><a class="nav-link" href="<%=request.getContextPath()%>/index.jsp">Home</a></li>
+                <li><a class="nav-link" href="<%=request.getContextPath()%>/products.jsp">Products</a></li>
                 <!-- staff members can see a link to Create Product page -->
                 <% if (session.getAttribute("isStaff") != null) { %>
-                    <li><a class="nav-link" href="create-product.jsp">Create a Product</a></li>
+                    <li><a class="nav-link" href="<%=request.getContextPath()%>/create-product.jsp">Create a Product</a></li>
                 <% } %>
             </ul>
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">

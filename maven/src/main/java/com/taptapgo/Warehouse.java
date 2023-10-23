@@ -47,20 +47,19 @@ public class Warehouse {
     }
 
     /**
-     * Increment the amount of an existing product in the warehouse.
+     * Modify the amount of an existing product in the warehouse.
      *
-     * @param product the product to increment/stock-up
+     * @param product the product to modify/stock-up
      * @param amount the amount to add for this product
      * @return False if product doesn't exist in warehouse. Else, return True on success.
      */
-    public boolean incrementProduct(Product product, int amount) {
+    public boolean setProductInventory(Product product, int amount) {
         Integer amount_avail = warehouse_instance.product_list.get(product);
 
         if (amount_avail == null) {
             return false;
         } else {
-            int amount_total = amount_avail + amount;
-            warehouse_instance.product_list.replace(product, amount_total);
+            warehouse_instance.product_list.replace(product, amount);
             return true;
         }
     }
@@ -174,6 +173,9 @@ public class Warehouse {
 
                 if(amount_avail < amount) {
                     return false;
+                } else if (amount_avail == amount) {
+                    deleteProduct(product);
+                    return true;
                 } else {
                     int amount_left = amount_avail - amount;
                     warehouse_instance.product_list.replace(product, amount_left);

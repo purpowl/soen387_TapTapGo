@@ -5,11 +5,13 @@
     if (session == null || session.getAttribute("isStaff") == null) {
         response.sendRedirect("login.jsp");
     }
+
+    String slug = request.getParameter("slug");
 %>
 <html>
 <head>
     <%@include file="includes/header.jsp" %>
-    <title>Create Product</title>
+    <title>Modify Product</title>
 </head>
 <body>
 <%@include file="includes/navbar.jsp" %>
@@ -19,10 +21,10 @@
         <div class="card-header text-center">Product Details</div>
         <div class="card-body">
             <!-- form for staff to enter sku and name to create new product, calls CreateProductServlet doPost -->
-            <form action="<%=request.getContextPath()%>/create-product" method="post" >
+            <form action="<%=request.getContextPath()%>/products/<%=slug%>" method="post" >
+                <input type="hidden" name="method" value="post">
+                <input type="hidden" name="slug" value="<%=slug%>">
                 <div class="form-group mb-3">
-                    <label for="sku">Product SKU</label>
-                    <input type="text" class="form-control" id="sku" name="sku" placeholder="Product SKU">
                     <label for="name">Product Name</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Product Name">
                     <label for="desc">Description</label>
@@ -35,7 +37,7 @@
                     <input type="text" class="form-control" id="amount" name="amount" placeholder="Product Amount">
                 </div>
                 <div class="text-center mb-3">
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-primary">Modify</button>
                 </div>
             </form>
         </div>
