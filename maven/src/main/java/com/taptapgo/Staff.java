@@ -1,7 +1,10 @@
 package com.taptapgo;
 
 import com.taptapgo.exceptions.InvalidParameterException;
+import com.taptapgo.exceptions.ProductAreadyExistsException;
 import com.taptapgo.exceptions.ProductNotFoundException;
+
+import java.io.FileNotFoundException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,9 +24,18 @@ public class Staff extends User{
         staffID.incrementAndGet();
     }
 
-    public void createProduct(String SKU, String name, double price, String vendor, String desc, int amount) {
-        String slug = name.split(" ")[0] + "_" + SKU;
-        Warehouse.getInstance().addProduct(new Product(SKU, name, desc, vendor, slug, price), amount);
+    public void createProduct(String SKU, String name, double price, String vendor, String desc, int amount) throws ProductAreadyExistsException, InvalidParameterException {
+        // check product doesn't already exist in warehouse
+        if (Warehouse.getInstance().findProductBySKU(SKU) != null) 
+            throw new ProductAreadyExistsException();
+        // check SKU and name are not blank
+        else if (SKU == null || SKU.equals("") || name == null || name.equals("")) 
+            throw new InvalidParameterException("Product SKU and Name cannot be blank.");
+        // otherwise add new product to warehouse
+        else {
+            String slug = name.split(" ")[0] + "_" + SKU;
+            Warehouse.getInstance().addProduct(new Product(SKU, name, desc, vendor, slug, price), amount);
+        }
     }
 
     public void updateProduct(String slug, HashMap<String, Object> fieldsToUpdate) throws ProductNotFoundException, InvalidParameterException {
@@ -86,7 +98,8 @@ public class Staff extends User{
         }
     }
 
-    public void downloadProductCatalog() throws IOException{
+    public String getProductCatalog() throws IOException{
+        StringBuilder stringBuilder = new StringBuilder();
         // get product list
         HashMap<Product, Integer> productList = Warehouse.getInstance().getProductList();
 
@@ -95,33 +108,43 @@ public class Staff extends User{
 
         // create CSV data, with headers and information of each product in product list
         // and their quantities in warehouse
-        File csvOutputFile = new File("Product_List.csv");
         List<String[]> dataLines = new ArrayList<>();
         dataLines.add(headers);
-
         for (Entry<Product, Integer> product : productList.entrySet()) {
             dataLines.add(new String[] {product.getKey().getSKU(), product.getKey().getName(), product.getKey().getVendor(), product.getKey().getSlug(), String.valueOf(product.getKey().getPrice()), product.getKey().getDescription(), String.valueOf(product.getValue()) });
         }
 
-        // escape special chars and write to file
-        try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
-            dataLines.stream().map(this::convertToCSV).forEach(pw::println);
+        // build a string with delimited csv data
+        for (String[] strArr : dataLines) {
+            String concatStr = String.join(", ", strArr);
+            stringBuilder.append(escapeSpecialCharacters(concatStr)).append("\n");
         }
+
+        // return built string
+        return stringBuilder.toString();
     }
 
-    private String convertToCSV(String[] data) {
-        return Stream.of(data).map(this::escapeSpecialCharacters).collect(Collectors.joining(","));
+    // method to write to csv file locally
+    public void downloadProductCatalog(String[] data) throws IOException {
+        File csvOutputFile = new File("Product_List.csv");
+
+        // get the String for product list
+        String productCatalog = getProductCatalog();
+
+        // write the product catalog to a csv file
+        try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
+            pw.print(productCatalog);
+        }
     }
 
     private String escapeSpecialCharacters(String data) {
-        if (data != null) {
-            String escapedData = data.replaceAll("\\R", " ");
+        if (data != null && !data.equals("")) {
+            data = data.replaceAll("\\R", " ");
             if (data.contains(",") || data.contains("\"") || data.contains("'")) {
                 data = data.replace("\"", "\"\"");
-                escapedData = "\"" + data + "\"";
             }
-            return escapedData;
+            return data;
         }
-        else return data;
+        else return "";
     }
 }
