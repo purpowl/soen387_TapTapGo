@@ -21,14 +21,13 @@ public class Staff extends User{
         staffID.incrementAndGet();
     }
 
-    public void createProduct(String SKU, String name, String price, String vendor, String desc) {
-        double product_price = Double.parseDouble(price);
+    public void createProduct(String SKU, String name, double price, String vendor, String desc, int amount) {
         String slug = name.split(" ")[0] + "_" + SKU;
-        Warehouse.getInstance().addProduct(new Product(SKU, name, desc, vendor, slug, product_price), 0);
+        Warehouse.getInstance().addProduct(new Product(SKU, name, desc, vendor, slug, price), amount);
     }
 
-    public void updateProduct(String SKU, HashMap<String, Object> fieldsToUpdate) throws ProductNotFoundException, InvalidParameterException {
-        Product productToUpdate = Warehouse.getInstance().findProductBySKU(SKU);
+    public void updateProduct(String slug, HashMap<String, Object> fieldsToUpdate) throws ProductNotFoundException, InvalidParameterException {
+        Product productToUpdate = Warehouse.getInstance().findProductBySlug(slug);
         // check if product exists in warehouse
         if (productToUpdate == null) throw new ProductNotFoundException();
         else {
@@ -44,16 +43,46 @@ public class Staff extends User{
                     case "vendor":
                         productToUpdate.setVendor(field.getValue().toString());
                         break;
-                    case "URL_slug":
-                        productToUpdate.setSlug(field.getValue().toString());
+                    case "amount":
+                        String amount_str = field.getValue().toString();
+                        int amount;
+                        try {
+                            amount = Integer.parseInt(amount_str);
+                            if (amount <= 0) {
+                                throw new InvalidParameterException("Amount entered is negative.");
+                            }
+                        } catch (Exception e) {
+                            throw new InvalidParameterException("Amount entered is not a number.");
+                        }
+                        Warehouse.getInstance().setProductInventory(productToUpdate, amount);
                         break;
                     case "price":
-                        productToUpdate.setPrice(Double.parseDouble(field.getValue().toString()));
+                        String price_str = field.getValue().toString();
+                        double price;
+
+                        try {
+                            price = Double.parseDouble(price_str);
+                            if (price <= 0) {
+                                throw new InvalidParameterException("Price entered is negative.");
+                            }
+                        } catch (Exception e) {
+                            throw new InvalidParameterException("Price entered is not a number.");
+                        }
+                        productToUpdate.setPrice(price);
                         break;
                     default:
                         throw new InvalidParameterException("Invalid parameters. Cannot update product.");
                 }
             }
+        }
+    }
+
+    public void deleteProduct(String slug) throws ProductNotFoundException{
+        Product productToDelete = Warehouse.getInstance().findProductBySlug(slug);
+
+        if (productToDelete == null) throw new ProductNotFoundException();
+        else {
+            Warehouse.getInstance().deleteProduct(productToDelete);
         }
     }
 

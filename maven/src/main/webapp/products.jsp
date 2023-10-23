@@ -15,7 +15,7 @@
 <body>
 <%@include file="includes/navbar.jsp" %>
 
-<div class="container">
+<div class="container" style="min-height: 1000px;">
     <div class="card-header my-3">All Products</div>
     <div class="row">
         <%
@@ -31,13 +31,25 @@
                     <h5 class="card-title"><%=p.getName() %></h5>
                     <h6 class="price">Price: $<%=p.getPrice() %></h6>
                     <h6 class="category">Description: <%=p.getDescription() %></h6>
+                    <!-- Show different types of button for staff/user -->
+                    <%  if (session.getAttribute("isStaff") != null) { %>
+                    <div class="mt-3 d-flex justify-content-between">
+                        <a class="btn btn-primary mb-3" href="<%=request.getContextPath()%>/modify-product.jsp?slug=<%=p.getSlug()%>">Modify</a>
+                        <form action="<%=request.getContextPath()%>/products/<%=p.getSlug()%>" method="post">
+                            <input type="hidden" name="slug" value="<%=p.getSlug()%>">
+                            <input type="hidden" name="method" value="delete">
+                            <button type="submit" class="btn btn-dark">Delete</button>
+                        </form>
+                    </div>
+                    <%  } else { %>
                     <div class="mt-3 d-flex justify-content-between">
                         <form action="<%=request.getContextPath()%>/cart/add" method="post">
                             <input type="hidden" name="slug" value="<%=p.getSlug()%>">
                             <button type="submit" class="btn btn-dark">Add To Cart</button>
                         </form>
-                        <a class="btn btn-primary" href="<%=request.getContextPath()%>/product/<%=p.getSlug()%>">View</a>
+                        <a class="btn btn-primary mb-3" href="<%=request.getContextPath()%>/products/<%=p.getSlug()%>">View</a>
                     </div>
+                    <%  } %>
                 </div>
             </div>
         </div>
