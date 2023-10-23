@@ -11,7 +11,7 @@
         <div class="container-fluid mx-4 my-5" style="min-height: 1000px;">
             <div class="row">
                 <div class="col">
-                    <img src="images/epomaker_alice.jpg" alt="keyboard">
+                    <img src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="keyboard">
                 </div>
                 <div class="col">
                     <div class="container-fluid">

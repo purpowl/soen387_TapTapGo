@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,11 +19,10 @@
             <p><a href="<%=request.getContextPath()%>/products.jsp" class="btn btn-secondary me-2">Shop Now</a></p>
         </article>
         <article class="img-container">
-            <img src="${pageContext.request.contextPath}/images/hero-bcg.jpeg" alt="green keyboard" class="main-img" />
+            <img src="<%=request.getContextPath()%>/images/hero-bcg.jpeg" alt="green keyboard" class="main-img" />
         </article>
     </div>
 </div>
-
 <%@include file="includes/footer.jsp" %>
 </body>
 </html>
