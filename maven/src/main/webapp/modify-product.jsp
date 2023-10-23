@@ -20,13 +20,6 @@
     <div class="card w-50 mx-auto my-5">
         <div class="card-header text-center">Product Details</div>
         <div class="card-body">
-            <%
-                String modifyFail = request.getParameter("modify");
-
-                if (modifyFail != null) {
-            %>
-            <p class="card-subtitle" style="color: red;">Failed to modify product. Please recheck your parameters!</p>
-            <%  }   %>
             <!-- form for staff to enter sku and name to create new product, calls CreateProductServlet doPost -->
             <form action="<%=request.getContextPath()%>/products/<%=slug%>" method="post" >
                 <input type="hidden" name="method" value="post">

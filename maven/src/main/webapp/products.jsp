@@ -18,17 +18,28 @@
 <div class="container" style="min-height: 1000px;">
     <div class="card-header my-3">All Products</div>
     <%
-        String modifySuccess = request.getParameter("modify");
+        String modifyStatus = request.getParameter("modify");
 
-        if (modifySuccess != null) {
+        if (modifyStatus != null) {
+            if (modifyStatus.equals("success")) {
     %>
     <div class="row">
         <div class="col-12">
-            <h5 style="color: #8EFF33;">Product successfully modified!</h5>
+            <p style="color: #8EFF33;">Product successfully modified!</p>
         </div>
     </div>
-    <%  }   %>
-
+    <%  
+            } else {   
+    %>
+    <div class="row">
+        <div class="col-12">
+            <p style="color: red;">Fail to modify product! Please recheck your parameters.</p>
+        </div>
+    </div>
+    <% 
+            }
+        }
+    %>
     <%
         String deleteStatus = request.getParameter("delete");
 
@@ -37,7 +48,7 @@
     %>
     <div class="row">
         <div class="col-12">
-            <h5 style="color: #8EFF33;">Product successfully deleted!</h5>
+            <p style="color: #8EFF33;">Product successfully deleted!</p>
         </div>
     </div>
     <%  
@@ -45,7 +56,7 @@
     %>
     <div class="row">
         <div class="col-12">
-            <h5 style="color: red;">Product successfully modified!</h5>
+            <p style="color: red;">Product successfully modified!</p>
         </div>
     </div>
     <%
