@@ -65,21 +65,13 @@ public class ProductServlet extends HttpServlet {
             Staff staff = (Staff) context.getAttribute("staff");
             try {
                 staff.updateProduct(slug, updateFields);
+
+                // output message for successful product creation and reset page
+                response.sendRedirect(request.getContextPath() + "/products.jsp?modify=success");
             } catch (Exception e) {
                 // output message if there's an issue creating product and reset page
-                response.sendRedirect(request.getContextPath() + "modify-product.jsp");
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/modify-product.jsp");
-                PrintWriter out= response.getWriter();
-                out.println("<font color=red>Unable to modify product. " + e.getMessage() + "</font>");
-                rd.include(request, response);
+                response.sendRedirect(request.getContextPath() + "/modify-product.jsp?modify=fail");
             }
-
-            // output message for successful product creation and reset page
-            response.sendRedirect(request.getContextPath() + "/products.jsp");
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/products.jsp");
-            PrintWriter out= response.getWriter();
-            out.println("<font color=green>Product modified.</font>");
-            rd.include(request, response);
         } else if (method.equals("delete")) {
             /* Delete the product for DELETE method */
             ServletContext context = getServletContext();
@@ -87,21 +79,13 @@ public class ProductServlet extends HttpServlet {
 
             try {
                 staff.deleteProduct(slug);
+
+                // output message for successful product creation and reset page
+                response.sendRedirect(request.getContextPath() + "/products.jsp?delete=success");
             } catch (Exception e) {
                 // output message if there's an issue creating product and reset page
-                response.sendRedirect(request.getContextPath() + "products.jsp");
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/products.jsp");
-                PrintWriter out= response.getWriter();
-                out.println("<font color=red>Unable to delete product. " + e.getMessage() + "</font>");
-                rd.include(request, response);
+                response.sendRedirect(request.getContextPath() + "/products.jsp?delete=fail");
             }
-
-            // output message for successful product creation and reset page
-            response.sendRedirect(request.getContextPath() + "/products.jsp");
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/products.jsp");
-            PrintWriter out= response.getWriter();
-            out.println("<font color=green>Product deleted.</font>");
-            rd.include(request, response);
         }
         
         

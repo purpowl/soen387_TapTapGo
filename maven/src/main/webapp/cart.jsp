@@ -48,14 +48,14 @@
                                 currentSession.removeAttribute("cart-modified");
                             }
                         %>
-                        <div class="row">
+                        <div class="row pr-3">
                             <div class="col-8">
                                 <%
                                     double total = 0;
                                     for (Map.Entry<Product, Integer> product_entry : cart.entrySet()) { 
                                         Product product = product_entry.getKey();
                                         int amount = product_entry.getValue();
-                                        total += product.getPrice();
+                                        total += product.getPrice() * amount;
                                 %>
                                 <div class="card mt-2">
                                     <div class="card-body px-5">
@@ -104,7 +104,7 @@
                                     } 
                                 %>
                             </div>
-                            <div class="col-4 p-2 mr-3">
+                            <div class="col-4 p-2">
                                 <div class="card border rounded">
                                     <div class="card-body">
                                         <h4 class="card-title">Order Summary</h4>
@@ -115,7 +115,7 @@
                                                 </div>
                                                 <div class="col-6"><p></p></div>
                                                 <div class="col-3">
-                                                    $<%=total%>
+                                                    $<%=Product.roundPrice(total)%>
                                                 </div>
                                             </div>
                                             <div class="row my-1">

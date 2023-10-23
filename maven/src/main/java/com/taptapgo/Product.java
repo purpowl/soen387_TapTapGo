@@ -121,6 +121,6 @@ public class Product {
         bd = bd.setScale(2, RoundingMode.HALF_UP);
         double result = bd.doubleValue();
 
-        return Double.toString(result);
+        return String.format("%.2f", result);
     }
 }

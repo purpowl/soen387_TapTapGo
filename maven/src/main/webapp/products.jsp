@@ -17,6 +17,41 @@
 
 <div class="container" style="min-height: 1000px;">
     <div class="card-header my-3">All Products</div>
+    <%
+        String modifySuccess = request.getParameter("modify");
+
+        if (modifySuccess != null) {
+    %>
+    <div class="row">
+        <div class="col-12">
+            <h5 style="color: #8EFF33;">Product successfully modified!</h5>
+        </div>
+    </div>
+    <%  }   %>
+
+    <%
+        String deleteStatus = request.getParameter("delete");
+
+        if (deleteStatus != null) {
+            if (deleteStatus.equals("success")) {
+    %>
+    <div class="row">
+        <div class="col-12">
+            <h5 style="color: #8EFF33;">Product successfully deleted!</h5>
+        </div>
+    </div>
+    <%  
+            } else {
+    %>
+    <div class="row">
+        <div class="col-12">
+            <h5 style="color: red;">Product successfully modified!</h5>
+        </div>
+    </div>
+    <%
+            }
+        }   
+    %>
     <div class="row">
         <%
             // if there are products in warehouse, create cards for them
