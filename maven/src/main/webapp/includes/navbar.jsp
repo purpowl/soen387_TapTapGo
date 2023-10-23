@@ -19,7 +19,7 @@
                     <li><a class="nav-link" href="logout">Log Out</a></li>
                 <% } else { %>
                     <!-- customers see login button and cart -->
-                    <li><a class="nav-link" href="login.jsp?from=${pageContext.request.requestURI}"><img src="<%=request.getContextPath()%>/images/user.svg" alt="user icon"></a></li>
+                    <li><a class="nav-link" href="${pageContext.request.contextPath}/login.jsp?from=${pageContext.request.requestURI}"><img src="<%=request.getContextPath()%>/images/user.svg" alt="user icon"></a></li>
                     <li><a class="nav-link" href="<%=request.getContextPath()%>/cart.jsp"><img src="<%=request.getContextPath()%>/images/cart.svg" alt="cart icon"></a></li>
                 <% } %>
             </ul>

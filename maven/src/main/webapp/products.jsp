@@ -105,8 +105,8 @@
     <!-- staff members can see a button to download product catalog -->
     <% if (session.getAttribute("isStaff") != null) { %>
         <div class="row text-center container">
-            <form action="download-catalog" method="post">
-                <button class="btn btn-primary btn-sm" type="submit"><i class="fa fa-download"></i>Download Product Catalog</button>
+            <form action="download-catalog" method="get">
+                <button class="btn btn-primary btn-sm" type="submit"><i class="fa fa-download"></i> Download Product Catalog</button>
             </form>
         </div>
     <% } %>

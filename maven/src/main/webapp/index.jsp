@@ -11,15 +11,15 @@
 <!--Hero Section-->
 <div class="hero">
     <div class="container">
-        <article className="content">
+        <article class="content">
             <h1>The best mechanical<br />keyboards for you.</h1>
             <p>We were founded to support Concordians with our favourite obsession.
                 No import fees, long wait times for shipping, or foreign-currency
                 exchange rates. We offer simple pricing and free shipping in Montreal.</p>
-            <p><a href="products.jsp" class="btn btn-secondary me-2">Shop Now</a></p>
+            <p><a href="<%=request.getContextPath()%>/products.jsp" class="btn btn-secondary me-2">Shop Now</a></p>
         </article>
-        <article className="img-container">
-            <img src="/taptapgo/images/hero-bcg.jpeg" alt="green keyboard" className="main-img" />
+        <article class="img-container">
+            <img src="${pageContext.request.contextPath}/images/hero-bcg.jpeg" alt="green keyboard" class="main-img" />
         </article>
     </div>
 </div>
