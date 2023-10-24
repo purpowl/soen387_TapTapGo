@@ -4,14 +4,19 @@ pageEncoding="UTF-8"%>
 <html>
   <head>
     <%@include file="includes/header.jsp" %>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="<%=request.getContextPath()%>/lib/css/hero.css"
+    />
     <title>TapTapGo</title>
   </head>
   <body>
     <%@include file="includes/navbar.jsp" %>
 
     <!--Hero Section-->
-    <div class="hero">
-      <div class="container">
+    <div class="container">
+      <div class="hero-container">
         <article class="content">
           <h1>The best mechanical<br />keyboards for you.</h1>
           <p>
@@ -22,8 +27,13 @@ pageEncoding="UTF-8"%>
           </p>
           <p>
             <a
+              style="
+                text-transform: uppercase;
+                background: hsl(221, 100%, 33%);
+                color: hsl(221, 100%, 95%);
+              "
               href="<%=request.getContextPath()%>/products.jsp"
-              class="btn btn-secondary me-2"
+              class="btn btn-lg me-2"
               >Shop Now</a
             >
           </p>
