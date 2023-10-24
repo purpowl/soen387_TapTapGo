@@ -7,7 +7,7 @@
     <a class="navbar-brand" href="<%=request.getContextPath()%>/index.jsp">
       <img
         style="width: 175px; margin-right: 20px; border-radius: 0.25rem"
-        src="${pageContext.request.contextPath}/images/TapTapGo logo blue.png"
+        src="<%=request.getContextPath()%>/images/TapTapGo-logo-blue.png"
         alt="TapTapGo"
       />
     </a>
