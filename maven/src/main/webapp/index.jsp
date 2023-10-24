@@ -40,7 +40,7 @@ pageEncoding="UTF-8"%>
         </article>
         <article class="img-container">
           <img
-            src="${pageContext.request.contextPath}/images/hero-bcg.jpeg"
+            src="<%=request.getContextPath()%>/images/hero-bcg.jpeg"
             alt="green keyboard"
             class="main-img"
           />
