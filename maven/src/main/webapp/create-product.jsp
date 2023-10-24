@@ -15,7 +15,7 @@
 <%@include file="includes/navbar.jsp" %>
 
 <div class="container">
-    <div class="card-header">Create Product</div>
+    <div class="card-header my-3">Create Product</div>
     <div class="card w-50 mx-auto my-5">
         <div class="card-header text-center">Product Details</div>
         <div class="card-body">
