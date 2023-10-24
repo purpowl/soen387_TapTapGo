@@ -15,6 +15,7 @@
 <%@include file="includes/navbar.jsp" %>
 
 <div class="container">
+    <div class="card-header">Create Product</div>
     <div class="card w-50 mx-auto my-5">
         <div class="card-header text-center">Product Details</div>
         <div class="card-body">
@@ -35,7 +36,12 @@
                     <input type="text" class="form-control" id="amount" name="amount" placeholder="Product Amount">
                 </div>
                 <div class="text-center mb-3">
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button 
+                        style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);"
+                        type="submit" 
+                        class="btn"
+                        >Create
+                    </button>
                 </div>
             </form>
         </div>

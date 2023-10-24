@@ -48,7 +48,7 @@
     %>
     <div class="row">
         <div class="col-12">
-            <p style="color: #8EFF33;">Product successfully deleted!</p>
+            <p style="color: #379237;">Product successfully deleted!</p>
         </div>
     </div>
     <%  
