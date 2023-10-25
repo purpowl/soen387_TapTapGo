@@ -9,8 +9,9 @@
 <%@include file="includes/navbar.jsp" %>
 
 <div class="container">
+  <div class="card-header my-3">Staff Login</div>
   <div class="card w-50 mx-auto my-5">
-    <div class="card-header text-center">Staff Login</div>
+    <div class="card-header text-center">Credential</div>
     <div class="card-body">
       <!-- form for staff login, calls LoginServlet doPost -->
       <form action="login" method="post">
@@ -21,7 +22,12 @@
           <input type="hidden" name="from" value="${param.from}">
         </div>
         <div class="text-center mb-3">
-          <button type="submit" class="btn btn-primary">Login</button>
+          <button 
+            style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" 
+            type="submit" 
+            class="btn"
+            >Login
+          </button>
         </div>
       </form>
     </div>
