@@ -1,5 +1,5 @@
 <nav
-  class="navbar navbar-expand-md navbar-light bg-transparent"
+  class="custom-navbar navbar navbar-expand-md navbar-light bg-transparent"
   aria-label="Taptapgo navigation bar"
 >
   <div class="container">
