@@ -84,6 +84,7 @@
                            class="btn btn-sm mb-3" href="<%=request.getContextPath()%>/modify-product.jsp?slug=<%=p.getSlug()%>"
                            >Modify
                         </a>
+                        <a class="btn btn-secondary btn-sm mb-3" href="<%=request.getContextPath()%>/products/<%=p.getSlug()%>">View</a>
                         <form action="<%=request.getContextPath()%>/products/<%=p.getSlug()%>" method="post">
                             <input type="hidden" name="slug" value="<%=p.getSlug()%>">
                             <input type="hidden" name="method" value="delete">

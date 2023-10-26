@@ -21,7 +21,7 @@
     <div class="card w-50 mx-auto my-5">
         <div class="card-header text-center">Product Details</div>
         <div class="card-body">
-            <!-- form for staff to enter sku and name to create new product, calls CreateProductServlet doPost -->
+            <!-- form for staff to modify product details -->
             <form action="<%=request.getContextPath()%>/products/<%=slug%>" method="post" >
                 <input type="hidden" name="method" value="post">
                 <input type="hidden" name="slug" value="<%=slug%>">
