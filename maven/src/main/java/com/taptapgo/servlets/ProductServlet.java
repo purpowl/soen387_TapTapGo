@@ -80,10 +80,10 @@ public class ProductServlet extends HttpServlet {
             try {
                 staff.deleteProduct(slug);
 
-                // output message for successful product creation and reset page
+                // output message for successful product deletion and reset page
                 response.sendRedirect(request.getContextPath() + "/products.jsp?delete=success");
             } catch (Exception e) {
-                // output message if there's an issue creating product and reset page
+                // output message if there's an issue deleting product and reset page
                 response.sendRedirect(request.getContextPath() + "/products.jsp?delete=fail");
             }
         }

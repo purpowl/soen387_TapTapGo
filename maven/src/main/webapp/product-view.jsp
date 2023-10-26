@@ -22,6 +22,13 @@
                     <p class="vendor"><span>Vendor: </span>${product.getVendor()}</p>
                     <p class="desc"><span>Description: </span>${product.getDescription()}</p>
                     <hr />
+                    <!-- staff members can see a button to download product catalog -->
+                    <% if (session.getAttribute("isStaff") != null) { %>
+                        <a style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);"
+                           class="btn btn-sm mb-3" href="<%=request.getContextPath()%>/modify-product.jsp?slug=${product.getSlug()}"
+                        >Modify
+                        </a>
+                    <% } else { %>
                     <form action="<%=request.getContextPath()%>/cart/add" method="POST">
                         <input type="hidden" name="slug" value="${product.getSlug()}">
                             <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);"
@@ -29,6 +36,7 @@
                                 >Add To Cart
                             </button>
                     </form>
+                    <% } %>
                 </section>
             </div>
         </div>
