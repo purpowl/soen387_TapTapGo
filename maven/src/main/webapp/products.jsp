@@ -18,6 +18,29 @@
 <div class="container" style="min-height: 1000px;">
     <div class="card-header my-3">All Products</div>
     <%
+        String createStatus = request.getParameter("create");
+
+        if (createStatus != null) {
+            if (createStatus.equals("success")) {
+    %>
+    <div class="row">
+        <div class="col-12">
+            <p style="color: #379237;">Product successfully created!</p>
+        </div>
+    </div>
+    <%
+    } else {
+    %>
+    <div class="row">
+        <div class="col-12">
+            <p style="color: red;">Fail to create product! Please recheck your parameters.</p>
+        </div>
+    </div>
+    <%
+            }
+        }
+    %>
+    <%
         String modifyStatus = request.getParameter("modify");
 
         if (modifyStatus != null) {

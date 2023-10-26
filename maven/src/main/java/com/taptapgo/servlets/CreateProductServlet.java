@@ -14,47 +14,46 @@ import com.taptapgo.exceptions.InvalidNumberException;
 public class CreateProductServlet extends HttpServlet {
     
     protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response) throws ServletException, IOException {
+                          HttpServletResponse response) throws IOException {
 
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("/create-product.jsp");
-        PrintWriter out= response.getWriter();
+        try {
+            // get request parameters for product sku and name
+            String SKU = request.getParameter("sku");
+            String name = request.getParameter("name");
+            String price_str = request.getParameter("price");
+            String desc = request.getParameter("desc");
+            String vendor = request.getParameter("vendor");
+            String amount_str = request.getParameter("amount");
 
-        // get request parameters for product sku and name
-        String SKU = request.getParameter("sku");
-        String name = request.getParameter("name");
-        String price_str = request.getParameter("price");
-        String desc = request.getParameter("desc");
-        String vendor = request.getParameter("vendor");
-        String amount_str = request.getParameter("amount");
+            // get staff attribute to create new product
+            ServletContext context = getServletContext();
+            Staff staff = (Staff) context.getAttribute("staff");
 
-        // get staff attribute to create new product
-        ServletContext context = getServletContext();
-        Staff staff = (Staff) context.getAttribute("staff");
-        try{
-            int amount = Integer.parseInt(amount_str);
-            if (amount <= 0) {
-                throw new InvalidNumberException("Negative amount entered.");
+            int amount = 0;
+            double price = 0;
+
+            if (!amount_str.isEmpty()) {
+                amount = Integer.parseInt(amount_str);
+                if (amount <= 0) {
+                    throw new InvalidNumberException("Negative amount entered.");
+                }
             }
 
-            double price = Double.parseDouble(price_str);
-            if (price <= 0) {
-                throw new InvalidNumberException("Negative price entered.");
+            if (!price_str.isEmpty()) {
+                price = Double.parseDouble(price_str);
+                if (price <= 0) {
+                    throw new InvalidNumberException("Negative price entered.");
+                }
             }
+
             staff.createProduct(SKU, name, price, vendor, desc, amount);
-        } catch(NumberFormatException e){
-            // output message if there's an issue creating product
-            response.sendRedirect("create-product.jsp");
-            out.println("<font color=red>Unable to create product. Invalid number entered for price or amount.</font>");
-            rd.include(request, response);
+
         } catch (Exception e) {
-            // output message if there's an issue creating product
-            response.sendRedirect("create-product.jsp");
-            out.println("<font color=red>Unable to create product. " + e.getMessage() + "</font>");
-            rd.include(request, response);
+            // output message for failed product creation and redirect to products page
+            response.sendRedirect(request.getContextPath() + "/products.jsp?create=fail");
         }
-        // output message for successful product creation and reset page
-        response.sendRedirect("create-product.jsp");
-        out.println("<font color=green>Product created.</font>");
-        rd.include(request, response);
+
+        // output message for successful product creation and redirect to products page
+        response.sendRedirect(request.getContextPath() + "/products.jsp?create=success");
     }
 }

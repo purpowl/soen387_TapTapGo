@@ -34,7 +34,7 @@ public class ProductServlet extends HttpServlet {
         }
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String method = request.getParameter("method");
         String slug = request.getParameter("slug");
 
@@ -70,10 +70,10 @@ public class ProductServlet extends HttpServlet {
             try {
                 staff.updateProduct(slug, updateFields);
 
-                // output message for successful product creation and reset page
+                // output message for successful product modification and reset page
                 response.sendRedirect(request.getContextPath() + "/products.jsp?modify=success");
             } catch (Exception e) {
-                // output message if there's an issue creating product and reset page
+                // output message if there's an issue modifying product and reset page
                 response.sendRedirect(request.getContextPath() + "/products.jsp?modify=fail");
             }
         } else if (method.equals("delete")) {
