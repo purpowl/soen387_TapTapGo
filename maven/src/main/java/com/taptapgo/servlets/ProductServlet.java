@@ -54,8 +54,12 @@ public class ProductServlet extends HttpServlet {
             if (!price_str.isEmpty()) {
                 updateFields.put("price", price_str);
             }
-            updateFields.put("description", desc);
-            updateFields.put("vendor", vendor);
+            if (!desc.isEmpty()) {
+                updateFields.put("description", desc);
+            }
+            if (!vendor.isEmpty()) {
+                updateFields.put("vendor", vendor);
+            }
             if (!amount_str.isEmpty()) {
                 updateFields.put("amount", amount_str);
             }
