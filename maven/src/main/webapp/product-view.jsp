@@ -41,45 +41,5 @@
                 </section>
             </div>
         </div>
-        <!-- <div class="container" style="min-height: 1000px;">
-            <div class="card-header my-3">Product Details</div>
-            <div class="row">
-                <div class="col-8">
-                    <img class="main" src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="keyboard">
-                </div>
-                <div class="col">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-12">
-                                <p class="font-weight-bold font-size-2">${product.getName()}</p>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <p class="font-weight-light">&#36;${product.getPrice()}</p>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <p>Vendor: ${product.getVendor()}</p>
-                                <p>Description:</p>
-                                <p>${product.getDescription()}</p>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <form action="<%=request.getContextPath()%>/cart/add" method="POST">
-                                    <input type="hidden" name="slug" value="${product.getSlug()}">
-                                    <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);"
-                                            type="submit" class="btn btn-dark"
-                                        >Add To Cart
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
     </body>
 </html>
