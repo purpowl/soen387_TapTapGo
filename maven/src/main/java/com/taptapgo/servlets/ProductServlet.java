@@ -34,7 +34,7 @@ public class ProductServlet extends HttpServlet {
         }
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String method = request.getParameter("method");
         String slug = request.getParameter("slug");
 
@@ -54,8 +54,12 @@ public class ProductServlet extends HttpServlet {
             if (!price_str.isEmpty()) {
                 updateFields.put("price", price_str);
             }
-            updateFields.put("description", desc);
-            updateFields.put("vendor", vendor);
+            if (!desc.isEmpty()) {
+                updateFields.put("description", desc);
+            }
+            if (!vendor.isEmpty()) {
+                updateFields.put("vendor", vendor);
+            }
             if (!amount_str.isEmpty()) {
                 updateFields.put("amount", amount_str);
             }
@@ -66,10 +70,10 @@ public class ProductServlet extends HttpServlet {
             try {
                 staff.updateProduct(slug, updateFields);
 
-                // output message for successful product creation and reset page
+                // output message for successful product modification and reset page
                 response.sendRedirect(request.getContextPath() + "/products.jsp?modify=success");
             } catch (Exception e) {
-                // output message if there's an issue creating product and reset page
+                // output message if there's an issue modifying product and reset page
                 response.sendRedirect(request.getContextPath() + "/products.jsp?modify=fail");
             }
         } else if (method.equals("delete")) {
@@ -80,10 +84,10 @@ public class ProductServlet extends HttpServlet {
             try {
                 staff.deleteProduct(slug);
 
-                // output message for successful product creation and reset page
+                // output message for successful product deletion and reset page
                 response.sendRedirect(request.getContextPath() + "/products.jsp?delete=success");
             } catch (Exception e) {
-                // output message if there's an issue creating product and reset page
+                // output message if there's an issue deleting product and reset page
                 response.sendRedirect(request.getContextPath() + "/products.jsp?delete=fail");
             }
         }

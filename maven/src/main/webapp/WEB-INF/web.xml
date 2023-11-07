@@ -33,15 +33,23 @@
         <servlet-name>modifyCartServlet</servlet-name>
         <servlet-class>com.taptapgo.servlets.ModifyCartServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>downloadProductCatalog</servlet-name>
+        <servlet-class>com.taptapgo.servlets.DownloadCatalogServlet</servlet-class>
+    </servlet>
 
 
     <servlet-mapping>
         <servlet-name>tapTapServlet</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern></url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>logoutServlet</servlet-name>
         <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>downloadProductCatalog</servlet-name>
+        <url-pattern>/download-catalog</url-pattern>
     </servlet-mapping>
     <!-- <servlet-mapping>
         <servlet-name>cartServlet</servlet-name>
