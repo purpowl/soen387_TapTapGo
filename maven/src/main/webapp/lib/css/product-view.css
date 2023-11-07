@@ -1,0 +1,44 @@
+
+
+  .product-center {
+    display: grid;
+    gap: 4rem;
+    margin-top: 2rem;
+  }
+  .price {
+    color: hsl(221, 100%, 33%);
+  }
+  .vendor {
+    line-height: 2;
+  }
+  .desc {
+    line-height: 2;
+  }
+
+  .product-center img {
+    width: 100%;
+    display: block;
+    border-radius: 0.25rem;
+    object-fit: contain;
+  }
+ .main-image {
+    height: 400px;
+  }
+
+  @media (max-width: 576px) {
+    .main {
+      height: 200px;
+    }
+  }
+  @media (min-width: 992px) {
+    .main {
+      height: 300px;
+    }
+    .product-center {
+      grid-template-columns: 2fr 1fr;
+      align-items: center;
+    }
+    .price {
+      font-size: 1.25rem;
+    }
+  }
