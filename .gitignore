@@ -97,9 +97,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-### Less ###
-*.css
-
 
 ### Code ###
 # Visual Studio Code - https://code.visualstudio.com/
