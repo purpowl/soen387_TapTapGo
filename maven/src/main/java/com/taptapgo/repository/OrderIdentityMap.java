@@ -22,9 +22,14 @@ public class OrderIdentityMap {
     }
 
     public static synchronized boolean createOrder(Order order) {
-        instance.orderMap.put(order.getOrderID(), order);
+        boolean dbResult = OrderRepository.createOrder(order);
 
-        return OrderRepository.createOrder(order);
+        if (dbResult) {
+            OrderIdentityMap.getInstance().orderMap.put(order.getOrderID(), order);
+            return true;
+        }
+
+        return false;
     }
 
     public static synchronized int getMaxOrderID() {
@@ -32,7 +37,7 @@ public class OrderIdentityMap {
     }
 
     public static synchronized Order getOrderByID(int orderID) {
-        Order orderMapResult = instance.orderMap.get(orderID);
+        Order orderMapResult = OrderIdentityMap.getInstance().orderMap.get(orderID);
 
         if(orderMapResult == null){
             return OrderRepository.readOrderByID(orderID);
@@ -44,7 +49,7 @@ public class OrderIdentityMap {
     public static synchronized HashMap<Integer, Order> getOrdersByCustomer(Customer customer) {
         HashMap<Integer, Order> orderMapResults = new HashMap<Integer, Order>();
 
-        for (Map.Entry<Integer, Order> orderEntry : instance.orderMap.entrySet()) {
+        for (Map.Entry<Integer, Order> orderEntry : OrderIdentityMap.getInstance().orderMap.entrySet()) {
             Order order = orderEntry.getValue();
 
             if (order.getCustomer().equals(customer)) {

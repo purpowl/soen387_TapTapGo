@@ -23,14 +23,14 @@ public class CustomerIdentityMap {
         boolean addToDBResult = CustomerRepository.create(customer);
 
         if (addToDBResult) {
-            instance.customerMap.put(customer.getUserID(), customer);
+            CustomerIdentityMap.getInstance().customerMap.put(customer.getUserID(), customer);
             return true;
         }
         return false;
     }
 
     public static Customer getCustomerByID(String customerID) {
-        Customer customerMapResult = instance.customerMap.get(customerID);
+        Customer customerMapResult = CustomerIdentityMap.getInstance().customerMap.get(customerID);
 
         if (customerMapResult == null) {
             return CustomerRepository.read(customerID);

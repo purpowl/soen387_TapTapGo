@@ -101,7 +101,7 @@ public class OrderRepository{
      */
     public static Order readOrderByID(int orderID) {
         String getOrderQuery = "SELECT OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, CustomerID, GCID FROM `order` WHERE OrderID = ?";
-        String getOrderItemsQuery = "SELECT ProductSKU, Quantity FROM `order` WHERE OrderID = ?";
+        String getOrderItemsQuery = "SELECT ProductSKU, Quantity FROM orderitem WHERE OrderID = ?";
         
         try {
             // Open database connection
@@ -179,7 +179,7 @@ public class OrderRepository{
      */
     public static HashMap<Integer, Order> readOrderByCustomer(Customer customer, HashMap<Integer, Order> ordersLoaded) {
         String getOrderQuery = "SELECT OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode FROM `order` WHERE CustomerID = ?";
-        String getOrderItemsQuery = "SELECT ProductSKU, Quantity FROM `order` WHERE OrderID = ?";
+        String getOrderItemsQuery = "SELECT ProductSKU, Quantity FROM orderitem WHERE OrderID = ?";
         HashMap<Integer, Order> orderResults = new HashMap<Integer, Order>();
 
         try {
