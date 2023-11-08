@@ -19,6 +19,13 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-mxj</artifactId>
+            <version>5.0.12</version>
+        </dependency>
+
+
         <!-- https://mvnrepository.com/artifact/org.json/json -->
         <dependency>
             <groupId>org.json</groupId>
