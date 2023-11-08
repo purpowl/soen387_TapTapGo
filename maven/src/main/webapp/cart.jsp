@@ -28,7 +28,7 @@
     </head>
     <body>
         <%@include file="includes/navbar.jsp" %>
-        <div class="container" style="min-height: 1000px;">
+        <div class="container mb-5">
             <!-- Page Location Indicator -->
             <div class="card-header my-3 ">Cart</div>
             <!-- Container Wrapper -->

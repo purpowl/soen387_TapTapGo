@@ -15,7 +15,7 @@
 <body>
 <%@include file="includes/navbar.jsp" %>
 
-<div class="container">
+<div class="container mb-5">
     <div class="card-header my-3">All Products</div>
     <!-- Error Handling -->
     <%
