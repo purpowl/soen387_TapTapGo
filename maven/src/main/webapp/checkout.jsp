@@ -219,7 +219,9 @@
                     </div>
                 </div>
                 <hr class="mb-4">
-                <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" class="btn btn-lg btn-block" type="submit">Continue to checkout</button>
+                <a href="<%=request.getContextPath()%>/order-confirmation.jsp">
+                    <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" class="btn btn-lg btn-block" type="submit">Place Order</button>
+                </a> 
             </form>
         </div>
     </div>

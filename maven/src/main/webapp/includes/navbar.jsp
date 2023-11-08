@@ -75,8 +75,9 @@
           </ul>
         </div>
         <!-- Avatar -->
+
         <!-- Toggle button -->
-        <button
+        <!-- <button
           class="navbar-toggler"
           type="button"
           data-mdb-toggle="collapse"
@@ -86,7 +87,9 @@
           aria-label="Toggle navigation"
         >
           <span class="navbar-toggler-icon"></span>
-        </button>
+        </button> -->
+        <!-- Toggle button -->
+
       </div> 
       <!-- Right elements --> 
       <% } %>

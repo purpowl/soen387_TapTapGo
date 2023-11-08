@@ -33,7 +33,7 @@
           <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" type="submit" class="btn btn-lg btn-block">Login</button>
         </div>
         <div class="text-center mb-3">
-          <a style="color: hsl(221, 100%, 33%)"href="<%=request.getContextPath()%>/register.jsp">Don't have an account? Register here</a>
+          <a style="color: hsl(221, 100%, 33%)" href="<%=request.getContextPath()%>/register.jsp">Don't have an account? Register here</a>
         </div>
       </form>
     </div>
