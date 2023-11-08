@@ -12,7 +12,7 @@
     <div class="card w-100 mx-auto my-5 border-0">
         <div class="card-body p-5">
             <!-- Form Title -->
-            <h2 class="text-center mb-3">Register</h2>
+            <h2 class="text-center mb-5">Register</h2>
             <!-- Form -->
             <form action="register" method="post">
                 <!-- First Name & Last Name Row -->
@@ -48,15 +48,15 @@
 
                 <!-- Username Row -->
                 <div class="form-outline mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" id="register-username" class="form-control" placeholder="" value="" required="">
+                    <label class="form-label" for="registerUsername" >Username</label>
+                    <input type="text" id="registerUsername" class="form-control" placeholder="" value="" required="">
                     <div class="invalid-feedback"> Username cannot be empty. </div>
                 </div>
 
                 <!-- Password Row -->
                 <div class="form-outline mb-3">
-                    <label for="inputPassword" class="form-label">Password</label>
-                    <input type="password" id="register-pwd" class="form-control" placeholder="" value="" required="">
+                    <label class="form-label" for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" class="form-control" placeholder="" value="" required="">
                     <div class="invalid-feedback"> Password cannot be empty. </div>
                 </div>
 
@@ -68,7 +68,7 @@
 
                 <!-- Register button-->
                 <div class="text-center mb-3">
-                    <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" type="submit" class="btn btn-block btn-lg">Register</button> 
+                    <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" type="submit" class="btn btn-lg btn-block">Register</button> 
                 </div>
             </form>
         </div>

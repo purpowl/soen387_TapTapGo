@@ -30,7 +30,7 @@
 <%@include file="includes/navbar.jsp" %>
 
 <div class="container mb-4">
-    <div class="card-header my-3 mb-4">Checkout</div>
+    <div class="card-header my-5 mb-4">Checkout</div>
     <!-- Container Wrapper -->
     <div class="row">
         <!-- Right Section - Your Cart -->
@@ -100,14 +100,14 @@
                     <div class="invalid-feedback"> Please enter a valid email address for shipping updates. </div>
                 </div>
                 <div class="mb-3">
-                    <label for="address">Address</label>
-                    <input type="text" class="form-control" id="address" placeholder="1234 Main St" required="">
+                    <label for="billAddress">Address</label>
+                    <input type="text" class="form-control" id="billAddress" placeholder="1234 Main St" required="">
                     <div class="invalid-feedback"> Please enter your shipping address. </div>
                 </div>
                 <div class="row">
                     <div class="col-md-5 mb-3">
-                        <label for="city">City</label>
-                        <select class="custom-select d-block w-100" id="city" required="">
+                        <label for="billCity">City</label>
+                        <select class="custom-select d-block w-100" id="billCity" required="">
                             <option value="">Choose...</option>
                             <option value="AB">Alberta</option>
                             <option value="BC">British Columbia</option>
@@ -126,28 +126,61 @@
                         <div class="invalid-feedback"> Please select a valid city. </div>
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label for="country">Country</label>
-                        <select class="custom-select d-block w-100" id="country" required="">
+                        <label for="billCountry">Country</label>
+                        <select class="custom-select d-block w-100" id="billCountry" required="">
                             <option value="">Choose...</option>
                             <option value="CA">Canada</option>
                         </select>
                         <div class="invalid-feedback"> Please provide a valid country. </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <label for="postalCode">Postal Code</label>
-                        <input type="text" class="form-control" id="postalCode" placeholder="" required="">
+                        <label for="billPostalCode">Postal Code</label>
+                        <input type="text" class="form-control" id="billPostalCode" placeholder="" required="">
                         <div class="invalid-feedback"> Postal Code code required. </div>
                     </div>
                 </div>
                 <hr class="mb-4">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="same-address">
-                    <label class="custom-control-label" for="same-address">Shipping address is the same as my billing address</label>
+                <h4 class="mb-3">Shipping Address</h4>
+                <div class="mb-3">
+                    <label for="shipAddress">Address</label>
+                    <input type="text" class="form-control" id="shipAddress" placeholder="1234 Main St" required="">
+                    <div class="invalid-feedback"> Please enter your shipping address. </div>
                 </div>
-                <!-- <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="save-info">
-                    <label class="custom-control-label" for="save-info">Save this information for next time</label>
-                </div> -->
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        <label for="shipCity">City</label>
+                        <select class="custom-select d-block w-100" id="shipCity" required="">
+                            <option value="">Choose...</option>
+                            <option value="AB">Alberta</option>
+                            <option value="BC">British Columbia</option>
+                            <option value="MB">Manitoba</option>
+                            <option value="NB">New Brunswick</option>
+                            <option value="NL">Newfoundland and Labrador</option>
+                            <option value="NS">Nova Scotia</option>
+                            <option value="ON">Ontario</option>
+                            <option value="PE">Prince Edward Island</option>
+                            <option value="QC">Quebec</option>
+                            <option value="SK">Saskatchewan</option>
+                            <option value="NT">Northwest Territories</option>
+                            <option value="NU">Nunavut</option>
+                            <option value="YT">Yukon</option>
+                        </select>
+                        <div class="invalid-feedback"> Please select a valid city. </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="shipCountry">Country</label>
+                        <select class="custom-select d-block w-100" id="shipCountry" required="">
+                            <option value="">Choose...</option>
+                            <option value="CA">Canada</option>
+                        </select>
+                        <div class="invalid-feedback"> Please provide a valid country. </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="shipPostalCode">Postal Code</label>
+                        <input type="text" class="form-control" id="shipPostalCode" placeholder="" required="">
+                        <div class="invalid-feedback"> Postal Code code required. </div>
+                    </div>
+                </div>
                 <hr class="mb-4">
                 <h4 class="mb-3">Payment</h4>
                 <div class="d-block my-3">
