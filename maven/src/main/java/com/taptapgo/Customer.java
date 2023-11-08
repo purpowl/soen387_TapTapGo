@@ -1,9 +1,11 @@
 package com.taptapgo;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 
 import com.taptapgo.exceptions.InsufficientInventoryException;
 import com.taptapgo.exceptions.InvalidParameterException;
@@ -18,20 +20,18 @@ public class Customer extends User {
     protected String lastName;
     protected String phone;
     protected String email;
-    protected List<Order> ordersList;
 
-    public Customer() {
+    private Customer(String firstName, String lastName, String phone, String email) {
         super();
         this.cart = new HashMap<>();
-        this.firstName = null;
-        this.lastName = null;
-        this.phone = null;
-        this.email = null;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
         this.customerType = customerTypes.Anonymous;
-        this.ordersList = null;
     }
 
-    public Customer(String username, String password, String firstName, String lastName, String phone, String email) {
+    private Customer(String username, String password, String firstName, String lastName, String phone, String email) {
         super("registered", username, password);
         this.cart = new HashMap<>();
         this.firstName = firstName;
@@ -39,7 +39,43 @@ public class Customer extends User {
         this.phone = phone;
         this.email = email;
         this.customerType = customerTypes.Registered;
-        this.ordersList = null;
+    }
+
+    private Customer(String userID, String firstName, String lastName, String phone, String email) {
+        super(userID);
+        this.cart = new HashMap<>();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+        this.customerType = customerTypes.Anonymous;
+    }
+
+    private Customer(String userID, String username, String password, String firstName, String lastName, String phone, String email) {
+        super("registered", userID, username, password);
+        this.cart = new HashMap<>();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+        this.customerType = customerTypes.Registered;
+    }
+
+    public static Customer loadGuestCustomer(String GCID, String firstName, String lastName, String phone, String email) {
+        return new Customer(GCID, firstName, lastName, phone, email);
+    }
+
+    public static Customer loadRegisteredCustomer(String CustomerID, String username, String password, String firstName, String lastName, String phone, String email) {
+        return new Customer(CustomerID, username, password, firstName, lastName, phone, email);
+    }
+
+    public static Customer createGuestCustomer(String firstName, String lastName, String phone, String email) {
+        return new Customer(firstName, lastName, phone, email);
+    }
+
+    public static Customer createRegisteredCustomer(String username, String password, String firstName, String lastName, String phone, String email) {
+
+        return new Customer(username, password, firstName, lastName, phone, email);
     }
 
     public HashMap<Product, Integer> getCart() {
@@ -126,14 +162,6 @@ public class Customer extends User {
         return email;
     }
 
-    public void createOrder(String shippingAddress) {
-
-    }
-
-    public List<Order> getOrders() {
-        return this.ordersList;
-    }
-
     @Override
     public boolean equals(Object object) {
         if (object == null){
@@ -150,8 +178,4 @@ public class Customer extends User {
         }
         return false;
     }
-
-//    public Order getOrder(int orderID) {
-//
-//    }
 }

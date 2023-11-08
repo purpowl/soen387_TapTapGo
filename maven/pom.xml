@@ -55,6 +55,12 @@
             <artifactId>tomcat-servlet-api</artifactId>
             <version>10.1.15</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.9</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

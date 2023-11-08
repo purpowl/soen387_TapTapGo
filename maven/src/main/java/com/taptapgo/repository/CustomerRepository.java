@@ -1,18 +1,25 @@
 package com.taptapgo.repository;
 
+import java.io.InputStreamReader;
 import java.sql.*;
 
 import com.taptapgo.Customer;
+import java.io.InputStream;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+
 
 public class CustomerRepository{
     private static Connection db_conn;
 
     public static boolean create(Customer customer) {
         String insertQuery = "";
-        if (((Customer) customer).getUserID().contains("gc")) {
+        if (customer.getUserID().contains("gc")) {
             insertQuery = "INSERT INTO guestcustomer (GCID, FirstName, LastName, Phone, Email) VALUES (?, ?, ?, ?, ?)";
         }
-        else if (((Customer) customer).getUserID().contains("rc")) {
+        else if (customer.getUserID().contains("rc")) {
             insertQuery = "INSERT INTO registeredcustomer (CustomerID, FirstName, LastName, Phone, Email, Username) VALUES (?, ?, ?, ?, ?, ?)";
         }
         else {
@@ -52,13 +59,19 @@ public class CustomerRepository{
     }
 
     public static Customer read(String userID) {
+        InputStream is = CustomerRepository.class.getResourceAsStream( "/credentials.json");
+        assert is != null;
+        InputStreamReader isr = new InputStreamReader(is);
+        JsonObject credentials = JsonParser.parseReader(isr).getAsJsonObject();
+        JsonArray usersJsonArray = credentials.getAsJsonArray("users");
+
         String getQuery = "";
 
         if (((String) userID).contains("gc")) {
-            getQuery = "SELECT FirstName, LastName, Phone, Email FROM guestcustomer WHERE GCID = ?";
+            getQuery = "SELECT GCID, FirstName, LastName, Phone, Email FROM guestcustomer WHERE GCID = ?";
         }
         else if (((String) userID).contains("rc")) {
-            getQuery = "SELECT FirstName, LastName, Phone, Email, Username FROM registeredcustomer WHERE CustomerID = ?";
+            getQuery = "SELECT CustomerID, FirstName, LastName, Phone, Email, Username FROM registeredcustomer WHERE CustomerID = ?";
         }
 
         try {
@@ -72,10 +85,38 @@ public class CustomerRepository{
             ResultSet queryResult = pstmt.executeQuery();
 
             if (queryResult.next()) {
+                String id = queryResult.getString(1);
+                String firstName = queryResult.getString(2);
+                String lastName = queryResult.getString(3);
+                String phone = queryResult.getString(4);
+                String email = queryResult.getString(5);
 
-            } else {
+                if (id.contains("rc")) {
+                    String usernameDB = "";
+                    String passwordDB = "";
+                    usernameDB = queryResult.getString(6);
+                    for (JsonElement user : usersJsonArray) {
+                        JsonObject userObj = user.getAsJsonObject();
+                        String usernameInFile = userObj.get("username").getAsString();
+                        if (usernameInFile.equals(usernameDB)) {
+                            passwordDB = userObj.get("password").getAsString();
+                            break;
+                        }
+                    }
+                    if (passwordDB.isEmpty()) {
+                        return null;
+                    }
+                    return Customer.loadRegisteredCustomer(id, usernameDB, passwordDB, firstName, lastName, phone, email);
+                }
+                else if (id.contains("gc")) {
+                    return Customer.loadGuestCustomer(id, firstName, lastName, phone, email);
+                }
+            }
+            else {
                 return null;
             }
+            queryResult.close();
+            db_conn.close();
 
         } catch(Exception e) {
             e.printStackTrace();
@@ -94,7 +135,7 @@ public class CustomerRepository{
     }
 
     public Integer readMaxID(String customerType) {
-        if(!(customerType instanceof String)) {
+        if(customerType == null) {
             return null;
         }
 
