@@ -20,7 +20,7 @@ public class TapTapServlet extends HttpServlet {
         Warehouse warehouse = Warehouse.getInstance();
         warehouse.loadDatabase();
         context.setAttribute("warehouse", warehouse);
-        Staff staff = new Staff("secret");
+        Staff staff = new Staff("adminStaff", "secret");
         context.setAttribute("staff", staff);
     }
 

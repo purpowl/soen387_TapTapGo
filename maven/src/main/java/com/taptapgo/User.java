@@ -6,25 +6,29 @@ public abstract class User {
     public static final int USER_COOKIE_DURATION_SEC = 300;
     private static AtomicInteger guestIDGen = new AtomicInteger(0);
     private static AtomicInteger registeredIDGen = new AtomicInteger(0);
-    private static AtomicInteger staffCustomerIDGen = new AtomicInteger(0);
+    private static AtomicInteger staffIDGen = new AtomicInteger(0);
     protected String userID;
+    protected String username;
     protected String password;
 
 
     public User() {
         guestIDGen.incrementAndGet();
         this.userID = "gc" + String.format("%05d", guestIDGen.get());
-        password = null;
+        this.username = null;
+        this.password = null;
     }
 
-    public User(String userType, String password) {
+    public User(String userType, String username, String password) {
         if (userType.equals("staff")) {
-            staffCustomerIDGen.incrementAndGet();
-            this.userID = "s" + String.format("%05d", staffCustomerIDGen.get());
+            staffIDGen.incrementAndGet();
+            this.userID = "s" + String.format("%05d", staffIDGen.get());
+            this.username = username;
         }
         else if (userType.equals("registered")) {
             registeredIDGen.incrementAndGet();
             this.userID = "rc" + String.format("%05d", registeredIDGen.get());
+            this.username = username;
         }
         this.password = password;
     }

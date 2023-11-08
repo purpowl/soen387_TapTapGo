@@ -115,4 +115,41 @@ public class CustomerRepository{
     public boolean delete(Object object) {
         return true;
     }
+
+    public Integer readMaxID(String customerType) {
+        if(!(customerType instanceof String)) {
+            return null;
+        }
+
+        String getQuery = "";
+        if (customerType.equals("guest")) {
+            getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(GCID, ' ', -1)), 2) FROM guestcustomer";
+        }
+        else if (customerType.equals("registered")) {
+            getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(CustomerID, ' ', -1)), 2) FROM registeredcustomer";
+        }
+        else {
+            return null;
+        }
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+
+            PreparedStatement pstmt = db_conn.prepareStatement(getQuery);
+
+            ResultSet queryResult = pstmt.executeQuery();
+
+            if (queryResult.next()) {
+                return Integer.parseInt(queryResult.getString(1));
+            } else {
+                return null;
+            }
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

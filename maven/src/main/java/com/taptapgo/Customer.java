@@ -31,8 +31,8 @@ public class Customer extends User {
         this.ordersList = null;
     }
 
-    public Customer(String password, String firstName, String lastName, String phone, String email) {
-        super("registered", password);
+    public Customer(String username, String password, String firstName, String lastName, String phone, String email) {
+        super("registered", username, password);
         this.cart = new HashMap<>();
         this.firstName = firstName;
         this.lastName = lastName;
