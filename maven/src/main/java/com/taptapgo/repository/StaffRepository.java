@@ -4,9 +4,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Connection;
-import java.sql.Date;
 
-import com.taptapgo.Customer;
 import com.taptapgo.Staff;
 public class StaffRepository{
     private static Connection db_conn;
@@ -61,5 +59,30 @@ public class StaffRepository{
     
     public boolean delete(Object object) {
         return true;
+    }
+
+    public Integer readMaxID() {
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+
+            String getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(StaffID, ' ', -1)), 2) FROM staff";
+
+            PreparedStatement pstmt = db_conn.prepareStatement(getQuery);
+
+            ResultSet queryResult = pstmt.executeQuery();
+
+            if (queryResult.next()) {
+                return Integer.parseInt(queryResult.getString(1));
+            } else {
+                return null;
+            }
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -9,7 +9,7 @@
 
 <div class="container">
   <!-- Login -->
-  <div class="card w-80 mx-auto my-5 border-0">
+  <div class="card w-100 mx-auto my-5 border-0">
     <div class="card-body p-5">
       <h2 class="text-center mb-3">Login</h2>
       <!-- form for staff login, calls LoginServlet doPost -->

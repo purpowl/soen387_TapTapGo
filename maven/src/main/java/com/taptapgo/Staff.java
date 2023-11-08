@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 public class Staff extends User{
-    public Staff(String password) {
-        super("staff", password);
+    public Staff(String username, String password) {
+        super("staff", username, password);
     }
 
     public void createProduct(String SKU, String name, double price, String vendor, String desc, int amount) throws ProductAreadyExistsException, InvalidParameterException {
