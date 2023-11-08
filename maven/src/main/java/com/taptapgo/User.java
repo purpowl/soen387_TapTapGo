@@ -60,4 +60,9 @@ public abstract class User {
     public String getUserID() {
         return this.userID;
     }
+
+    public String getUserName() {
+        return this.username;
+    }
+
 }

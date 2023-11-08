@@ -1,9 +1,6 @@
 package com.taptapgo.repository;
 
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Connection;
+import java.sql.*;
 
 import com.taptapgo.Staff;
 public class StaffRepository{
@@ -20,7 +17,7 @@ public class StaffRepository{
             return false;
         }
 
-        String insertQuery = "INSERT INTO staff (StaffID) VALUES (?)";
+        String insertQuery = "INSERT INTO staff (StaffID, Username) VALUES (?, ?)";
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -30,6 +27,7 @@ public class StaffRepository{
             PreparedStatement pstmt = db_conn.prepareStatement(insertQuery);
 
             pstmt.setString(1, staffToCreate.getUserID());
+            pstmt.setString(2, staffToCreate.getUserName());
 
             int result = pstmt.executeUpdate();
 
@@ -70,9 +68,8 @@ public class StaffRepository{
 
             String getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(StaffID, ' ', -1)), 2) FROM staff";
 
-            PreparedStatement pstmt = db_conn.prepareStatement(getQuery);
-
-            ResultSet queryResult = pstmt.executeQuery();
+            Statement stmt = db_conn.createStatement();
+            ResultSet queryResult = stmt.executeQuery(getQuery);
 
             if (queryResult.next()) {
                 return Integer.parseInt(queryResult.getString(1));
