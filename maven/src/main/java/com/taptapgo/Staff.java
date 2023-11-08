@@ -1,5 +1,6 @@
 package com.taptapgo;
 
+import com.taptapgo.exceptions.DatabaseException;
 import com.taptapgo.exceptions.InvalidParameterException;
 import com.taptapgo.exceptions.ProductAreadyExistsException;
 import com.taptapgo.exceptions.ProductNotFoundException;
@@ -33,7 +34,7 @@ public class Staff extends User{
         }
     }
 
-    public void updateProduct(String slug, HashMap<String, Object> fieldsToUpdate) throws ProductNotFoundException, InvalidParameterException {
+    public void updateProduct(String slug, HashMap<String, Object> fieldsToUpdate) throws ProductNotFoundException, InvalidParameterException, DatabaseException {
         Product productToUpdate = Warehouse.getInstance().findProductBySlug(slug);
         // check if product exists in warehouse
         if (productToUpdate == null) throw new ProductNotFoundException();
@@ -66,12 +67,13 @@ public class Staff extends User{
                             throw new InvalidParameterException("Price entered is not a number.");
                         }
                         break;
-                    default:
-                        throw new InvalidParameterException("Invalid parameters. Cannot update product.");
                 }
             }
 
-            Warehouse.getInstance().updateProductInfo(productToUpdate, fieldsToUpdate);
+            boolean warehouseUpdateResult = Warehouse.getInstance().updateProductInfo(productToUpdate, fieldsToUpdate);
+            if(!warehouseUpdateResult) {
+                throw new DatabaseException("Fail to update product in database");
+            }
         }
     }
 

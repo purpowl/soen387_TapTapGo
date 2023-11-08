@@ -1,14 +1,12 @@
 package com.taptapgo.servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 
 import com.taptapgo.Product;
 import com.taptapgo.Staff;
 import com.taptapgo.Warehouse;
 
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -74,6 +72,7 @@ public class ProductServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/products.jsp?modify=success");
             } catch (Exception e) {
                 // output message if there's an issue modifying product and reset page
+                e.printStackTrace();
                 response.sendRedirect(request.getContextPath() + "/products.jsp?modify=fail");
             }
         } else if (method.equals("delete")) {
