@@ -20,13 +20,15 @@
                     <div class="col-md-6">
                         <div class="form-outline mb-3">
                             <label class="form-label" for="firstName">First Name</label>
-                            <input type="text" id="firstName" class="form-control" />
+                            <input type="text" id="firstName" class="form-control" placeholder="" value="" required=""/>
+                            <div class="invalid-feedback"> First Name cannot be empty. </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-outline mb-3">
                             <label class="form-label" for="lastName">Last Name</label>
-                            <input type="text" id="lastName" class="form-control"/>    
+                            <input type="text" id="lastName" class="form-control" placeholder="" value="" required=""/>    
+                            <div class="invalid-feedback"> Last Name cannot be empty. </div>
                         </div>
                     </div>
                 </div>
@@ -34,25 +36,28 @@
                 <!-- Email Row -->
                 <div class="form-outline mb-3">
                     <label class="form-label" for="emailAddress">Email Address</label>
-                    <input type="email" id="emailAddress" class="form-control" >
+                    <input type="email" id="emailAddress" class="form-control" placeholder="you@example.com" value="" required="">
+                    <div class="invalid-feedback"> Please enter a valid email address for shipping updates. </div>
                 </div>
                 
                 <!-- Phone Number Row -->
                 <div class="form-outline mb-3">
-                    <label for="phoneNumber" class="form-label">Telephone</label>
+                    <label class="form-label" for="phoneNumber">Telephone<span class="text-muted">(Optional)</span></label>
                     <input type="tel" id="phoneNumber" class="form-control">
                 </div>
 
                 <!-- Username Row -->
                 <div class="form-outline mb-3">
                     <label for="username" class="form-label">Username</label>
-                    <input type="text" id="register-username" class="form-control">
+                    <input type="text" id="register-username" class="form-control" placeholder="" value="" required="">
+                    <div class="invalid-feedback"> Username cannot be empty. </div>
                 </div>
 
                 <!-- Password Row -->
                 <div class="form-outline mb-3">
                     <label for="inputPassword" class="form-label">Password</label>
-                    <input type="password" id="register-pwd" class="form-control">
+                    <input type="password" id="register-pwd" class="form-control" placeholder="" value="" required="">
+                    <div class="invalid-feedback"> Password cannot be empty. </div>
                 </div>
 
                 <!-- Term Agreement-->

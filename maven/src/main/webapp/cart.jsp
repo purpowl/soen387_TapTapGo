@@ -161,7 +161,7 @@
             <!-- Check Out button -->
             <div class="row mt-4">
                 <div class="col-12">
-                    <a href="#">
+                    <a href="<%=request.getContextPath()%>/checkout.jsp">
                         <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" type="submit" class="btn btn-block btn-lg me-2">Check Out</button>                                                 
                     </a>
                 </div>
