@@ -39,11 +39,6 @@ public class TapTapServlet extends HttpServlet {
     }
 
     public void destroy(){
-        try {
-            Warehouse.archiveProducts();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         
     }
 }

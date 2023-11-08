@@ -4,6 +4,7 @@ import com.taptapgo.exceptions.InvalidParameterException;
 import com.taptapgo.exceptions.ProductAreadyExistsException;
 import com.taptapgo.exceptions.ProductNotFoundException;
 
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.io.File;
 import java.io.IOException;
@@ -14,19 +15,16 @@ import java.util.List;
 import java.util.Map.Entry;
 
 public class Staff extends User{
-    private static AtomicInteger staffID = new AtomicInteger(0);
-
     public Staff(String username, String password) {
-        super(username, password);
-        staffID.incrementAndGet();
+        super("staff", username, password);
     }
 
-    public void createProduct(String SKU, String name, double price, String vendor, String desc, int amount) throws ProductAreadyExistsException, InvalidParameterException {
+    public void createProduct(String SKU, String name, float price, String vendor, String desc, int amount) throws ProductAreadyExistsException, InvalidParameterException {
         // check product doesn't already exist in warehouse
         if (Warehouse.getInstance().findProductBySKU(SKU) != null) 
             throw new ProductAreadyExistsException();
         // check SKU and name are not blank
-        else if (SKU == null || SKU.equals("") || name == null || name.equals("")) 
+        else if (SKU == null || SKU.isEmpty() || name == null || name.isEmpty())
             throw new InvalidParameterException("Product SKU and Name cannot be blank.");
         // otherwise add new product to warehouse
         else {
@@ -40,18 +38,9 @@ public class Staff extends User{
         // check if product exists in warehouse
         if (productToUpdate == null) throw new ProductNotFoundException();
         else {
-            // if product exists, check the fields to update and update them
+            // Check for errors in update fields
             for (Entry<String, Object> field : fieldsToUpdate.entrySet()) {
                 switch (field.getKey()) {
-                    case "name" :
-                        productToUpdate.setName(field.getValue().toString());
-                        break;
-                    case "description":
-                        productToUpdate.setDescription(field.getValue().toString());
-                        break;
-                    case "vendor":
-                        productToUpdate.setVendor(field.getValue().toString());
-                        break;
                     case "amount":
                         String amount_str = field.getValue().toString();
                         int amount;
@@ -63,26 +52,26 @@ public class Staff extends User{
                         } catch (Exception e) {
                             throw new InvalidParameterException("Amount entered is not a number.");
                         }
-                        Warehouse.getInstance().setProductInventory(productToUpdate, amount);
                         break;
                     case "price":
                         String price_str = field.getValue().toString();
-                        double price;
+                        float price;
 
                         try {
-                            price = Double.parseDouble(price_str);
+                            price = Float.parseFloat(price_str);
                             if (price <= 0) {
                                 throw new InvalidParameterException("Price entered is negative.");
                             }
                         } catch (Exception e) {
                             throw new InvalidParameterException("Price entered is not a number.");
                         }
-                        productToUpdate.setPrice(price);
                         break;
                     default:
                         throw new InvalidParameterException("Invalid parameters. Cannot update product.");
                 }
             }
+
+            Warehouse.getInstance().updateProductInfo(productToUpdate, fieldsToUpdate);
         }
     }
 
@@ -93,6 +82,11 @@ public class Staff extends User{
         else {
             Warehouse.getInstance().deleteProduct(productToDelete);
         }
+    }
+
+    public void shipOrder(int orderID) {
+        String trackingNumber = getRandomString();
+        // query order, then set tracking number
     }
 
     public String getProductCatalog() throws IOException{
@@ -134,8 +128,19 @@ public class Staff extends User{
         }
     }
 
+    private String getRandomString() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder randStrBuilder = new StringBuilder();
+        Random rnd = new Random();
+        while (randStrBuilder.length() < 18) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * chars.length());
+            randStrBuilder.append(chars.charAt(index));
+        }
+        return randStrBuilder.toString();
+    }
+
     private String escapeSpecialCharacters(String data) {
-        if (data != null && !data.equals("")) {
+        if (data != null && !data.isEmpty()) {
             data = data.replaceAll("\\R", " ");
             if (data.contains(",") || data.contains("\"") || data.contains("'")) {
                 data = data.replace("\"", "\"\"");
