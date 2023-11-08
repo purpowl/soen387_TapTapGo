@@ -183,7 +183,7 @@ public class WarehouseRepository {
             savepoint = db_conn.setSavepoint();
 
             PreparedStatement pstmt1 = db_conn.prepareStatement(deleteInventoryQuery);
-            pstmt1.setString(0, product.getSKU());
+            pstmt1.setString(1, product.getSKU());
 
             pstmt1.executeUpdate();
 
@@ -255,7 +255,7 @@ public class WarehouseRepository {
                     valueList.add(field.getValue());
                     break;
                 case "amount":
-                    amount = (Integer) field.getValue();
+                    amount = Integer.parseInt(field.getValue().toString());
                     break;
             }
         }
@@ -274,14 +274,14 @@ public class WarehouseRepository {
             PreparedStatement pstmt = db_conn.prepareStatement(updateProductQuery);
             for (int i = 0; i < valueList.size(); i++) {
                 if(priceValueIndex != null && priceValueIndex == i){
-                    Float priceValue = (Float) valueList.get(i);
+                    Float priceValue = Float.parseFloat(valueList.get(i).toString());
                     pstmt.setFloat((i+1), priceValue);
                 } else {
                     String value = valueList.get(i).toString();
                     pstmt.setString((i+1), value);
                 }
             }
-            pstmt.setString(valueList.size(), productSKU);
+            pstmt.setString(valueList.size()+1, productSKU);
             pstmt.executeUpdate();
 
             // Check if amount update is needed

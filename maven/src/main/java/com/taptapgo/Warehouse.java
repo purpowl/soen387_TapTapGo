@@ -314,11 +314,11 @@ public class Warehouse {
                         product.setVendor(field.getValue().toString());
                         break;
                     case "amount":
-                        Integer amount = (Integer) field.getValue();
+                        Integer amount = Integer.parseInt(field.getValue().toString());
                         Warehouse.getInstance().setProductInventory(product, amount);
                         break;
                     case "price":
-                        Float price = (Float) field.getValue();
+                        Float price = Float.parseFloat(field.getValue().toString());
                         product.setPrice(price);
                         break;
                 }
