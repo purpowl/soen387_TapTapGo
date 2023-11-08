@@ -1,41 +1,59 @@
 package com.taptapgo;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public abstract class User {
     public static final int USER_COOKIE_DURATION_SEC = 300;
-    protected String username;
+    private static AtomicInteger guestIDGen = new AtomicInteger(0);
+    private static AtomicInteger registeredIDGen = new AtomicInteger(0);
+    private static AtomicInteger staffCustomerIDGen = new AtomicInteger(0);
+    protected String userID;
     protected String password;
 
-    public User(String username) {
-        this.username = username;
-        this.password = null;
+
+    public User() {
+        guestIDGen.incrementAndGet();
+        this.userID = "gc" + String.format("%05d", guestIDGen.get());
+        password = null;
     }
 
-    public User(String username, String password) {
-        this.username = username;
+    public User(String userType, String password) {
+        if (userType.equals("staff")) {
+            staffCustomerIDGen.incrementAndGet();
+            this.userID = "s" + String.format("%05d", staffCustomerIDGen.get());
+        }
+        else if (userType.equals("registered")) {
+            registeredIDGen.incrementAndGet();
+            this.userID = "rc" + String.format("%05d", registeredIDGen.get());
+        }
         this.password = password;
     }
 
-    public boolean changeUsername(String oldUsername, String newUsername, String password){
-        if (oldUsername == null || newUsername == null) return false;
-        else if (oldUsername.equals(newUsername)) return false;
-        else if (this.username.equals(oldUsername) && this.password.equals(password)) {
-            this.username = newUsername;
-            return true;
-        }
+//    public boolean changeUsername(String oldUsername, String newUsername, String password){
+//        if (oldUsername == null || newUsername == null) return false;
+//        else if (oldUsername.equals(newUsername)) return false;
+//        else if (this.username.equals(oldUsername) && this.password.equals(password)) {
+//            this.username = newUsername;
+//            return true;
+//        }
+//        else return false;
+//    }
+
+//    public boolean changePassword(String username, String oldPassword, String newPassword){
+//        if (this.password != null && authenticate(username, oldPassword)) {
+//            this.password = newPassword;
+//            return true;
+//        }
+//        else return false;
+//    };
+
+    // if the user has a password, authenticate them
+    public boolean authenticate(String inputPassword) {
+        if (inputPassword != null && this.password != null) return (inputPassword.equals(password));
         else return false;
     }
 
-    public boolean changePassword(String username, String oldPassword, String newPassword){
-        if (this.password != null && authenticate(username, oldPassword)) {
-            this.password = newPassword;
-            return true;
-        }
-        else return false;
-    };
-
-    // if the user has a password, authenticate them
-    public boolean authenticate(String username, String inputPassword) {
-        if (this.username.equals(username) && inputPassword != null) return (inputPassword.equals(password));
-        else return false;
-    };
+    public String getUserID() {
+        return this.userID;
+    }
 }
