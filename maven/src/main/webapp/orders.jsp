@@ -12,7 +12,7 @@
   <!-- Search box -->
   <div class="d-flex justify-content-end">
     <form class="form-inline">
-      <input class="form-control mr-sm-2" type="search" placeholder="Enter OrderID to search" aria-label="Search">
+      <input class="form-control mr-sm-2" type="search" placeholder="Enter Order # to search" aria-label="Search">
       <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
     </form>
   </div>
@@ -29,7 +29,7 @@
           <table class="table mb-0">
             <thead class="table-dark">
               <tr>
-                <th scope="col">ORDER ID</th>
+                <th scope="col">ORDER #</th>
                 <th scope="col">ORDER PLACED</th>
                 <th scope="col">TOTAL</th>
                 <th scope="col">SHIP TO</th>
@@ -38,7 +38,7 @@
             </thead>
             <tbody>
               <tr>
-                <td>123456</td> <!-- TODO -->
+                <td><span class="badge badge-success">123456</span></td> <!-- TODO -->
                 <td>2023-11-08</td> <!-- TODO-->
                 <td>$129.00</td> <!-- TODO-->
                 <td>1234 Main St</td> <!-- TODO: Address without City, Country, Postal Code-->

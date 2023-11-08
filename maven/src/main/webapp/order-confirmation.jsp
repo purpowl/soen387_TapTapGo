@@ -10,15 +10,21 @@
 <div class="container mb-5">
     <!-- Container Wrapper -->
   <div class="row">
+    <!-- Order Confirmation message -->
+    <div class="col-lg-12 mt-3">
+        <h2>Order confirmed!</h2>
+        <p class="fw-bold">Your order has been confirmed. You will recieve your tracking number via email within the next few days!</p>
+    </div>
+    <!-- Order Details -->
     <div class="col-lg-12">
-      <div class="card mt-4">
+      <div class="card mt-3">
         <div class="card-body p-0 table-responsive">
           <!-- Order Info table -->
           <table class="table mb-0">
             <thead class="table-dark">
               <tr>
-                <th scope="col">ORDER ID</th>
-                <th scope="col">ORDER Date</th>
+                <th scope="col">ORDER #</th>
+                <th scope="col">ORDER PLACED</th>
                 <th scope="col">TOTAL</th>
                 <th scope="col">SHIP TO</th>
                 <th scope="col">ORDER STATUS</th>
@@ -26,11 +32,11 @@
             </thead>
             <tbody>
               <tr>
-                <td>123456</td> <!-- TODO -->
+                <td><span class="badge badge-success">123456</span></td> <!-- TODO -->
                 <td>2023-11-08</td> <!-- TODO-->
                 <td>$129.00</td> <!-- TODO-->
                 <td>1234 Main St</td> <!-- TODO: Address without City, Country, Postal Code-->
-                <td>Shipped</td><!-- TODO-->
+                <td>Order Recieved</td>
               </tr>
               <tr>
               <!-- For each product in the cart, display the image and the description -->
