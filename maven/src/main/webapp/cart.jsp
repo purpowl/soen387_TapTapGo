@@ -29,8 +29,11 @@
     <body>
         <%@include file="includes/navbar.jsp" %>
         <div class="container" style="min-height: 1000px;">
-            <div class="card-header my-3">Cart</div>
+            <!-- Page Location Indicator -->
+            <div class="card-header my-3 ">Cart</div>
+            <!-- Container Wrapper -->
             <div class="row">
+                <!-- Error Handler -->
                 <div class="col-12">
                     <div class="container m-3">
                         <% 
@@ -53,6 +56,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Display All products (in grid of 3) -->
             <div class="row mt-1">
                 <div class="col-12">
                     <%
@@ -62,6 +66,7 @@
                             int amount = product_entry.getValue();
                             total += product.getPrice() * amount;
                     %>
+                    <!-- Display a product -->
                     <div class="card mt-2">
                         <div class="card-body px-5">
                             <h4 class="card-title mt-2 mb-2"><%=product.getName()%></h4>
@@ -114,16 +119,20 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Display a product -->
                     <% 
                         } 
                     %>
                 </div>
             </div>
+            <!-- Display All products (in grid of 3) -->
+
+            <!-- Total Order Amount -->
             <div class="row mt-4">
                 <div class="col-12">
                     <div class="card mt-2">
                         <div class="card-body px-5">
-                            <h4 class="card-title mt-2 mb-2">Total Order</h4>
+                            <h4 class="card-title mt-2 mb-4">Total Order</h4>
                             <div class="container pl-0">
                                 <div class="row">
                                     <div class="col-8 pl-0">
@@ -148,6 +157,16 @@
                     </div>
                 </div>
             </div>
+            <!-- Total Order Amount -->
+            <!-- Check Out button -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <a href="#">
+                        <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" type="submit" class="btn btn-block btn-lg me-2">Check Out</button>                                                 
+                    </a>
+                </div>
+            </div>
+            <!-- Check Out button -->
         </div>
         <%@include file="includes/footer.jsp" %>
     </body>
