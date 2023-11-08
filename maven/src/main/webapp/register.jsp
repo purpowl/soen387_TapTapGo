@@ -68,7 +68,7 @@
 
                 <!-- Register button-->
                 <div class="text-center mb-3">
-                    <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" type="submit" class="btn btn-block btn-lg">Register</button> 
+                    <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" type="submit" class="btn btn-lg btn-block">Register</button> 
                 </div>
             </form>
         </div>
