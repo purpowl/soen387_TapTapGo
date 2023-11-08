@@ -2,6 +2,7 @@ package com.taptapgo;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.taptapgo.exceptions.InsufficientInventoryException;
 import com.taptapgo.exceptions.InvalidParameterException;
@@ -9,17 +10,23 @@ import com.taptapgo.exceptions.ProductNotFoundException;
 
 public class Customer extends User {
     protected enum customerTypes {Anonymous, Registered};
+    private static AtomicInteger customerIDGen = new AtomicInteger(0);
+    protected int customerID;
     protected HashMap<Product, Integer> cart;
     protected customerTypes customerType;
 
     public Customer(String username) {
         super(username);
+        customerIDGen.incrementAndGet();
+        this.customerID = Integer.parseInt(String.format("%05d", customerIDGen.get()));
         this.cart = new HashMap<>();
         this.customerType = customerTypes.Anonymous;
     }
 
     public Customer(String username, String password) {
         super(username, password);
+        customerIDGen.incrementAndGet();
+        this.customerID = Integer.parseInt(String.format("%05d", customerIDGen.get()));
         this.cart = new HashMap<>();
         this.customerType = customerTypes.Registered;
     }
@@ -87,5 +94,13 @@ public class Customer extends User {
                 else cart.put(productInCart, amount);
             }
         }
+    }
+
+    public void clearCart() {
+        this.cart = new HashMap<>();
+    }
+
+    public int getCustomerID(){
+        return this.customerID;
     }
 }
