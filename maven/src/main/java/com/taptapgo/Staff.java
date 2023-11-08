@@ -19,7 +19,7 @@ public class Staff extends User{
         super("staff", username, password);
     }
 
-    public void createProduct(String SKU, String name, double price, String vendor, String desc, int amount) throws ProductAreadyExistsException, InvalidParameterException {
+    public void createProduct(String SKU, String name, float price, String vendor, String desc, int amount) throws ProductAreadyExistsException, InvalidParameterException {
         // check product doesn't already exist in warehouse
         if (Warehouse.getInstance().findProductBySKU(SKU) != null) 
             throw new ProductAreadyExistsException();
@@ -38,18 +38,9 @@ public class Staff extends User{
         // check if product exists in warehouse
         if (productToUpdate == null) throw new ProductNotFoundException();
         else {
-            // if product exists, check the fields to update and update them
+            // Check for errors in update fields
             for (Entry<String, Object> field : fieldsToUpdate.entrySet()) {
                 switch (field.getKey()) {
-                    case "name" :
-                        productToUpdate.setName(field.getValue().toString());
-                        break;
-                    case "description":
-                        productToUpdate.setDescription(field.getValue().toString());
-                        break;
-                    case "vendor":
-                        productToUpdate.setVendor(field.getValue().toString());
-                        break;
                     case "amount":
                         String amount_str = field.getValue().toString();
                         int amount;
@@ -61,26 +52,26 @@ public class Staff extends User{
                         } catch (Exception e) {
                             throw new InvalidParameterException("Amount entered is not a number.");
                         }
-                        Warehouse.getInstance().setProductInventory(productToUpdate, amount);
                         break;
                     case "price":
                         String price_str = field.getValue().toString();
-                        double price;
+                        float price;
 
                         try {
-                            price = Double.parseDouble(price_str);
+                            price = Float.parseFloat(price_str);
                             if (price <= 0) {
                                 throw new InvalidParameterException("Price entered is negative.");
                             }
                         } catch (Exception e) {
                             throw new InvalidParameterException("Price entered is not a number.");
                         }
-                        productToUpdate.setPrice(price);
                         break;
                     default:
                         throw new InvalidParameterException("Invalid parameters. Cannot update product.");
                 }
             }
+
+            Warehouse.getInstance().updateProductInfo(productToUpdate, fieldsToUpdate);
         }
     }
 

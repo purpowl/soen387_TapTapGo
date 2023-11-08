@@ -52,7 +52,7 @@ public class CartServlet extends HttpServlet{
         JSONArray cart_content = new JSONArray(cart_content_json);
         for (int i = 0; i < cart_content.length(); i++) {
             JSONObject cart_item = cart_content.getJSONObject(i);
-            Product product = new Product(cart_item.getString("sku"), cart_item.getString("name"), cart_item.getString("description"), cart_item.getString("vendor"), cart_item.getString("slug"), Double.parseDouble(cart_item.getString("price")));
+            Product product = new Product(cart_item.getString("sku"), cart_item.getString("name"), cart_item.getString("description"), cart_item.getString("vendor"), cart_item.getString("slug"), Float.parseFloat(cart_item.getString("price")));
             int amount = Integer.parseInt(cart_item.getString("amount"));
 
             cart.put(product, amount);
