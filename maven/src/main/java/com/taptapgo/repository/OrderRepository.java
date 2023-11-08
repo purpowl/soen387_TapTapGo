@@ -38,7 +38,7 @@ public class OrderRepository implements Repository{
             pstmt.setString(8, orderToCreate.getShippingCity());
             pstmt.setString(9, orderToCreate.getShippingCountry());
             pstmt.setString(10, orderToCreate.getShippingPostalCode());
-            pstmt.setInt(11, orderToCreate.getCustomer().getCustomerID());
+            pstmt.setString(11, orderToCreate.getCustomer().getUserID());
 
             int result = pstmt.executeUpdate();
 

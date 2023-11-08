@@ -4,6 +4,7 @@ import com.taptapgo.exceptions.InvalidParameterException;
 import com.taptapgo.exceptions.ProductAreadyExistsException;
 import com.taptapgo.exceptions.ProductNotFoundException;
 
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.io.File;
 import java.io.IOException;
@@ -14,11 +15,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 public class Staff extends User{
-    private static AtomicInteger staffID = new AtomicInteger(0);
-
-    public Staff(String username, String password) {
-        super(username, password);
-        staffID.incrementAndGet();
+    public Staff(String password) {
+        super("staff", password);
     }
 
     public void createProduct(String SKU, String name, double price, String vendor, String desc, int amount) throws ProductAreadyExistsException, InvalidParameterException {
@@ -26,7 +24,7 @@ public class Staff extends User{
         if (Warehouse.getInstance().findProductBySKU(SKU) != null) 
             throw new ProductAreadyExistsException();
         // check SKU and name are not blank
-        else if (SKU == null || SKU.equals("") || name == null || name.equals("")) 
+        else if (SKU == null || SKU.isEmpty() || name == null || name.isEmpty())
             throw new InvalidParameterException("Product SKU and Name cannot be blank.");
         // otherwise add new product to warehouse
         else {
@@ -95,6 +93,11 @@ public class Staff extends User{
         }
     }
 
+    public void shipOrder(int orderID) {
+        String trackingNumber = getRandomString();
+        // query order, then set tracking number
+    }
+
     public String getProductCatalog() throws IOException{
         StringBuilder stringBuilder = new StringBuilder();
         // get product list
@@ -134,8 +137,19 @@ public class Staff extends User{
         }
     }
 
+    private String getRandomString() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder randStrBuilder = new StringBuilder();
+        Random rnd = new Random();
+        while (randStrBuilder.length() < 18) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * chars.length());
+            randStrBuilder.append(chars.charAt(index));
+        }
+        return randStrBuilder.toString();
+    }
+
     private String escapeSpecialCharacters(String data) {
-        if (data != null && !data.equals("")) {
+        if (data != null && !data.isEmpty()) {
             data = data.replaceAll("\\R", " ");
             if (data.contains(",") || data.contains("\"") || data.contains("'")) {
                 data = data.replace("\"", "\"\"");

@@ -1,6 +1,7 @@
 package com.taptapgo;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -10,25 +11,35 @@ import com.taptapgo.exceptions.ProductNotFoundException;
 
 public class Customer extends User {
     protected enum customerTypes {Anonymous, Registered};
-    private static AtomicInteger customerIDGen = new AtomicInteger(0);
-    protected int customerID;
+
     protected HashMap<Product, Integer> cart;
     protected customerTypes customerType;
+    protected String firstName;
+    protected String lastName;
+    protected String phone;
+    protected String email;
+    protected List<Order> ordersList;
 
-    public Customer(String username) {
-        super(username);
-        customerIDGen.incrementAndGet();
-        this.customerID = Integer.parseInt(String.format("%05d", customerIDGen.get()));
+    public Customer() {
+        super();
         this.cart = new HashMap<>();
+        this.firstName = null;
+        this.lastName = null;
+        this.phone = null;
+        this.email = null;
         this.customerType = customerTypes.Anonymous;
+        this.ordersList = null;
     }
 
-    public Customer(String username, String password) {
-        super(username, password);
-        customerIDGen.incrementAndGet();
-        this.customerID = Integer.parseInt(String.format("%05d", customerIDGen.get()));
+    public Customer(String password, String firstName, String lastName, String phone, String email) {
+        super("registered", password);
         this.cart = new HashMap<>();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
         this.customerType = customerTypes.Registered;
+        this.ordersList = null;
     }
 
     public HashMap<Product, Integer> getCart() {
@@ -63,7 +74,6 @@ public class Customer extends User {
                 else cart.put(Warehouse.getInstance().findProductBySKU(SKU), amount);
             }
             else throw new InsufficientInventoryException();
-
         }
     }
 
@@ -100,7 +110,31 @@ public class Customer extends User {
         this.cart = new HashMap<>();
     }
 
-    public int getCustomerID(){
-        return this.customerID;
+    public String getFirstName() {
+        return firstName;
     }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void createOrder(String shippingAddress) {
+
+    }
+
+    public List<Order> getOrders() {
+        return this.ordersList;
+    }
+
+//    public Order getOrder(int orderID) {
+//
+//    }
 }
