@@ -15,8 +15,9 @@
 <body>
 <%@include file="includes/navbar.jsp" %>
 
-<div class="container" style="min-height: 1000px;">
+<div class="container">
     <div class="card-header my-3">All Products</div>
+    <!-- Error Handling -->
     <%
         String createStatus = request.getParameter("create");
 
@@ -86,6 +87,7 @@
             }
         }   
     %>
+    <!-- Display Product -->
     <div class="row">
         <%
             // if there are products in warehouse, create cards for them
@@ -118,7 +120,7 @@
                     <div class="mt-3 d-flex justify-content-between">
                         <form action="<%=request.getContextPath()%>/cart/add" method="post">
                             <input type="hidden" name="slug" value="<%=p.getSlug()%>">
-                            <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);"
+                            <button style=" background: hsl(221, 100%, 33%) ;color: hsl(221, 100%, 95%);"
                                     type="submit" 
                                     class="btn btn-sm"
                                 >Add To Cart
