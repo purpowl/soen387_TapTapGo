@@ -30,7 +30,7 @@ public class CreateProductServlet extends HttpServlet {
             Staff staff = (Staff) context.getAttribute("staff");
 
             int amount = 0;
-            double price = 0;
+            float price = 0;
 
             if (!amount_str.isEmpty()) {
                 amount = Integer.parseInt(amount_str);
@@ -40,7 +40,7 @@ public class CreateProductServlet extends HttpServlet {
             }
 
             if (!price_str.isEmpty()) {
-                price = Double.parseDouble(price_str);
+                price = Float.parseFloat(price_str);
                 if (price <= 0) {
                     throw new InvalidNumberException("Negative price entered.");
                 }

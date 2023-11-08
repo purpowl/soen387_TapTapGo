@@ -1,14 +1,10 @@
 package com.taptapgo;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
+import java.util.Map.Entry;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.taptapgo.repository.WarehouseRepository;
 
 public class Warehouse {
     private static Warehouse warehouse_instance = null;
@@ -39,15 +35,21 @@ public class Warehouse {
      */
     public boolean addProduct(Product new_product, int amount){
         if (warehouse_instance.product_list.get(new_product) == null){
-            warehouse_instance.product_list.put(new_product, amount);
-            return true;
-        }
+            boolean db_result = WarehouseRepository.createProduct(new_product, amount);
 
+            if(db_result){
+                warehouse_instance.product_list.put(new_product, amount);
+                return true;
+            }
+            
+            return false;
+        }
         return false;
     }
 
     /**
      * Modify the amount of an existing product in the warehouse.
+     * Caller must check if the amount is negative or not
      *
      * @param product the product to modify/stock-up
      * @param amount the amount to add for this product
@@ -59,8 +61,13 @@ public class Warehouse {
         if (amount_avail == null) {
             return false;
         } else {
-            warehouse_instance.product_list.replace(product, amount);
-            return true;
+            boolean db_result = WarehouseRepository.modifyProductInventory(product, amount);
+            if (db_result) {
+                warehouse_instance.product_list.replace(product, amount);
+                return true;
+            }
+            
+            return false;
         }
     }
 
@@ -149,8 +156,15 @@ public class Warehouse {
                     return false;
                 } else {
                     int amount_left = amount_avail - amount;
-                    warehouse_instance.product_list.replace(product, amount_left);
-                    return true;
+
+                    boolean db_result = WarehouseRepository.modifyProductInventory(product, amount);
+                    
+                    if(db_result) {
+                        warehouse_instance.product_list.replace(product, amount_left);
+                        return true;
+                    }
+                    
+                    return false;
                 }
             }
         }
@@ -178,8 +192,14 @@ public class Warehouse {
                     return true;
                 } else {
                     int amount_left = amount_avail - amount;
-                    warehouse_instance.product_list.replace(product, amount_left);
-                    return true;
+
+                    boolean db_result = WarehouseRepository.modifyProductInventory(product, amount);
+                    if(db_result) {
+                        warehouse_instance.product_list.replace(product, amount_left);
+                        return true;
+                    }
+                    
+                    return false;
                 }
             }
         }
@@ -203,8 +223,14 @@ public class Warehouse {
             return false;
         } else {
             int amount_left = amount_avail - amount;
-            warehouse_instance.product_list.replace(product, amount_left);
-            return true;
+
+            boolean db_result = WarehouseRepository.modifyProductInventory(product, amount_left);
+            if (db_result){
+                warehouse_instance.product_list.replace(product, amount_left);
+                return true;
+            }
+            
+            return false;
         }
     }
 
@@ -218,8 +244,14 @@ public class Warehouse {
         for (Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()) {
             Product product = product_entry.getKey();
             if (product.getSKU().equals(SKU)) {
-                warehouse_instance.product_list.remove(product);
-                return true;
+                boolean db_result = WarehouseRepository.deleteProduct(product);
+
+                if (db_result) {
+                    warehouse_instance.product_list.remove(product);
+                    return true;
+                }
+                
+                return false;
             }
         }
 
@@ -233,72 +265,68 @@ public class Warehouse {
      * @return True if the operation succeed. False if the product was not found.
      */
     public boolean deleteProduct(Product product) {
-        Integer result = warehouse_instance.product_list.remove(product);
-
-        if (result == null){
+        // Make sure the product is in warehouse
+        Integer findProduct = warehouse_instance.product_list.get(product);
+        if (findProduct == null) {
             return false;
-        } else {
+        }
+
+        boolean db_result = WarehouseRepository.deleteProduct(product);
+
+        if(db_result){
+            warehouse_instance.product_list.remove(product);
             return true;
         }
-    }
-
-    /**
-     * Store products data from memory into JSON file
-     * @throws IOException
-     */
-    public static void archiveProducts() throws IOException {
-        JSONArray database = new JSONArray();
-
-        for (Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()) {
-            Product product = product_entry.getKey();
-            int amount = product_entry.getValue();
-            JSONObject database_entry = new JSONObject();
-
-            // Put the data of each object onto the json object
-            database_entry.put("name", product.getName());
-            database_entry.put("description", product.getDescription());
-            database_entry.put("vendor", product.getVendor());
-            database_entry.put("sku", product.getSKU());
-            database_entry.put("slug", product.getSlug());
-            database_entry.put("price", Double.toString(product.getPrice()));
-            database_entry.put("amount", Integer.toString(amount));
-
-            // Write to database
-            database.put(database_entry);
-        }
-
-        FileWriter output = new FileWriter("data.json");
-        output.write(database.toString());
-        output.close();
+        return false;
     }
 
     /**
      * Load product data from JSON file into memory
      */
     public void loadDatabase() {
-        String content = "";
-        try {
-            Scanner reader = new Scanner(new File("data.json"));
-            while (reader.hasNextLine()) {
-                content += reader.nextLine() + "\n";
+        warehouse_instance.product_list = WarehouseRepository.loadWarehouse();
+    }
+
+
+    /**
+     * Update the information of a product in the warehouse.
+     * This function will assume the product is valid, and all the fields are valid.
+     * Caller has to check if this product exist in the warehouse or not.
+     * 
+     * @param product the product to be updated
+     * @param fieldsToUpdate fields used to update
+     * @return true on success, false on failure
+     */
+    public boolean updateProductInfo(Product product, HashMap<String, Object> fieldsToUpdate) {
+        // First, update in the database
+        boolean db_result = WarehouseRepository.updateProductInfo(product.getSKU(), fieldsToUpdate);
+
+        if(db_result) {
+            for (Entry<String, Object> field : fieldsToUpdate.entrySet()) {
+                switch (field.getKey()) {
+                    case "name" :
+                        product.setName(field.getValue().toString());
+                        break;
+                    case "description":
+                        product.setDescription(field.getValue().toString());
+                        break;
+                    case "vendor":
+                        product.setVendor(field.getValue().toString());
+                        break;
+                    case "amount":
+                        Integer amount = (Integer) field.getValue();
+                        Warehouse.getInstance().setProductInventory(product, amount);
+                        break;
+                    case "price":
+                        Float price = (Float) field.getValue();
+                        product.setPrice(price);
+                        break;
+                }
             }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        if(!content.isEmpty()){
-            JSONArray database = new JSONArray(content);
-
-            for (int i = 0; i < database.length(); i++){
-                JSONObject db_entry = database.getJSONObject(i);
-                
-                Product current_product = new Product(db_entry.getString("sku"), db_entry.getString("name"), db_entry.getString("description"), db_entry.getString("vendor"), db_entry.getString("slug"), Double.parseDouble(db_entry.getString("price")));
-                Integer amount = Integer.parseInt(db_entry.getString("amount"));
-
-                warehouse_instance.addProduct(current_product, amount);
-            }
+            return true;
         }
         
+        return false;
     }
 }

@@ -12,7 +12,8 @@ public class Product {
     protected String description;
     protected String vendor;
     protected String URL_slug;
-    protected double price;
+    protected float price;
+    protected String image_path;
 
     public Product(){
         this.SKU = null;
@@ -21,24 +22,27 @@ public class Product {
         this.vendor = null;
         this.URL_slug = null;
         this.price = -1;
+        this.image_path = null;
     }
 
-    public Product(String sku, String name, double price, String slug){
+    public Product(String sku, String name, float price, String slug){
         this.SKU = sku;
         this.name = name;
         this.price = price;
         this.description = "";
         this.vendor = "";
         this.URL_slug = slug;
+        this.image_path = null;
     }
 
-    public Product(String sku, String name, String description, String vendor, String url_slug, double price){
+    public Product(String sku, String name, String description, String vendor, String url_slug, float price){
         this.SKU = sku;
         this.name = name;
         this.price = price;
         this.description = description;
         this.vendor = vendor;
         this.URL_slug = url_slug;
+        this.image_path = null;
     }
 
     public String getSKU(){
@@ -81,17 +85,25 @@ public class Product {
         this.URL_slug = URL_slug;
     }
 
-    public double getPrice() {
+    public float getPrice() {
         return this.price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(float price) {
         this.price = price;
+    }
+
+    public String getImagePath() {
+        return this.image_path;
+    }
+
+    public void setImagePath(String path) {
+        this.image_path = path;
     }
 
     /**
      * Compare between two products to determine if they are the same product.
-     * Comparison is made based on name, SKU, URL slug, and price.
+     * Comparison is made based on SKU because SKU is the primary key for Product table
      *
      * @param anotherObject the product that we want to compare to
      * @return True if it is the same product. Else, return False.
@@ -104,7 +116,7 @@ public class Product {
 
         Product anotherProduct = (Product) anotherObject;
 
-        if (!this.name.equals(anotherProduct.name) || !this.SKU.equals(anotherProduct.SKU) || !this.URL_slug.equals(anotherProduct.URL_slug) || this.price != anotherProduct.price) {
+        if (!this.SKU.equals(anotherProduct.SKU)) {
             return false;
         } else {
             return true;

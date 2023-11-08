@@ -1,18 +1,11 @@
 package com.taptapgo.repository;
 
-import java.sql.ResultSet;
+import com.taptapgo.Order;
 
 public class TestDriver {
     public static void main(String[] args) {
-        ResultSet queryResult = Database.readQuery("select * from product");
+        Order testOrder = OrderIdentityMap.getOrderByID(1);
 
-        try {
-            while(queryResult.next()){
-                System.out.println(queryResult.getString(1));
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-
+        System.out.println(testOrder.getBillAddress());
     }
 }
