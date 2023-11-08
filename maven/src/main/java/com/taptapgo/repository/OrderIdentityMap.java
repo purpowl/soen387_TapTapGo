@@ -1,7 +1,9 @@
 package com.taptapgo.repository;
 
 import java.util.HashMap;
+import java.util.Map;
 
+import com.taptapgo.Customer;
 import com.taptapgo.Order;
 
 public class OrderIdentityMap {
@@ -23,6 +25,37 @@ public class OrderIdentityMap {
         instance.orderMap.put(order.getOrderID(), order);
 
         return OrderRepository.createOrder(order);
+    }
+
+    public static synchronized int getMaxOrderID() {
+        return OrderRepository.getMaxOrderID();
+    }
+
+    public static synchronized Order getOrderByID(int orderID) {
+        Order orderMapResult = instance.orderMap.get(orderID);
+
+        if(orderMapResult == null){
+            return OrderRepository.readOrderByID(orderID);
+        } else {
+            return orderMapResult;
+        }
+    }
+
+    public static synchronized HashMap<Integer, Order> getOrdersByCustomer(Customer customer) {
+        HashMap<Integer, Order> orderMapResults = new HashMap<Integer, Order>();
+
+        for (Map.Entry<Integer, Order> orderEntry : instance.orderMap.entrySet()) {
+            Order order = orderEntry.getValue();
+
+            if (order.getCustomer().equals(customer)) {
+                orderMapResults.put(order.getOrderID(), order);
+            }
+        }
+
+        HashMap<Integer, Order> orderRepoResults = OrderRepository.readOrderByCustomer(customer, orderMapResults);
+        orderRepoResults.putAll(orderMapResults);
+
+        return orderRepoResults;
     }
     
 }

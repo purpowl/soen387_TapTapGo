@@ -134,6 +134,23 @@ public class Customer extends User {
         return this.ordersList;
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (object == null){
+            return false;
+        }
+        if (!(object.getClass().equals(this.getClass()))){
+            return false;
+        }
+
+        Customer otherCustomer = (Customer) object;
+
+        if(otherCustomer.userID.equals(this.userID) && otherCustomer.firstName.equals(this.firstName) && otherCustomer.lastName.equals(this.lastName)){
+            return true;
+        }
+        return false;
+    }
+
 //    public Order getOrder(int orderID) {
 //
 //    }
