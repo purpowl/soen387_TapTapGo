@@ -4,20 +4,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Connection;
-import java.sql.Date;
 
 import com.taptapgo.Customer;
 
 public class CustomerRepository{
     private static Connection db_conn;
 
-    public boolean create(Object customer) {
-        if(!(customer instanceof Customer)){
-            return false;
-        }
-
-        Customer customerToCreate = (Customer) customer;
-
+    public static boolean create(Customer customer) {
         String insertQuery = "";
         if (((Customer) customer).getUserID().contains("gc")) {
             insertQuery = "INSERT INTO guestcustomer (GCID, FirstName, LastName, Phone, Email) VALUES (?, ?, ?, ?, ?)";
@@ -40,14 +33,14 @@ public class CustomerRepository{
             PreparedStatement pstmt = db_conn.prepareStatement(insertQuery);
 
             if (((Customer) customer).getUserID().contains("gc") || ((Customer) customer).getUserID().contains("rc")) {
-                pstmt.setString(1, customerToCreate.getUserID());
-                pstmt.setString(2, customerToCreate.getFirstName());
-                pstmt.setString(3, customerToCreate.getLastName());
-                pstmt.setString(4, customerToCreate.getPhone());
-                pstmt.setString(5, customerToCreate.getEmail());
+                pstmt.setString(1, customer.getUserID());
+                pstmt.setString(2, customer.getFirstName());
+                pstmt.setString(3, customer.getLastName());
+                pstmt.setString(4, customer.getPhone());
+                pstmt.setString(5, customer.getEmail());
             }
             else if (((Customer) customer).getUserID().contains("s")) {
-                pstmt.setString(1, customerToCreate.getUserID());
+                pstmt.setString(1, customer.getUserID());
             }
             else {
                 return false;
@@ -68,13 +61,7 @@ public class CustomerRepository{
         }
     }
 
-    public Object read(Object userID) {
-        if(!(userID instanceof String)) {
-            return null;
-        }
-
-        String userIDToRetrieve = (String) userID;
-
+    public static Customer read(String userID) {
         String getQuery = "";
 
         if (((String) userID).contains("gc")) {
@@ -90,7 +77,7 @@ public class CustomerRepository{
             db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
 
             PreparedStatement pstmt = db_conn.prepareStatement(getQuery);
-            pstmt.setString(1, userIDToRetrieve);
+            pstmt.setString(1, userID);
 
             ResultSet queryResult = pstmt.executeQuery();
 

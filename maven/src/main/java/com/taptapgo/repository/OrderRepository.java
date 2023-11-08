@@ -135,11 +135,10 @@ public class OrderRepository{
                 Customer customer = null;
                 queryResult.close();
 
-                // TODO: Implement CustomerIdentityMap before testing this
                 if (customerID != null) {
-                    customer = CustomerIdentityMap.getRegisteredCustomer(customerID);
+                    customer = CustomerIdentityMap.getCustomerByID(customerID);
                 } else {
-                    customer = CustomerIdentityMap.getGuestCustomer(guestCustomerID);
+                    customer = CustomerIdentityMap.getCustomerByID(guestCustomerID);
                 }
 
 
