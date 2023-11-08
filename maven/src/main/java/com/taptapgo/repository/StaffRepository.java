@@ -8,10 +8,9 @@ import java.sql.Date;
 
 import com.taptapgo.Customer;
 import com.taptapgo.Staff;
-public class StaffRepository implements Repository{
+public class StaffRepository{
     private static Connection db_conn;
 
-    @Override
     public boolean create(Object staff) {
         if(!(staff instanceof Staff)){
             return false;
@@ -49,17 +48,17 @@ public class StaffRepository implements Repository{
         }
     }
 
-    @Override
+    
     public Object read(Object userID) {
         return true;
     }
 
-    @Override
+    
     public boolean update(Object object) {
         return true;
     }
 
-    @Override
+    
     public boolean delete(Object object) {
         return true;
     }
