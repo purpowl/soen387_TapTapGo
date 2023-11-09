@@ -32,8 +32,8 @@ public class Customer extends User {
         this.customerType = customerTypes.Anonymous;
     }
 
-    private Customer(String firstName, String lastName, String phone, String email) {
-        super();
+    private Customer(String sessionID, String firstName, String lastName, String phone, String email) {
+        super(sessionID);
         this.cart = new HashMap<>();
         this.firstName = firstName;
         this.lastName = lastName;
@@ -50,16 +50,6 @@ public class Customer extends User {
         this.phone = phone;
         this.email = email;
         this.customerType = customerTypes.Registered;
-    }
-
-    private Customer(String userID, String firstName, String lastName, String phone, String email) {
-        super(userID);
-        this.cart = new HashMap<>();
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.email = email;
-        this.customerType = customerTypes.Anonymous;
     }
 
     private Customer(String userID, String username, String password, String firstName, String lastName, String phone, String email) {
@@ -80,8 +70,8 @@ public class Customer extends User {
         return new Customer(CustomerID, username, password, firstName, lastName, phone, email);
     }
 
-    public static Customer createGuestCustomer(String firstName, String lastName, String phone, String email) {
-        return new Customer(firstName, lastName, phone, email);
+    public static Customer createGuestCustomer(String sessionID, String firstName, String lastName, String phone, String email) {
+        return new Customer(sessionID, firstName, lastName, phone, email);
     }
 
     public static Customer createRegisteredCustomer(String username, String password, String firstName, String lastName, String phone, String email) throws IOException {
