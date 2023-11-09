@@ -25,7 +25,7 @@
           <a class="nav-link" href="<%=request.getContextPath()%>/products.jsp">Shop</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="<%=request.getContextPath()%>/orders.jsp">Search Order</a>
+          <a class="nav-link" href="<%=request.getContextPath()%>/orders">Search Order</a>
         </li>
         <!-- staff members can see a link to Create Product page -->
         <% if (session.getAttribute("isStaff") != null) { %>

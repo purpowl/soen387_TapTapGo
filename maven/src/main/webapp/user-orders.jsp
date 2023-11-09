@@ -2,14 +2,34 @@
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="com.taptapgo.Customer" %>
 <%@ page import="com.taptapgo.Order" %>
 <%@ page import="com.taptapgo.Product" %>
 <%@ page import="com.taptapgo.repository.OrderIdentityMap" %>
 <%@ page import="jakarta.servlet.http.HttpSession" %>
+
+<%
+  HttpSession currentSession = request.getSession();
+
+  // Redirect to ship order if this is staff
+  if (currentSession.getAttribute("staff") != null) {
+    response.sendRedirect(request.getContextPath() + "/ship-orders.jsp")
+  }
+
+  // Redirect to anonymous order retrieval if this is not registered user
+  if (currentSession.getAttribute("registered_user") == null) {
+    response.sendRedirect(request.getContextPath() + "/orders.jsp")
+  }
+
+  Object customer_object = currentSession.getAttribute("registered_user");
+  Customer customer = (Customer) customer_object;
+  HashMap<Integer, Order> orderList = OrderIdentityMap.getOrdersByCustomer(customer);
+  SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+%>
 <html>
 <head>
   <%@include file="includes/header.jsp" %>
-  <title>Order Details</title>
+  <title>Orders</title>
 </head>
 <body>
 <%@include file="includes/navbar.jsp" %>
@@ -18,37 +38,14 @@
 
   <!-- Search box -->
   <div class="d-flex justify-content-end">
-    <form class="form-inline" action="<%=request.getContextPath()%>/orders" method="post">
-      <input class="form-control mr-sm-2" type="search" placeholder="Enter OrderID to search" aria-label="Search" id="orderID" name="orderID">
+    <form class="form-inline">
+      <input class="form-control mr-sm-2" type="search" placeholder="Enter OrderID to search" aria-label="Search">
       <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
     </form>
   </div>
 
   <!-- Page Indicator -->
   <div class="card-header my-3 ">Order Details</div>
-
-  <!-- Check if a search was carried out -->
-  <%
-      String createStatus = request.getParameter("search");
-      boolean searched = false;
-      HttpSession currentSession = request.getSession();
-      SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-      
-
-      if (createStatus != null) {
-          if (createStatus.equals("success")) {
-            searched = true;
-          } else {
-  %>
-  <div class="row">
-      <div class="col-12">
-          <p style="color: red;">Order not found!</p>
-      </div>
-  </div>
-  <%
-          }
-      }
-  %>
   
   <!-- Container Wrapper -->
   <div class="row">
@@ -67,12 +64,9 @@
               </tr>
             </thead>
             <tbody>
-              <%
-                if (searched) {
-                  Object order_object = currentSession.getAttribute("order");
-                  currentSession.removeAttribute("order");
-
-                  Order order = (Order) order_object;
+              <% 
+                for (Map.Entry<Integer, Order> orderEntry : orderList.entrySet()) {
+                  Order order = orderEntry.getValue();
               %>
               <tr>
                 <td><%=order.getOrderID()%></td> <!-- TODO -->
@@ -91,7 +85,7 @@
                   <td style="vertical-align: middle;"><%=product.getName()%></td> <!-- TODO -->
                   <td colspan="3" style="vertical-align: middle;"><%=product.getDescription()%></td> <!-- TODO -->
               </tr>
-              <%
+              <% 
                   }
                 }
               %>

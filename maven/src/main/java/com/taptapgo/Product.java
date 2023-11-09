@@ -128,7 +128,7 @@ public class Product {
      * @param value the value/price that you want to round up (to 2 decimal places)
      * @return the string representation of the value, to be printed out
      */
-    public static String roundPrice(double value) {
+    public static String roundPrice(float value) {
         BigDecimal bd = BigDecimal.valueOf(value);
         bd = bd.setScale(2, RoundingMode.HALF_UP);
         double result = bd.doubleValue();

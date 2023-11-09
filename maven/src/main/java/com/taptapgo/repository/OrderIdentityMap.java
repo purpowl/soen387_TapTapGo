@@ -1,5 +1,6 @@
 package com.taptapgo.repository;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +15,11 @@ public class OrderIdentityMap {
         orderMap = new HashMap<Integer, Order>();
     }
 
+
+    /**
+     * Get an instance of OrderIdentityMap
+     * @return OrderIdentityMap object
+     */
     public static OrderIdentityMap getInstance() {
         if (instance == null) {
             instance = new OrderIdentityMap();
@@ -21,6 +27,13 @@ public class OrderIdentityMap {
         return instance;
     }
 
+
+    /**
+     * Create an order and store it in the database
+     * 
+     * @param order The order to be created
+     * @return True on success, false on failure
+     */
     public static synchronized boolean createOrder(Order order) {
         boolean dbResult = OrderRepository.createOrder(order);
 
@@ -32,10 +45,24 @@ public class OrderIdentityMap {
         return false;
     }
 
+
+    /**
+     * Get the maximum orderID from database.
+     * This function is called when the server loads
+     * 
+     * @return Maximum orderID present in database
+     */
     public static synchronized int getMaxOrderID() {
         return OrderRepository.getMaxOrderID();
     }
 
+
+    /**
+     * Get an order by ID
+     * 
+     * @param orderID The ID of the order
+     * @return An order object with specified ID. Returns null if order is not found.
+     */
     public static synchronized Order getOrderByID(int orderID) {
         Order orderMapResult = OrderIdentityMap.getInstance().orderMap.get(orderID);
 
@@ -46,6 +73,13 @@ public class OrderIdentityMap {
         }
     }
 
+
+    /**
+     * Get all orders of a specific customer
+     * 
+     * @param customer The customer to get orders for
+     * @return A Hashmap mapping each orderID to an order object
+     */
     public static synchronized HashMap<Integer, Order> getOrdersByCustomer(Customer customer) {
         HashMap<Integer, Order> orderMapResults = new HashMap<Integer, Order>();
 
@@ -58,9 +92,49 @@ public class OrderIdentityMap {
         }
 
         HashMap<Integer, Order> orderRepoResults = OrderRepository.readOrderByCustomer(customer, orderMapResults);
-        orderRepoResults.putAll(orderMapResults);
+        orderMapResults.putAll(orderRepoResults);
+        OrderIdentityMap.getInstance().orderMap.putAll(orderRepoResults);
 
-        return orderRepoResults;
+        return orderMapResults;
+    }
+
+
+    /**
+     * Load all orders from database into memory.
+     * This also means loading all customers from database into memory
+     * 
+     * @return A Hashmap mapping each orderID to an order object
+     */
+    public static synchronized HashMap<Integer, Order> loadAllOrders() {
+        HashMap<Integer, Order> ordersFromDB = OrderRepository.loadAllOrders(OrderIdentityMap.getInstance().orderMap);
+
+        // Add orders from database to order map
+        OrderIdentityMap.getInstance().orderMap.putAll(ordersFromDB);
+
+        return instance.orderMap;
+    }
+
+    
+    /**
+     * Update an order with tracking information and shipping date
+     * This function assumes that the order is already in memory (in orderMap).
+     * 
+     * @param order The order to be updated
+     * @param tracking Tracking number
+     * @param shipDate Shipping date
+     * @return True on success, false on failure.
+     */
+    public static synchronized boolean shipOrder(Order order, String tracking, Date shipDate){
+        boolean db_result = OrderRepository.shipOrder(order.getOrderID(), tracking, shipDate);
+
+        if (db_result) {
+            order.setTrackingNumber(tracking);
+            order.setShipDate(shipDate);
+
+            return true;
+        }
+
+        return false;
     }
     
 }

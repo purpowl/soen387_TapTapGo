@@ -18,7 +18,6 @@ public class Customer extends User {
     protected String lastName;
     protected String phone;
     protected String email;
-    protected List<Order> ordersList;
 
     public Customer() {
         super();
@@ -28,7 +27,6 @@ public class Customer extends User {
         this.phone = null;
         this.email = null;
         this.customerType = customerTypes.Anonymous;
-        this.ordersList = null;
     }
 
     public Customer(String username, String password, String firstName, String lastName, String phone, String email) {
@@ -39,7 +37,6 @@ public class Customer extends User {
         this.phone = phone;
         this.email = email;
         this.customerType = customerTypes.Registered;
-        this.ordersList = null;
     }
 
     public HashMap<Product, Integer> getCart() {
@@ -128,10 +125,6 @@ public class Customer extends User {
 
     public void createOrder(String shippingAddress) {
 
-    }
-
-    public List<Order> getOrders() {
-        return this.ordersList;
     }
 
     @Override
