@@ -59,11 +59,12 @@
           <table class="table mb-0">
             <thead class="table-dark">
               <tr>
-                <th scope="col">ORDER ID</th>
+                <th scope="col">ORDER #</th>
                 <th scope="col">ORDER PLACED</th>
                 <th scope="col">TOTAL</th>
                 <th scope="col">SHIP TO</th>
                 <th scope="col">ORDER STATUS</th>
+                <th scope="col">TRACKING #</th>
               </tr>
             </thead>
             <tbody>
@@ -75,11 +76,12 @@
                   Order order = (Order) order_object;
               %>
               <tr>
-                <td><%=order.getOrderID()%></td> <!-- TODO -->
+                <td><span class="badge badge-success"><%=order.getOrderID()%></span></td> <!-- TODO -->
                 <td><%=formatter.format(order.getPayDate())%></td> <!-- TODO-->
                 <td>$<%=Product.roundPrice(order.getTotalPrice())%></td> <!-- TODO-->
                 <td><%=order.getShippingAddress()%></td> <!-- TODO: Address without City, Country, Postal Code-->
                 <td><%=order.shipStatusToString()%></td><!-- TODO-->
+                <td>Tracking Number</td>
               </tr>
               <!-- For each product in the cart, display the image and the description -->
               <% 
@@ -87,10 +89,12 @@
                     Product product = productEntry.getKey();
               %>
               <tr>
-                  <th><img src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="product" class="" width="150"></th>  <!-- TODO -->
-                  <td style="vertical-align: middle;"><%=product.getName()%></td> <!-- TODO -->
-                  <td colspan="3" style="vertical-align: middle;"><%=product.getDescription()%></td> <!-- TODO -->
+                  <th colspan="2"><img src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="product" class="" width="150"></th>  <!-- TODO -->
+                  <td colspan="1" style="vertical-align: middle;"><%=product.getName()%></td> <!-- TODO -->
+                  <td colspan="1" style="vertical-align: middle;">x<span>1</span></td> <!-- TODO -->
+                  <td colspan="2" style="vertical-align: middle;"><%=product.getDescription()%></td> <!-- TODO -->
               </tr>
+              <tr>
               <%
                   }
                 }

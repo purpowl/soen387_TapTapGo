@@ -3,7 +3,7 @@
 <html>
 <head>
   <%@include file="includes/header.jsp" %>
-  <title>Staff Login</title>
+  <title>Register/title>
 </head>
 <body>
 <%@include file="includes/navbar.jsp" %>
@@ -12,7 +12,7 @@
     <div class="card w-100 mx-auto my-5 border-0">
         <div class="card-body p-5">
             <!-- Form Title -->
-            <h2 class="text-center mb-5">Register</h2>
+            <h2 class="text-center mb-3">Register</h2>
             <!-- Form -->
             <form action="register" method="post">
                 <!-- First Name & Last Name Row -->
