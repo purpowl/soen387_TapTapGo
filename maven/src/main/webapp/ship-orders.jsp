@@ -2,28 +2,34 @@
 <html>
 <head>
   <%@include file="includes/header.jsp" %>
-  <title>Order Confirmation</title>
+  <title>Staff Login</title>
 </head>
 <body>
 <%@include file="includes/navbar.jsp" %>
 
 <div class="container mb-5">
-    <!-- Container Wrapper -->
+
+  <!-- Search box -->
+  <div class="d-flex justify-content-end">
+    <form class="form-inline">
+      <input class="form-control mr-sm-2" type="search" placeholder="Enter OrderID to search" aria-label="Search">
+      <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+
+  <!-- Page Indicator -->
+  <div class="card-header my-3 ">Order Details</div>
+  
+  <!-- Container Wrapper -->
   <div class="row">
-    <!-- Order Confirmation message -->
-    <div class="col-lg-12 mt-3">
-        <h2>Order confirmed!</h2>
-        <p class="fw-bold">Your order has been confirmed. You will recieve your tracking number via email within the next few days!</p>
-    </div>
-    <!-- Order Details -->
     <div class="col-lg-12">
-      <div class="card mt-3">
+      <div class="card mt-4">
         <div class="card-body p-0 table-responsive">
           <!-- Order Info table -->
           <table class="table mb-0">
             <thead class="table-dark">
               <tr>
-                <th scope="col">ORDER #</th>
+                <th scope="col">ORDER ID</th>
                 <th scope="col">ORDER PLACED</th>
                 <th scope="col">TOTAL</th>
                 <th scope="col">SHIP TO</th>
@@ -32,11 +38,11 @@
             </thead>
             <tbody>
               <tr>
-                <td><span class="badge badge-success">123456</span></td> <!-- TODO -->
+                <td>123456</td> <!-- TODO -->
                 <td>2023-11-08</td> <!-- TODO-->
                 <td>$129.00</td> <!-- TODO-->
                 <td>1234 Main St</td> <!-- TODO: Address without City, Country, Postal Code-->
-                <td>Order Recieved</td>
+                <td>Shipped</td><!-- TODO-->
               </tr>
               <tr>
               <!-- For each product in the cart, display the image and the description -->

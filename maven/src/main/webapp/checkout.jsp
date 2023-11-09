@@ -24,7 +24,7 @@
 <html>
 <head>
   <%@include file="includes/header.jsp" %>
-  <title>Staff Login</title>
+  <title>Checkout</title>
 </head>
 <body>
 <%@include file="includes/navbar.jsp" %>

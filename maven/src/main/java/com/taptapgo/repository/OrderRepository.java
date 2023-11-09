@@ -284,11 +284,144 @@ public class OrderRepository{
         }
     }
 
-    public boolean update(Object object) {
-        return true;
+    /**
+     * Load all orders from database into memory.
+     * This also means loading all customers from database into memory.
+     * 
+     * @param ordersLoaded A Hashmap of already loaded order to avoid loading an object twice
+     * @return A Hashmap mapping orderID to an order object.
+     */
+    public static HashMap<Integer, Order> loadAllOrders(HashMap<Integer, Order> ordersLoaded){
+        String getOrderQuery = "SELECT OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, GCID, CustomerID FROM `order`";
+        String getOrderItemsQuery = "SELECT ProductSKU, Quantity FROM orderitem WHERE OrderID = ?";
+        HashMap<Integer, Order> orderResults = new HashMap<Integer, Order>();
+
+        try {
+            // Open database connection
+            Class.forName("com.mysql.jdbc.Driver");
+            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+
+            // Query the database to get all orders of this customer
+            PreparedStatement pstmt = db_conn.prepareStatement(getOrderQuery);
+            ResultSet queryResult = pstmt.executeQuery();
+
+            while (queryResult.next()) {
+                // Extract all order information
+                int orderID = queryResult.getInt(1);
+                // If order is already loaded, skip
+                if(ordersLoaded.get(orderID) != null) {
+                    continue;
+                }
+                Date payDate = queryResult.getDate(2);
+                float totalAmount = queryResult.getFloat(3);
+                String payMethod = queryResult.getString(4);
+                int cardNum = queryResult.getInt(5);
+                String billAddress = queryResult.getString(6);
+                String billCity = queryResult.getString(7);
+                String billCountry = queryResult.getString(8);
+                String billPostalCode = queryResult.getString(9);
+                String shipStatus = queryResult.getString(10);
+                String trackingNum = queryResult.getString(11);
+                Date shipDate = queryResult.getDate(12);
+                String shipAddress = queryResult.getString(13);
+                String shipCity = queryResult.getString(14);
+                String shipCountry = queryResult.getString(15);
+                String shipPostalCode = queryResult.getString(16);
+                String guestCustomerID = queryResult.getString(17);
+                String registeredCustomerID = queryResult.getString(18);
+                Customer customer = null;
+                queryResult.close();
+
+                // Load customer object to memory
+                if (registeredCustomerID != null) {
+                    customer = CustomerIdentityMap.getCustomerByID(registeredCustomerID);
+                } else {
+                    customer = CustomerIdentityMap.getCustomerByID(guestCustomerID);
+                }
+
+
+                // Load all order items of this order to memory
+                HashMap<Product, Integer> orderItems = new HashMap<Product, Integer>();
+                PreparedStatement pstmt2 = db_conn.prepareStatement(getOrderItemsQuery);
+                pstmt2.setInt(1, orderID);
+                queryResult = pstmt2.executeQuery();
+
+                while (queryResult.next()) {
+                    String productSKU = queryResult.getString(1);
+                    int quantity = queryResult.getInt(2);
+                    Product product = Warehouse.getInstance().findProductBySKU(productSKU);
+                    orderItems.put(product, quantity);
+                }
+                queryResult.close();
+
+                
+                // Create an order and load to result hashmap
+                Order newOrder = Order.loadOrder(orderID, totalAmount, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNum, shipDate, customer, orderItems);
+                orderResults.put(newOrder.getOrderID(), newOrder);
+
+            }
+
+            db_conn.close();
+
+            return orderResults;
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            return orderResults;
+        }
     }
 
-    public boolean delete(Object object) {
-        return true;
+
+    /**
+     * Update an order in database with tracking number and shipping date
+     * 
+     * @param orderID
+     * @param tracking
+     * @param shipDate
+     * @return true on success, false on failure
+     */
+    public static boolean shipOrder(int orderID, String tracking, Date shipDate) {
+        String modifyOrderQuery = "UPDATE `order` SET TrackingNumber = ?, ShipDate = ? WHERE OrderID = ?";
+        Savepoint savepoint = null;
+
+        try {
+            // Open DB connection
+            Class.forName("com.mysql.jdbc.Driver");
+            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+            
+            // Save checkpoint to rollback in case update fail
+            db_conn.setAutoCommit(false);
+            savepoint = db_conn.setSavepoint();
+
+            PreparedStatement pstmt = db_conn.prepareStatement(modifyOrderQuery);
+            pstmt.setString(1, tracking);
+            pstmt.setDate(2, shipDate);
+            pstmt.setInt(3, orderID);
+
+            pstmt.executeUpdate();
+            db_conn.commit();
+
+            db_conn.setAutoCommit(true);
+            db_conn.close();
+
+            return true;
+        } catch (SQLException e) {
+            try {
+                if (db_conn != null && savepoint != null) {
+                    db_conn.rollback(savepoint); // Rollback the transaction if an exception occurs
+                    db_conn.setAutoCommit(true);
+                    db_conn.close();
+                }
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+            return false;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+
+            return false;
+        }
     }
 }

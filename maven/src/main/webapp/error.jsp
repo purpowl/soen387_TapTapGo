@@ -1,7 +1,7 @@
 <html>
     <head>
         <%@include file="includes/header.jsp" %>
-        <title>Cart</title>
+        <title>Error page</title>
     </head>
     <body>
         <%@include file="includes/navbar.jsp" %>
