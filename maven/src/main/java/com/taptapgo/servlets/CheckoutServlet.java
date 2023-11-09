@@ -35,11 +35,7 @@ public class CheckoutServlet extends HttpServlet{
             String userID = (String) currentSession.getAttribute("userID");
             customer = CustomerIdentityMap.getCustomerByID(userID);
             if(customer == null) {
-                customer = new Customer(currentSession.getId());
-
-                customer.setFirstName(firstName);
-                customer.setLastName(lastName);
-                customer.setEmail(email);
+                customer = Customer.createGuestCustomer(userID, firstName, lastName, userID, email);
                 boolean db_result = CustomerIdentityMap.createCustomer(customer);
                 if (!db_result) {
                     response.sendRedirect(request.getContextPath() + "/checkout.jsp?checkout=dbcustfail");

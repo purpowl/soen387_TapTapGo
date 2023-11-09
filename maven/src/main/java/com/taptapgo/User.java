@@ -19,11 +19,6 @@ public abstract class User {
         this.username = null;
         this.password = null;
     }
-    public User(String userID) {
-        this.userID = userID;
-        this.username = null;
-        this.password = null;
-    }
 
     public User(String userType, String username, String password) {
         if (userType.equals("staff")) {

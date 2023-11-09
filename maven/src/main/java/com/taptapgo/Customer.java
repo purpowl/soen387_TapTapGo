@@ -22,13 +22,13 @@ public class Customer extends User {
     protected String phone;
     protected String email;
 
-    private Customer(String firstName, String lastName, String phone, String emailString sessionID) {
+    private Customer(String sessionID) {
         super(sessionID);
         this.cart = new HashMap<>();
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.email = email;
+        this.firstName = null;
+        this.lastName = null;
+        this.phone = null;
+        this.email = null;
         this.customerType = customerTypes.Anonymous;
     }
 
@@ -70,8 +70,8 @@ public class Customer extends User {
         return new Customer(CustomerID, username, password, firstName, lastName, phone, email);
     }
 
-    public static Customer createGuestCustomer(String firstName, String lastName, String phone, String email) {
-        return new Customer(firstName, lastName, phone, email);
+    public static Customer createGuestCustomer(String userID, String firstName, String lastName, String phone, String email) {
+        return new Customer(userID, firstName, lastName, phone, email);
     }
 
     public static Customer createRegisteredCustomer(String username, String password, String firstName, String lastName, String phone, String email) throws IOException {
