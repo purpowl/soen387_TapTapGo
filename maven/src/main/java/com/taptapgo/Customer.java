@@ -75,7 +75,7 @@ public class Customer extends User {
 
     public static Customer createRegisteredCustomer(String username, String password, String firstName, String lastName, String phone, String email) throws IOException {
         String content = "";
-        Scanner reader = new Scanner(new File("credentials.json"));
+        Scanner reader = new Scanner(new File("/credentials.json"));
         while (reader.hasNextLine()) {
             content += reader.nextLine() + "\n";
         }
@@ -89,7 +89,7 @@ public class Customer extends User {
             // Put the data of each object onto the json object
             usersJsonArray.put(newUserObj);
 
-            FileWriter output = new FileWriter("credentials.json");
+            FileWriter output = new FileWriter("/credentials.json");
             output.write(usersJsonArray.toString());
             output.close();
         }

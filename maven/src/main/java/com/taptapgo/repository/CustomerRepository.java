@@ -89,7 +89,7 @@ public class CustomerRepository{
 
                     String content = "";
 
-                    Scanner reader = new Scanner(new File("credentials.json"));
+                    Scanner reader = new Scanner(new File("/credentials.json"));
                     while (reader.hasNextLine()) {
                         content += reader.nextLine() + "\n";
                     }
@@ -127,6 +127,66 @@ public class CustomerRepository{
             return null;
         }
         return null;
+    }
+
+    public static Customer readByUsername(String username) {
+
+        String getQuery = "SELECT CustomerID, FirstName, LastName, Phone, Email, Username FROM registeredcustomer WHERE Username = ?";
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+
+            PreparedStatement pstmt = db_conn.prepareStatement(getQuery);
+            pstmt.setString(1, username);
+
+            ResultSet queryResult = pstmt.executeQuery();
+
+            if (queryResult.next()) {
+                String id = queryResult.getString(1);
+                String firstName = queryResult.getString(2);
+                String lastName = queryResult.getString(3);
+                String phone = queryResult.getString(4);
+                String email = queryResult.getString(5);
+
+                    String passwordDB = "";
+                    String content = "";
+
+                    Scanner reader = new Scanner(new File("/credentials.json"));
+                    while (reader.hasNextLine()) {
+                        content += reader.nextLine() + "\n";
+                    }
+                    reader.close();
+
+                    if(!content.isEmpty()) {
+                        JSONArray usersJsonArray = new JSONArray(content);
+                        for (int i = 0; i < usersJsonArray.length(); i++) {
+                            JSONObject userObj = usersJsonArray.getJSONObject(i);
+                            String usernameInFile = userObj.getString("username");
+                            if (usernameInFile.equals(username)) {
+                                passwordDB = userObj.getString("password");
+                                break;
+                            }
+                        }
+                    }
+
+                queryResult.close();
+                db_conn.close();
+
+                    if (passwordDB.isEmpty()) {
+                        return null;
+                    }
+                    return Customer.loadRegisteredCustomer(id, username, passwordDB, firstName, lastName, phone, email);
+            }
+            else {
+                return null;
+            }
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public boolean update(Object object) {
