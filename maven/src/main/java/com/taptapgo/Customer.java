@@ -1,11 +1,11 @@
 package com.taptapgo;
 
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 
 import com.taptapgo.exceptions.InsufficientInventoryException;
 import com.taptapgo.exceptions.InvalidParameterException;
@@ -73,7 +73,23 @@ public class Customer extends User {
         return new Customer(firstName, lastName, phone, email);
     }
 
-    public static Customer createRegisteredCustomer(String username, String password, String firstName, String lastName, String phone, String email) {
+    public static Customer createRegisteredCustomer(String username, String password, String firstName, String lastName, String phone, String email) throws IOException {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream is = classLoader.getResourceAsStream("/credentials.json");
+        assert is != null;
+        InputStreamReader isr = new InputStreamReader(is);
+        JsonObject credentials = JsonParser.parseReader(isr).getAsJsonObject();
+        JsonArray usersJsonArray = credentials.getAsJsonArray("users");
+
+        JsonObject newUserObj = new JsonObject();
+        newUserObj.addProperty(username, password);
+
+        // Put the data of each object onto the json object
+        usersJsonArray.add(newUserObj);
+
+        FileWriter output = new FileWriter("credentials.json");
+        output.write(usersJsonArray.toString());
+        output.close();
 
         return new Customer(username, password, firstName, lastName, phone, email);
     }
