@@ -8,6 +8,7 @@ import java.util.Scanner;
 import com.taptapgo.exceptions.InsufficientInventoryException;
 import com.taptapgo.exceptions.InvalidParameterException;
 import com.taptapgo.exceptions.ProductNotFoundException;
+import com.taptapgo.repository.CustomerRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -75,7 +76,12 @@ public class Customer extends User {
 
     public static Customer createRegisteredCustomer(String username, String password, String firstName, String lastName, String phone, String email) throws IOException {
         String content = "";
-        Scanner reader = new Scanner(new File("/credentials.json"));
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream is = CustomerRepository.class.getResourceAsStream("/credentials.json");
+
+        assert is != null;
+        Scanner reader = new Scanner(is, "UTF-8");
+        //Scanner reader = new Scanner(new File("/credentials.json"));
         while (reader.hasNextLine()) {
             content += reader.nextLine() + "\n";
         }

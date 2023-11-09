@@ -1,6 +1,7 @@
 package com.taptapgo.repository;
 
 import java.io.File;
+import java.io.InputStream;
 import java.sql.*;
 import com.taptapgo.Customer;
 import java.util.Scanner;
@@ -89,7 +90,10 @@ public class CustomerRepository{
 
                     String content = "";
 
-                    Scanner reader = new Scanner(new File("/credentials.json"));
+                    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+                    InputStream is = CustomerRepository.class.getResourceAsStream("/credentials.json");
+
+                    Scanner reader = new Scanner(is, "UTF-8");
                     while (reader.hasNextLine()) {
                         content += reader.nextLine() + "\n";
                     }
@@ -153,7 +157,13 @@ public class CustomerRepository{
                     String passwordDB = "";
                     String content = "";
 
-                    Scanner reader = new Scanner(new File("/credentials.json"));
+                    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+                    InputStream is = CustomerRepository.class.getResourceAsStream("/credentials.json");
+
+                    assert is != null;
+                    Scanner reader = new Scanner(is, "UTF-8");
+
+                    //Scanner reader = new Scanner(new File("/credentials.json"));
                     while (reader.hasNextLine()) {
                         content += reader.nextLine() + "\n";
                     }

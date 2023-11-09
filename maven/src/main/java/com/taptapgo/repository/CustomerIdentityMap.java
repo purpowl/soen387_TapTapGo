@@ -2,6 +2,7 @@ package com.taptapgo.repository;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -62,7 +63,12 @@ public class CustomerIdentityMap {
 
     public static boolean authenticateCustomer(String username, String password) throws FileNotFoundException {
         String content = "";
-        Scanner reader = new Scanner(new File("/credentials.json"));
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream is = CustomerRepository.class.getResourceAsStream("/credentials.json");
+
+        assert is != null;
+        Scanner reader = new Scanner(is, "UTF-8");
+        //ader = new Scanner(new File("/credentials.json"));
         while (reader.hasNextLine()) {
             content += reader.nextLine() + "\n";
         }
