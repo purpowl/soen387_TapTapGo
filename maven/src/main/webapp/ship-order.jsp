@@ -7,7 +7,7 @@
         response.sendRedirect("login.jsp");
     }
     Staff staff = (Staff) session.getAttribute("staff");
-    String slug = request.getParameter("slug");
+    String staffID = staff.getUserID();
 %>
 <html>
 <head>
@@ -27,7 +27,7 @@
           <div class=" card w-100 mx-auto mt-3 mb-5">
               <div class="card-header">Update Ship Date, Tracking Number & Order Status</div> <!-- TODO -->
               <div class="card-body">
-                  <form>
+                  <form action="<%=request.getContextPath()%>/shipOrder/<%=staffID%>" method="post">
                       <!-- Form Row-->
                       <div class="mb-3">
                           <label class="small mb-1" for="ShippingStatus">Order Status</label>
