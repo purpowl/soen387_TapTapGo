@@ -1,12 +1,16 @@
 package com.taptapgo;
 
+import java.io.*;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
+import java.util.Scanner;
 
 import com.taptapgo.exceptions.InsufficientInventoryException;
 import com.taptapgo.exceptions.InvalidParameterException;
 import com.taptapgo.exceptions.ProductNotFoundException;
+import com.taptapgo.repository.CustomerRepository;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class Customer extends User {
     protected enum customerTypes {Anonymous, Registered};
@@ -18,17 +22,17 @@ public class Customer extends User {
     protected String phone;
     protected String email;
 
-    public Customer(String sessionID) {
+    private Customer(String firstName, String lastName, String phone, String emailString sessionID) {
         super(sessionID);
         this.cart = new HashMap<>();
-        this.firstName = null;
-        this.lastName = null;
-        this.phone = null;
-        this.email = null;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
         this.customerType = customerTypes.Anonymous;
     }
 
-    public Customer(String username, String password, String firstName, String lastName, String phone, String email) {
+    private Customer(String username, String password, String firstName, String lastName, String phone, String email) {
         super("registered", username, password);
         this.cart = new HashMap<>();
         this.firstName = firstName;
@@ -36,6 +40,66 @@ public class Customer extends User {
         this.phone = phone;
         this.email = email;
         this.customerType = customerTypes.Registered;
+    }
+
+    private Customer(String userID, String firstName, String lastName, String phone, String email) {
+        super(userID);
+        this.cart = new HashMap<>();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+        this.customerType = customerTypes.Anonymous;
+    }
+
+    private Customer(String userID, String username, String password, String firstName, String lastName, String phone, String email) {
+        super("registered", userID, username, password);
+        this.cart = new HashMap<>();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+        this.customerType = customerTypes.Registered;
+    }
+
+    public static Customer loadGuestCustomer(String GCID, String firstName, String lastName, String phone, String email) {
+        return new Customer(GCID, firstName, lastName, phone, email);
+    }
+
+    public static Customer loadRegisteredCustomer(String CustomerID, String username, String password, String firstName, String lastName, String phone, String email) {
+        return new Customer(CustomerID, username, password, firstName, lastName, phone, email);
+    }
+
+    public static Customer createGuestCustomer(String firstName, String lastName, String phone, String email) {
+        return new Customer(firstName, lastName, phone, email);
+    }
+
+    public static Customer createRegisteredCustomer(String username, String password, String firstName, String lastName, String phone, String email) throws IOException {
+        String content = "";
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream is = CustomerRepository.class.getResourceAsStream("/credentials.json");
+
+        assert is != null;
+        Scanner reader = new Scanner(is, "UTF-8");
+        //Scanner reader = new Scanner(new File("/credentials.json"));
+        while (reader.hasNextLine()) {
+            content += reader.nextLine() + "\n";
+        }
+        reader.close();
+
+        if(!content.isEmpty()) {
+            JSONArray usersJsonArray = new JSONArray(content);
+            JSONObject newUserObj = new JSONObject();
+            newUserObj.put(username, password);
+
+            // Put the data of each object onto the json object
+            usersJsonArray.put(newUserObj);
+
+            FileWriter output = new FileWriter("/credentials.json");
+            output.write(usersJsonArray.toString());
+            output.close();
+        }
+        return new Customer(username, password, firstName, lastName, phone, email);
     }
 
     public HashMap<Product, Integer> getCart() {
@@ -168,8 +232,4 @@ public class Customer extends User {
         }
         return false;
     }
-
-//    public Order getOrder(int orderID) {
-//
-//    }
 }

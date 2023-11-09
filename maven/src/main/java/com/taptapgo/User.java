@@ -19,6 +19,11 @@ public abstract class User {
         this.username = null;
         this.password = null;
     }
+    public User(String userID) {
+        this.userID = userID;
+        this.username = null;
+        this.password = null;
+    }
 
     public User(String userType, String username, String password) {
         if (userType.equals("staff")) {
@@ -31,6 +36,12 @@ public abstract class User {
             this.userID = "rc" + String.format("%05d", registeredIDGen.get());
             this.username = username;
         }
+        this.password = password;
+    }
+
+    public User(String userType, String userID, String username, String password) {
+        this.userID = userID;
+        this.username = username;
         this.password = password;
     }
 
@@ -77,5 +88,4 @@ public abstract class User {
     public static void updateStaffIDGen(int maxID) {
         guestIDGen = new AtomicInteger(maxID);
     } 
-
 }
