@@ -225,22 +225,21 @@ public class OrderRepository{
                 String shipCity = queryResult.getString(14);
                 String shipCountry = queryResult.getString(15);
                 String shipPostalCode = queryResult.getString(16);
-                queryResult.close();
+                
 
 
                 // Extract all order items within this order
                 HashMap<Product, Integer> orderItems = new HashMap<Product, Integer>();
                 PreparedStatement pstmt2 = db_conn.prepareStatement(getOrderItemsQuery);
                 pstmt2.setInt(1, orderID);
-                queryResult = pstmt2.executeQuery();
+                ResultSet queryResult2 = pstmt2.executeQuery();
 
-                while (queryResult.next()) {
-                    String productSKU = queryResult.getString(1);
-                    int quantity = queryResult.getInt(2);
+                while (queryResult2.next()) {
+                    String productSKU = queryResult2.getString(1);
+                    int quantity = queryResult2.getInt(2);
                     Product product = Warehouse.getInstance().findProductBySKU(productSKU);
                     orderItems.put(product, quantity);
                 }
-                queryResult.close();
 
                 
                 // Create an order and load to result hashmap
