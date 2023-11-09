@@ -32,7 +32,7 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("isStaff", null);
                 session.setAttribute("staff", null);
                 session.setAttribute("isRegisteredCustomer", true);
-                session.setAttribute("registeredCustomer", CustomerIdentityMap.getCustomerbyUserName(username));
+                session.setAttribute("registered_user", CustomerIdentityMap.getCustomerbyUserName(username));
                 session.setMaxInactiveInterval(30 * 60);
                 response.sendRedirect("user-account.jsp");
             }
@@ -41,7 +41,7 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("isStaff", true);
                 session.setAttribute("staff", StaffRepository.readByUsername(username));
                 session.setAttribute("isRegisteredCustomer", null);
-                session.setAttribute("registeredCustomer", null);
+                session.setAttribute("registered_user", null);
                 session.setMaxInactiveInterval(30 * 60);
                 response.sendRedirect(previousPage);
             }

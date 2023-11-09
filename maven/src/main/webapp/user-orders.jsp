@@ -13,12 +13,12 @@
 
   // Redirect to ship order if this is staff
   if (currentSession.getAttribute("staff") != null) {
-    response.sendRedirect(request.getContextPath() + "/ship-orders.jsp")
+    response.sendRedirect(request.getContextPath() + "/ship-orders.jsp");
   }
 
   // Redirect to anonymous order retrieval if this is not registered user
   if (currentSession.getAttribute("registered_user") == null) {
-    response.sendRedirect(request.getContextPath() + "/orders.jsp")
+    response.sendRedirect(request.getContextPath() + "/orders.jsp");
   }
 
   Object customer_object = currentSession.getAttribute("registered_user");

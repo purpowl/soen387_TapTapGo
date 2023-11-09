@@ -7,7 +7,7 @@
         response.sendRedirect("login.jsp");
     }
     // reference to customer and order list
-    Customer rCustomer = (Customer) session.getAttribute("registeredCustomer");
+    Customer rCustomer = (Customer) session.getAttribute("registered_user");
 %>
 <html>
 <head>
@@ -24,7 +24,7 @@
         <div class="col-sm">
             <div class="card w-100">
                 <div class="card-body">
-                    <a href="<%=request.getContextPath()%>/orders.jsp">
+                    <a href="<%=request.getContextPath()%>/orders">
                         <h5 style="color: hsl(221, 100%, 33%)" class="card-title">Your Orders</h5>
                         <p class="card-text">Track orders and view all your past orders</p>
                     </a>
