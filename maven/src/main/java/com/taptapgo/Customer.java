@@ -22,7 +22,7 @@ public class Customer extends User {
     protected String phone;
     protected String email;
 
-    public Customer(String sessionID) {
+    private Customer(String sessionID) {
         super(sessionID);
         this.cart = new HashMap<>();
         this.firstName = null;
@@ -32,17 +32,7 @@ public class Customer extends User {
         this.customerType = customerTypes.Anonymous;
     }
 
-    private Customer(String sessionID, String firstName, String lastName, String phone, String email) {
-        super(sessionID);
-        this.cart = new HashMap<>();
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.email = email;
-        this.customerType = customerTypes.Anonymous;
-    }
-
-    public Customer(String username, String password, String firstName, String lastName, String phone, String email) {
+    private Customer(String username, String password, String firstName, String lastName, String phone, String email) {
         super("registered", username, password);
         this.cart = new HashMap<>();
         this.firstName = firstName;
@@ -70,9 +60,8 @@ public class Customer extends User {
         return new Customer(CustomerID, username, password, firstName, lastName, phone, email);
     }
 
-
-    public static Customer createGuestCustomer(String sessionID, String firstName, String lastName, String phone, String email) {
-        return new Customer(sessionID, firstName, lastName, phone, email);
+    public static Customer createGuestCustomer(String userID, String firstName, String lastName, String phone, String email) {
+        return new Customer(userID, firstName, lastName, phone, email);
     }
 
     public static Customer createRegisteredCustomer(String username, String password, String firstName, String lastName, String phone, String email) throws IOException {

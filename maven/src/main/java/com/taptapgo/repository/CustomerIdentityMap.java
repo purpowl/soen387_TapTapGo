@@ -47,10 +47,6 @@ public class CustomerIdentityMap {
         }
     }
 
-    public static Integer getMaxID(String customerType){
-        return CustomerRepository.readMaxID(customerType);
-    }
-
     public static Customer getCustomerbyUserName(String username) {
         Customer customerMapResult = null;
         for (Map.Entry<String, Customer> customer : CustomerIdentityMap.getInstance().customerMap.entrySet()) {
@@ -89,5 +85,9 @@ public class CustomerIdentityMap {
             }
         }
         return false;
+    }
+
+    public static Integer getMaxID(String customerType){
+        return CustomerRepository.readMaxID(customerType);
     }
 }

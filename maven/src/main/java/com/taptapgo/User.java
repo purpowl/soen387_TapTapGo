@@ -74,14 +74,13 @@ public abstract class User {
 
     public static void updateGuestIDGen(int maxID) {
         guestIDGen = new AtomicInteger(maxID);
-    }
+    } 
 
     public static void updateRegisteredIDGen(int maxID) {
         guestIDGen = new AtomicInteger(maxID);
-    }
+    } 
 
     public static void updateStaffIDGen(int maxID) {
         guestIDGen = new AtomicInteger(maxID);
     }
-
 }

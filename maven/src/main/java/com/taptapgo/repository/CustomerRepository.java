@@ -209,6 +209,9 @@ public class CustomerRepository{
     }
 
     public static Integer readMaxID(String customerType) {
+        if(!(customerType instanceof String)) {
+            return null;
+        }
 
         String getQuery = "";
         if (customerType.equals("guest")) {

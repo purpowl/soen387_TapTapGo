@@ -64,6 +64,9 @@ public class OrderRepository{
                 int amount = productEntry.getValue();
 
                 PreparedStatement pstmt2 = db_conn.prepareStatement(insertOrderItemQuery);
+                if (!Warehouse.getInstance().removeProduct(product, amount)) {
+                    throw new SQLException();
+                }
 
                 pstmt2.setInt(1, order.getOrderID());
                 pstmt2.setString(2, product.getSKU());
