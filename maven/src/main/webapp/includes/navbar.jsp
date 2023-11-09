@@ -49,7 +49,7 @@
         <% } %>
 
         <!-- Logout button - staff members see logout button -->
-        <% if (session.getAttribute("isStaff") != null) { %>
+        <% if (session.getAttribute("isStaff") != null || session.getAttribute("isRegisteredCustomer") != null) { %>
         <li><a class="nav-link" href="logout">Log Out</a></li>
         <% } else { %>
         

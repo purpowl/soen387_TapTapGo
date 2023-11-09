@@ -4,6 +4,8 @@ import com.taptapgo.exceptions.DatabaseException;
 import com.taptapgo.exceptions.InvalidParameterException;
 import com.taptapgo.exceptions.ProductAreadyExistsException;
 import com.taptapgo.exceptions.ProductNotFoundException;
+import com.taptapgo.repository.CustomerIdentityMap;
+import com.taptapgo.repository.OrderIdentityMap;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -89,11 +91,6 @@ public class Staff extends User{
         else {
             Warehouse.getInstance().deleteProduct(productToDelete);
         }
-    }
-
-    public void shipOrder(int orderID) {
-        String trackingNumber = getRandomString();
-        // query order, then set tracking number
     }
 
     public String getProductCatalog() throws IOException{

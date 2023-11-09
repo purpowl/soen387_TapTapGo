@@ -1,3 +1,4 @@
+<%@ page import="com.taptapgo.Staff" %>
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%
     // only staff can access this page, redirect to login page otherwise
@@ -5,13 +6,13 @@
     if (session == null || session.getAttribute("isStaff") == null) {
         response.sendRedirect("login.jsp");
     }
-
+    Staff staff = (Staff) session.getAttribute("staff");
     String slug = request.getParameter("slug");
 %>
 <html>
 <head>
     <%@include file="includes/header.jsp" %>
-    <title>Modify Product</title>
+    <title>Ship Order</title>
 </head>
 <body>
 <%@include file="includes/navbar.jsp" %>
