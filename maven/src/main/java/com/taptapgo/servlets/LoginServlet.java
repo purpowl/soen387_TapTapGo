@@ -5,11 +5,11 @@ import java.io.PrintWriter;
 
 import com.taptapgo.Staff;
 import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import com.taptapgo.repository.CustomerIdentityMap;
+import com.taptapgo.repository.StaffRepository;
 
 @WebServlet(name = "loginServlet", value = "/login")
 public class LoginServlet extends HttpServlet {
@@ -29,6 +29,8 @@ public class LoginServlet extends HttpServlet {
             // auto logout every 30 mins
             if (CustomerIdentityMap.getCustomerbyUserName(username) != null) {
                 HttpSession session = request.getSession();
+                session.setAttribute("isStaff", null);
+                session.setAttribute("staff", null);
                 session.setAttribute("isRegisteredCustomer", true);
                 session.setAttribute("registeredCustomer", CustomerIdentityMap.getCustomerbyUserName(username));
                 session.setMaxInactiveInterval(30 * 60);
@@ -37,6 +39,9 @@ public class LoginServlet extends HttpServlet {
             else {
                 HttpSession session = request.getSession();
                 session.setAttribute("isStaff", true);
+                session.setAttribute("staff", StaffRepository.readByUsername(username));
+                session.setAttribute("isRegisteredCustomer", null);
+                session.setAttribute("registeredCustomer", null);
                 session.setMaxInactiveInterval(30 * 60);
                 response.sendRedirect(previousPage);
             }

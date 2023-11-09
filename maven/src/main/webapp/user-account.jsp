@@ -1,8 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ page import="com.taptapgo.Customer" %>
-<%@ page import="com.taptapgo.Order" %>
-<%@ page import="com.taptapgo.repository.OrderIdentityMap" %>
-<%@ page import="java.util.HashMap" %>
 <%
     // only staff can access this page, redirect to login page otherwise
     session = request.getSession(false);
@@ -11,8 +8,6 @@
     }
     // reference to customer and order list
     Customer rCustomer = (Customer) session.getAttribute("registeredCustomer");
-    HashMap<Integer, Order> orders = OrderIdentityMap.getOrdersByCustomer(rCustomer);
-    String slug = request.getParameter("slug");
 %>
 <html>
 <head>
@@ -23,7 +18,7 @@
 <%@include file="includes/navbar.jsp" %>
 
 <div style ="margin-bottom: 2rem;" class="container">
-    <div class="card-header my-3">Hello <%rCustomer.getUsername();%></div>
+    <div class="card-header my-3">Hello <%=rCustomer.getUsername()%></div>
     <div class="row mb-10">
         <!-- Your orders -->
         <div class="col-sm">

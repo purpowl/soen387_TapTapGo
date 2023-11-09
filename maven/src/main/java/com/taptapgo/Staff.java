@@ -20,6 +20,11 @@ public class Staff extends User{
         super("staff", username, password);
     }
 
+    public Staff(String staffID, String username, String password) {
+        super("staff", staffID, username, password);
+    }
+
+
     public void createProduct(String SKU, String name, float price, String vendor, String desc, int amount) throws ProductAreadyExistsException, InvalidParameterException {
         // check product doesn't already exist in warehouse
         if (Warehouse.getInstance().findProductBySKU(SKU) != null) 

@@ -1,8 +1,14 @@
 package com.taptapgo.repository;
 
+import java.io.InputStream;
 import java.sql.*;
+import java.util.Scanner;
 
+import com.taptapgo.Customer;
 import com.taptapgo.Staff;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class StaffRepository{
     private static Connection db_conn;
 
@@ -47,6 +53,67 @@ public class StaffRepository{
     
     public Object read(Object userID) {
         return true;
+    }
+
+    public static Staff readByUsername(String username) {
+
+        String getQuery = "SELECT StaffID, Username FROM staff WHERE Username = ?";
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+
+            PreparedStatement pstmt = db_conn.prepareStatement(getQuery);
+            pstmt.setString(1, username);
+
+            ResultSet queryResult = pstmt.executeQuery();
+
+            if (queryResult.next()) {
+                String id = queryResult.getString(1);
+                String passwordDB = "";
+                String content = "";
+
+                ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+                InputStream is = classLoader.getResourceAsStream("/credentials.json");
+
+                assert is != null;
+                Scanner reader = new Scanner(is, "UTF-8");
+
+                //Scanner reader = new Scanner(new File("/credentials.json"));
+                while (reader.hasNextLine()) {
+                    content += reader.nextLine() + "\n";
+                }
+                reader.close();
+
+                if(!content.isEmpty()) {
+                    JSONArray usersJsonArray = new JSONArray(content);
+                    for (int i = 0; i < usersJsonArray.length(); i++) {
+                        JSONObject userObj = usersJsonArray.getJSONObject(i);
+                        String usernameInFile = userObj.getString("username");
+                        if (usernameInFile.equals(username)) {
+                            passwordDB = userObj.getString("password");
+                            break;
+                        }
+                    }
+                }
+
+                queryResult.close();
+                db_conn.close();
+
+                if (passwordDB.isEmpty()) {
+                    return null;
+                }
+                return new Staff(id, username, passwordDB);
+            }
+            else {
+                return null;
+            }
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     
