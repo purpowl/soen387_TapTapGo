@@ -2,7 +2,7 @@
 <html>
 <head>
   <%@include file="includes/header.jsp" %>
-  <title>Staff Login</title>
+  <title>Modify username and password</title>
 </head>
 <body>
 <%@include file="includes/navbar.jsp" %>
@@ -41,7 +41,7 @@
         <!-- Buttons -->
         <div class="text-center mb-3">
           <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" type="submit" class="btn">Submit</button>
-          <a href="<%=request.getContextPath()%>/your-account.jsp">
+          <a href="<%=request.getContextPath()%>/user-account.jsp">
             <button type="reset" class="btn btn-outline-secondary">Cancel</button>
           </a>
         </div>

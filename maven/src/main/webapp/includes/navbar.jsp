@@ -17,23 +17,38 @@
     <div class="collapse navbar-collapse" id="navbarsTaptapgo">
       <!-- Left links -->
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-      <!-- <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0"> -->
+        <!-- Home -->
         <li class="nav-item">
           <a class="nav-link" href="<%=request.getContextPath()%>/index.jsp">Home</a>
         </li>
+
+        <!-- Shop-->
         <li class="nav-item">
           <a class="nav-link" href="<%=request.getContextPath()%>/products.jsp">Shop</a>
         </li>
+
+        <!-- Search order - all users can see this link to search for their order-->
+        <% if (session.getAttribute("isStaff") == null) { %>
         <li class="nav-item">
           <a class="nav-link" href="<%=request.getContextPath()%>/orders.jsp">Search Order</a>
         </li>
-        <!-- staff members can see a link to Create Product page -->
+        <% } %>
+
+        <!-- Ship order - staff member can see this link to ship order -->
+        <% if (session.getAttribute("isStaff") != null) { %>
+        <li class="nav-item">
+          <a class="nav-link" href="<%=request.getContextPath()%>/manage-order.jsp">Manage Order</a>
+        </li>
+        <% } %>
+
+        <!-- Create Product page - staff members can see a link to add new product -->
         <% if (session.getAttribute("isStaff") != null) { %>
         <li class="nav-item">
           <a class="nav-link" href="<%=request.getContextPath()%>/create-product.jsp">Create Product</a>
         </li>
         <% } %>
-        <!-- staff members see logout button -->
+
+        <!-- Logout button - staff members see logout button -->
         <% if (session.getAttribute("isStaff") != null) { %>
         <li><a class="nav-link" href="logout">Log Out</a></li>
         <% } else { %>

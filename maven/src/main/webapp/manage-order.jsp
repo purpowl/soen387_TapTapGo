@@ -2,7 +2,7 @@
 <html>
 <head>
   <%@include file="includes/header.jsp" %>
-  <title>Order Details (Customer view)</title>
+  <title>Ship Order</title>
 </head>
 <body>
 <%@include file="includes/navbar.jsp" %>
@@ -18,7 +18,7 @@
   </div>
 
   <!-- Page Indicator -->
-  <div class="card-header my-3 ">Order Details</div>
+  <div class="card-header my-3 ">All Orders</div>
   
   <!-- Container Wrapper -->
   <div class="row">
@@ -31,9 +31,9 @@
               <tr>
                 <th scope="col">ORDER #</th>
                 <th scope="col">ORDER PLACED</th>
-                <th scope="col">TOTAL</th>
                 <th scope="col">SHIP TO</th>
                 <th scope="col">ORDER STATUS</th>
+                <th scope="col">SHIP DATE</th>
                 <th scope="col">TRACKING #</th>
               </tr>
             </thead>
@@ -41,10 +41,10 @@
               <tr>
                 <td><span class="badge badge-success">123456</span></td> <!-- TODO -->
                 <td>2023-11-08</td> <!-- TODO-->
-                <td>$129.00</td> <!-- TODO-->
                 <td>1234 Main St</td> <!-- TODO: Address without City, Country, Postal Code-->
                 <td>Shipped</td><!-- TODO-->
-                <td>Tracking Number</td>
+                <td>2023-11-20</td>
+                <td>623456956</td>
               </tr>
               <tr>
               <!-- For each product in the order, display the image and the description -->
@@ -53,6 +53,19 @@
                   <td colspan="1" style="vertical-align: middle;">Tsunami</td> <!-- TODO -->
                   <td colspan="1" style="vertical-align: middle;">x<span>1</span></td> <!-- TODO -->
                   <td colspan="2" style="vertical-align: middle;">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolorem, facilis.</td> <!-- TODO -->
+              </tr>
+              <tr>
+                <td>
+                    <a href="<%=request.getContextPath()%>/ship-order.jsp">
+                        <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%)" class="btn btn-block">Ship order</button>
+                    </a>
+                </td> 
+                <td>
+                    <a href="<%=request.getContextPath()%>/order-detail.jsp">
+                        <button class="btn btn-secondary btn-block">View order detail</button>
+                    </a>
+                </td> 
+                <td colspan="4"></td> 
               </tr>
             </tbody>
           </table>

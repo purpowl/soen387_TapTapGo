@@ -16,7 +16,7 @@
 
 <div class="container">
     <div class="card-header my-3">Create Product</div>
-    <div class="card w-50 mx-auto my-5">
+    <div class="card w-100 mx-auto my-5">
         <div class="card-header text-center">Product Details</div>
         <div class="card-body">
             <!-- form for staff to enter sku and name to create new product, calls CreateProductServlet doPost -->
