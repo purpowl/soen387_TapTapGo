@@ -38,4 +38,8 @@ public class CustomerIdentityMap {
             return customerMapResult;
         }
     }
+
+    public static Integer getMaxID(String customerType){
+        return CustomerRepository.readMaxID(customerType);
+    }
 }

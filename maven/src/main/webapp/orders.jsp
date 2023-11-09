@@ -81,17 +81,28 @@
                 <td>$<%=Product.roundPrice(order.getTotalPrice())%></td> <!-- TODO-->
                 <td><%=order.getShippingAddress()%></td> <!-- TODO: Address without City, Country, Postal Code-->
                 <td><%=order.shipStatusToString()%></td><!-- TODO-->
-                <td>Tracking Number</td>
+                <%
+                  if (order.getTrackingNumber() == null) {
+                %>
+                  <td>N/A</td>
+                <%
+                  } else {
+                %>
+                  <td><%=order.getTrackingNumber()%></td>
+                <%
+                  }
+                %>
               </tr>
               <!-- For each product in the cart, display the image and the description -->
               <% 
                   for (Map.Entry<Product, Integer> productEntry : order.getOrderProducts().entrySet()) {
                     Product product = productEntry.getKey();
+                    int amount = productEntry.getValue();
               %>
               <tr>
                   <th colspan="2"><img src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="product" class="" width="150"></th>  <!-- TODO -->
                   <td colspan="1" style="vertical-align: middle;"><%=product.getName()%></td> <!-- TODO -->
-                  <td colspan="1" style="vertical-align: middle;">x<span>1</span></td> <!-- TODO -->
+                  <td colspan="1" style="vertical-align: middle;">x<span><%=amount%></span></td> <!-- TODO -->
                   <td colspan="2" style="vertical-align: middle;"><%=product.getDescription()%></td> <!-- TODO -->
               </tr>
               <tr>

@@ -3,7 +3,6 @@ package com.taptapgo;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.taptapgo.exceptions.InsufficientInventoryException;
 import com.taptapgo.exceptions.InvalidParameterException;
@@ -19,8 +18,8 @@ public class Customer extends User {
     protected String phone;
     protected String email;
 
-    public Customer() {
-        super();
+    public Customer(String sessionID) {
+        super(sessionID);
         this.cart = new HashMap<>();
         this.firstName = null;
         this.lastName = null;
@@ -41,6 +40,10 @@ public class Customer extends User {
 
     public HashMap<Product, Integer> getCart() {
         return this.cart;
+    }
+
+    public void loadCart(HashMap<Product, Integer> cart) {
+        this.cart = cart;
     }
 
     // find the product and its quantity in cart by SKU
@@ -122,6 +125,28 @@ public class Customer extends User {
     public String getEmail() {
         return email;
     }
+
+    public String customerTypeToString() {
+        if (this.customerType == customerTypes.Anonymous) {
+            return "anonymous";
+        } else {
+            return "registered";
+        }
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
 
     public void createOrder(String shippingAddress) {
 

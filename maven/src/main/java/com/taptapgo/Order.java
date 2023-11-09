@@ -1,6 +1,9 @@
 package com.taptapgo;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.taptapgo.repository.OrderIdentityMap;
+
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +33,6 @@ public class Order {
     private Order(Customer customer, String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, String shipAddress, String shipCity, String shipCountry, String shipPostalCode) {
         orderCount.incrementAndGet();
         orderID = Integer.parseInt(String.format("%05d", orderCount.get()));
-        this.totalPrice = this.calculateOrderTotal();
         this.billAddress = billAddress;
         this.billCity = billCity;
         this.billCountry = billCountry;
@@ -48,6 +50,7 @@ public class Order {
         this.customer = customer;
         this.orderProducts = customer.getCart();
         customer.clearCart();
+        this.totalPrice = this.calculateOrderTotal();
     }
 
     private Order(int orderID, float orderTotal, String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, Date payDate, String shipAddress, String shipCity, String shipCountry, String shipPostalCode, String shipStatus, String trackingNumber, Date shipDate, Customer customer, HashMap<Product, Integer> products) {
@@ -90,10 +93,14 @@ public class Order {
         return newOrder;
     }
 
+    public static boolean addOrderToDB(Order order) {
+        return OrderIdentityMap.createOrder(order);
+    }
+
 
     public float calculateOrderTotal() {
         float total = 0;
-        for(Map.Entry<Product, Integer> productEntry : orderProducts.entrySet()) {
+        for(Map.Entry<Product, Integer> productEntry : this.orderProducts.entrySet()) {
             Product product = productEntry.getKey();
             int amount = productEntry.getValue();
 

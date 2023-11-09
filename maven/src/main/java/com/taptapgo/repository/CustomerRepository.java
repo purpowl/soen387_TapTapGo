@@ -93,20 +93,23 @@ public class CustomerRepository{
         return true;
     }
 
-    public Integer readMaxID(String customerType) {
+    public static Integer readMaxID(String customerType) {
         if(!(customerType instanceof String)) {
             return null;
         }
 
         String getQuery = "";
         if (customerType.equals("guest")) {
-            getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(GCID, ' ', -1)), 2) FROM guestcustomer";
+            getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(GCID, ' ', -1)), 3) FROM guestcustomer";
         }
         else if (customerType.equals("registered")) {
-            getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(CustomerID, ' ', -1)), 2) FROM registeredcustomer";
+            getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(CustomerID, ' ', -1)), 3) FROM registeredcustomer";
+        }
+        else if (customerType.equals("staff")) {
+            getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(StaffID, ' ', -1)), 3) FROM staff";
         }
         else {
-            return null;
+            return 0;
         }
 
         try {
@@ -120,12 +123,12 @@ public class CustomerRepository{
             if (queryResult.next()) {
                 return Integer.parseInt(queryResult.getString(1));
             } else {
-                return null;
+                return 0;
             }
 
         } catch(Exception e) {
             e.printStackTrace();
-            return null;
+            return 0;
         }
     }
 }

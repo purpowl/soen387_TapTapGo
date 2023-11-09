@@ -12,9 +12,10 @@ public abstract class User {
     protected String password;
 
 
-    public User() {
-        guestIDGen.incrementAndGet();
-        this.userID = "gc" + String.format("%05d", guestIDGen.get());
+    public User(String sessionID) {
+        // guestIDGen.incrementAndGet();
+        // this.userID = "gc" + String.format("%05d", guestIDGen.get());
+        this.userID = "gc" + sessionID;
         this.username = null;
         this.password = null;
     }
@@ -64,5 +65,17 @@ public abstract class User {
     public String getUserName() {
         return this.username;
     }
+
+    public static void updateGuestIDGen(int maxID) {
+        guestIDGen = new AtomicInteger(maxID);
+    } 
+
+    public static void updateRegisteredIDGen(int maxID) {
+        guestIDGen = new AtomicInteger(maxID);
+    } 
+
+    public static void updateStaffIDGen(int maxID) {
+        guestIDGen = new AtomicInteger(maxID);
+    } 
 
 }
