@@ -70,6 +70,7 @@ public class Customer extends User {
         return new Customer(CustomerID, username, password, firstName, lastName, phone, email);
     }
 
+
     public static Customer createGuestCustomer(String sessionID, String firstName, String lastName, String phone, String email) {
         return new Customer(sessionID, firstName, lastName, phone, email);
     }
@@ -215,7 +216,6 @@ public class Customer extends User {
     public void setEmail(String email) {
         this.email = email;
     }
-
 
     public String getUsername() {
         return super.getUserName();
