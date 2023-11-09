@@ -1,7 +1,11 @@
 <%@ page import="com.taptapgo.Order" %>
 <%@ page import="com.taptapgo.repository.OrderIdentityMap" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="com.taptapgo.Product" %>
 <%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page import="jakarta.servlet.http.HttpSession" %>
 <%
   // only staff can access this page, redirect to login page otherwise
   session = request.getSession(false);
@@ -9,6 +13,7 @@
     response.sendRedirect("login.jsp");
   }
   HashMap<Integer, Order> allOrders = OrderIdentityMap.loadAllOrders();
+  SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 %>
 <html>
 <head>
@@ -49,28 +54,59 @@
               </tr>
             </thead>
             <tbody>
+            <%
+              for (Map.Entry<Integer, Order> orderEntry : allOrders.entrySet()) {
+                Order order = orderEntry.getValue();
+            %>
               <tr>
-                <td><span class="badge badge-success">123456</span></td> <!-- TODO -->
-                <td>2023-11-08</td> <!-- TODO-->
-                <td>1234 Main St</td> <!-- TODO: Address without City, Country, Postal Code-->
-                <td>Shipped</td><!-- TODO-->
-                <td>2023-11-20</td>
-                <td>623456956</td>
+                <td><span class="badge badge-success"><%=order.getOrderID()%></span></td> <!-- TODO -->
+                <td><%=formatter.format(order.getPayDate())%></td> <!-- TODO-->
+                <td>$<%=Product.roundPrice(order.getTotalPrice())%></td> <!-- TODO-->
+                <td><%=order.getShippingAddress()%></td> <!-- TODO: Address without City, Country, Postal Code-->
+                <td><%=order.shipStatusToString()%></td><!-- TODO-->
+                <%
+                  if (order.getTrackingNumber() == null) {
+                %>
+                  <td>N/A</td>
+                <%
+                  } else {
+                %>
+                  <td><%=order.getTrackingNumber()%></td>
+                <%
+                  }
+                %>
               </tr>
               <tr>
               <!-- For each product in the order, display the image and the description -->
+              <% 
+                  for (Map.Entry<Product, Integer> productEntry : order.getOrderProducts().entrySet()) {
+                    Product product = productEntry.getKey();
+                    int amount = productEntry.getValue();
+              %>
               <tr>
-                  <th colspan="2"><img src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="product" class="" width="200"></th>  <!-- TODO -->
-                  <td colspan="1" style="vertical-align: middle;">Tsunami</td> <!-- TODO -->
-                  <td colspan="1" style="vertical-align: middle;">x<span>1</span></td> <!-- TODO -->
-                  <td colspan="2" style="vertical-align: middle;">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolorem, facilis.</td> <!-- TODO -->
+                  <th colspan="2"><img src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="product" class="" width="150"></th>  <!-- TODO -->
+                  <td colspan="1" style="vertical-align: middle;"><%=product.getName()%></td> <!-- TODO -->
+                  <td colspan="1" style="vertical-align: middle;">x<span><%=amount%></span></td> <!-- TODO -->
+                  <td colspan="2" style="vertical-align: middle;"><%=product.getDescription()%></td> <!-- TODO -->
               </tr>
               <tr>
-                <td>
-                    <a href="<%=request.getContextPath()%>/ship-order.jsp">
-                        <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%)" class="btn btn-block">Ship order</button>
-                    </a>
-                </td> 
+                <%
+                  if (order.getTrackingNumber() == null) {
+                %>
+                  <td>
+                      <a href="<%=request.getContextPath()%>/shipOrder/<%=order.getOrderID()%>">
+                          <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%)" class="btn btn-block">Ship order</button>
+                      </a>
+                  </td>
+                <%
+                  } else {
+                %>
+                  <td>
+                      <button class="btn btn-secondary btn-block">Shipped</button>
+                  </td>
+                <%
+                  }
+                %>
                 <td>
                     <a href="<%=request.getContextPath()%>/order-detail.jsp">
                         <button class="btn btn-secondary btn-block">View order detail</button>
@@ -78,6 +114,10 @@
                 </td> 
                 <td colspan="4"></td> 
               </tr>
+              <%
+                  }
+                }
+              %>
             </tbody>
           </table>
           <!-- Order Info table -->

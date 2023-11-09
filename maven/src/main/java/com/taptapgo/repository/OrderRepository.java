@@ -338,7 +338,6 @@ public class OrderRepository{
                 String guestCustomerID = queryResult.getString(17);
                 String registeredCustomerID = queryResult.getString(18);
                 Customer customer = null;
-                queryResult.close();
 
                 // Load customer object to memory
                 if (registeredCustomerID != null) {
@@ -352,15 +351,14 @@ public class OrderRepository{
                 HashMap<Product, Integer> orderItems = new HashMap<Product, Integer>();
                 PreparedStatement pstmt2 = db_conn.prepareStatement(getOrderItemsQuery);
                 pstmt2.setInt(1, orderID);
-                queryResult = pstmt2.executeQuery();
+                ResultSet queryResult2 = pstmt2.executeQuery();
 
-                while (queryResult.next()) {
-                    String productSKU = queryResult.getString(1);
-                    int quantity = queryResult.getInt(2);
+                while (queryResult2.next()) {
+                    String productSKU = queryResult2.getString(1);
+                    int quantity = queryResult2.getInt(2);
                     Product product = Warehouse.getInstance().findProductBySKU(productSKU);
                     orderItems.put(product, quantity);
                 }
-                queryResult.close();
 
                 
                 // Create an order and load to result hashmap
@@ -388,8 +386,8 @@ public class OrderRepository{
      * @param shipDate
      * @return true on success, false on failure
      */
-    public static boolean shipOrder(int orderID, String tracking, Date shipDate) {
-        String modifyOrderQuery = "UPDATE `order` SET TrackingNumber = ?, ShipDate = ? WHERE OrderID = ?";
+    public static boolean shipOrder(int orderID, String tracking, Date shipDate, String shipStatus) {
+        String modifyOrderQuery = "UPDATE `order` SET TrackingNumber = ?, ShipDate = ?, ShippingStatus = ? WHERE OrderID = ?";
         Savepoint savepoint = null;
 
         try {
@@ -404,7 +402,8 @@ public class OrderRepository{
             PreparedStatement pstmt = db_conn.prepareStatement(modifyOrderQuery);
             pstmt.setString(1, tracking);
             pstmt.setDate(2, shipDate);
-            pstmt.setInt(3, orderID);
+            pstmt.setString(3, shipStatus);
+            pstmt.setInt(4, orderID);
 
             pstmt.executeUpdate();
             db_conn.commit();

@@ -170,8 +170,16 @@ public class Order {
         return this.shippingStatus;
     }
 
-    public void setShippingStatus(ShipmentStatus shippingStatus) {
-        this.shippingStatus = shippingStatus;
+    public void setShippingStatus(String shipStatus) {
+        if (shipStatus.equals("packing")){
+            this.shippingStatus = ShipmentStatus.Packing;
+        } else if(shipStatus.equals("shipped")) {
+            this.shippingStatus = ShipmentStatus.Shipped;
+        } else if(shipStatus.equals("delivered")) {
+            this.shippingStatus = ShipmentStatus.Delivered;
+        } else {
+            this.shippingStatus = ShipmentStatus.Canceled;
+        }
     }
 
     public String getShippingAddress() {
