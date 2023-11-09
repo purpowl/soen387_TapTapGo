@@ -1,4 +1,22 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="com.taptapgo.Order" %>
+<%@ page import="jakarta.servlet.http.HttpSession" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="com.taptapgo.Product" %>
+
+<%
+  HttpSession currentSession = request.getSession();
+  SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+  if(currentSession.getAttribute("order") == null) {
+    response.sendRedirect(request.getContextPath() + "/orders");
+  }
+
+  Order order = (Order) currentSession.getAttribute("order");
+%>
+
 <html>
 <head>
   <%@include file="includes/header.jsp" %>
@@ -13,7 +31,7 @@
     <!-- Order Confirmation message -->
     <div class="col-lg-12 mt-3">
         <h2>Order confirmed!</h2>
-        <p class="fw-bold">Your order has been confirmed. You will recieve your tracking number via email within the next few days!</p>
+        <p class="fw-bold">Your order has been confirmed. You will receive your tracking number via email within the next few days!</p>
     </div>
     <!-- Order Details -->
     <div class="col-lg-12">
@@ -32,19 +50,27 @@
             </thead>
             <tbody>
               <tr>
-                <td><span class="badge badge-success">123456</span></td> <!-- TODO -->
-                <td>2023-11-08</td> <!-- TODO-->
-                <td>$129.00</td> <!-- TODO-->
-                <td>1234 Main St</td> <!-- TODO: Address without City, Country, Postal Code-->
-                <td>Order Recieved</td>
+                <td><span class="badge badge-success"><%=order.getOrderID()%></span></td> <!-- TODO -->
+                <td><%=formatter.format(order.getPayDate())%></td> <!-- TODO-->
+                <td>$<%=Product.roundPrice(order.getTotalPrice())%></td> <!-- TODO-->
+                <td><%=order.getShippingAddress()%></td> <!-- TODO: Address without City, Country, Postal Code-->
+                <td>Order Received</td>
               </tr>
-              <tr>
               <!-- For each product in the cart, display the image and the description -->
+              <% 
+                  for (Map.Entry<Product, Integer> productEntry : order.getOrderProducts().entrySet()) {
+                    Product product = productEntry.getKey();
+                    int amount = productEntry.getValue();
+              %>
               <tr>
-                  <th><img src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="product" class="" width="150"></th>  <!-- TODO -->
-                  <td style="vertical-align: middle;">Tsunami</td> <!-- TODO -->
-                  <td colspan="3" style="vertical-align: middle;">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolorem, facilis.</td> <!-- TODO -->
+                  <th colspan="2"><img src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="product" class="" width="150"></th>  <!-- TODO -->
+                  <td colspan="1" style="vertical-align: middle;"><%=product.getName()%></td> <!-- TODO -->
+                  <td colspan="1" style="vertical-align: middle;">x<span><%=amount%></span></td> <!-- TODO -->
+                  <td colspan="2" style="vertical-align: middle;"><%=product.getDescription()%></td> <!-- TODO -->
               </tr>
+              <%
+                  }
+              %>
             </tbody>
           </table>
           <!-- Order Info table -->

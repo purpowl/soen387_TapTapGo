@@ -4,10 +4,12 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Random;
 
+import com.taptapgo.Customer;
 import com.taptapgo.Order;
 import com.taptapgo.Product;
 import com.taptapgo.Staff;
 import com.taptapgo.Warehouse;
+import com.taptapgo.repository.CustomerIdentityMap;
 import com.taptapgo.repository.OrderIdentityMap;
 
 import jakarta.servlet.ServletContext;
@@ -25,6 +27,8 @@ public class TapTapServlet extends HttpServlet {
         Warehouse warehouse = Warehouse.getInstance();
         warehouse.loadDatabase();
         Order.updateOrderCounter(OrderIdentityMap.getMaxOrderID());
+        Customer.updateRegisteredIDGen(CustomerIdentityMap.getMaxID("registered"));
+        Customer.updateStaffIDGen(CustomerIdentityMap.getMaxID("staff"));
         context.setAttribute("warehouse", warehouse);
         Staff staff = new Staff("adminStaff", "secret");
         context.setAttribute("staff", staff);

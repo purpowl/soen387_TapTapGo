@@ -22,6 +22,16 @@ public class Customer extends User {
     protected String phone;
     protected String email;
 
+    public Customer(String sessionID) {
+        super(sessionID);
+        this.cart = new HashMap<>();
+        this.firstName = null;
+        this.lastName = null;
+        this.phone = null;
+        this.email = null;
+        this.customerType = customerTypes.Anonymous;
+    }
+
     private Customer(String firstName, String lastName, String phone, String email) {
         super();
         this.cart = new HashMap<>();
@@ -32,7 +42,7 @@ public class Customer extends User {
         this.customerType = customerTypes.Anonymous;
     }
 
-    private Customer(String username, String password, String firstName, String lastName, String phone, String email) {
+    public Customer(String username, String password, String firstName, String lastName, String phone, String email) {
         super("registered", username, password);
         this.cart = new HashMap<>();
         this.firstName = firstName;
@@ -109,6 +119,10 @@ public class Customer extends User {
 
     public HashMap<Product, Integer> getCart() {
         return this.cart;
+    }
+
+    public void loadCart(HashMap<Product, Integer> cart) {
+        this.cart = cart;
     }
 
     // find the product and its quantity in cart by SKU
@@ -190,6 +204,28 @@ public class Customer extends User {
     public String getEmail() {
         return email;
     }
+
+    public String customerTypeToString() {
+        if (this.customerType == customerTypes.Anonymous) {
+            return "anonymous";
+        } else {
+            return "registered";
+        }
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
 
     public String getUsername() {
         return super.getUserName();

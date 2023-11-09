@@ -20,7 +20,8 @@ public class OrderRepository{
     private static Connection db_conn;
 
     public static boolean createOrder(Order order) {
-        String insertOrderQuery = "INSERT INTO `order` (OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, CustomerID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertOrderRegisteredQuery = "INSERT INTO `order` (OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, CustomerID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertOrderGuestQuery = "INSERT INTO `order` (OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, GCID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String insertOrderItemQuery = "INSERT INTO orderitem (OrderID, ProductSKU, Quantity) VALUES (?, ?, ?)";
         Savepoint savepoint = null;
 
@@ -33,7 +34,12 @@ public class OrderRepository{
             db_conn.setAutoCommit(false);
             savepoint = db_conn.setSavepoint();
 
-            PreparedStatement pstmt1 = db_conn.prepareStatement(insertOrderQuery);
+            PreparedStatement pstmt1 = null;
+            if (order.getCustomer().customerTypeToString().equals("anonymous")) {
+                pstmt1 = db_conn.prepareStatement(insertOrderGuestQuery);
+            } else {
+                pstmt1 = db_conn.prepareStatement(insertOrderRegisteredQuery);
+            }
 
             pstmt1.setInt(1, order.getOrderID());
             pstmt1.setDate(2, new Date(order.getPayDate().getTime()));

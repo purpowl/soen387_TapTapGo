@@ -60,7 +60,7 @@
             <div class="row mt-1">
                 <div class="col-12">
                     <%
-                        double total = 0;
+                        float total = 0;
                         for (Map.Entry<Product, Integer> product_entry : cart.entrySet()) { 
                             Product product = product_entry.getKey();
                             int amount = product_entry.getValue();
