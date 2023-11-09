@@ -124,12 +124,13 @@ public class OrderIdentityMap {
      * @param shipDate Shipping date
      * @return True on success, false on failure.
      */
-    public static synchronized boolean shipOrder(Order order, String tracking, Date shipDate){
-        boolean db_result = OrderRepository.shipOrder(order.getOrderID(), tracking, shipDate);
+    public static synchronized boolean shipOrder(Order order, String tracking, String shippingStatus, Date shipDate){
+        boolean db_result = OrderRepository.shipOrder(order.getOrderID(), tracking, shipDate, shippingStatus);
 
         if (db_result) {
             order.setTrackingNumber(tracking);
             order.setShipDate(shipDate);
+            order.setShippingStatus(shippingStatus);
 
             return true;
         }

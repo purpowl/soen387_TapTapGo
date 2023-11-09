@@ -32,16 +32,6 @@ public class Customer extends User {
         this.customerType = customerTypes.Anonymous;
     }
 
-    private Customer(String sessionID, String firstName, String lastName, String phone, String email) {
-        super(sessionID);
-        this.cart = new HashMap<>();
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.email = email;
-        this.customerType = customerTypes.Anonymous;
-    }
-
     private Customer(String username, String password, String firstName, String lastName, String phone, String email) {
         super("registered", username, password);
         this.cart = new HashMap<>();
