@@ -6,7 +6,6 @@
         response.sendRedirect("login.jsp");
     }
 
-    String slug = request.getParameter("slug");
 %>
 <html>
 <head>

@@ -1,4 +1,15 @@
+<%@ page import="com.taptapgo.Order" %>
+<%@ page import="com.taptapgo.repository.OrderIdentityMap" %>
+<%@ page import="java.util.HashMap" %>
 <%@ page contentType="text/html;charset=UTF-8"%>
+<%
+  // only staff can access this page, redirect to login page otherwise
+  session = request.getSession(false);
+  if (session == null || session.getAttribute("isStaff") == null) {
+    response.sendRedirect("login.jsp");
+  }
+  HashMap<Integer, Order> allOrders = OrderIdentityMap.loadAllOrders();
+%>
 <html>
 <head>
   <%@include file="includes/header.jsp" %>
