@@ -77,7 +77,7 @@ public class Customer extends User {
     public static Customer createRegisteredCustomer(String username, String password, String firstName, String lastName, String phone, String email) throws IOException {
         String content = "";
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        InputStream is = CustomerRepository.class.getResourceAsStream("/credentials.json");
+        InputStream is = classLoader.getResourceAsStream("/credentials.json");
 
         assert is != null;
         Scanner reader = new Scanner(is, "UTF-8");
@@ -94,6 +94,11 @@ public class Customer extends User {
 
             // Put the data of each object onto the json object
             usersJsonArray.put(newUserObj);
+
+//            try (OutputStream out = new FileOutputStream;
+//                 Writer writer = new OutputStreamWriter(out,"UTF-8")) {
+//                writer.write(data);
+//            }
 
             FileWriter output = new FileWriter("/credentials.json");
             output.write(usersJsonArray.toString());
@@ -184,6 +189,10 @@ public class Customer extends User {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getUsername() {
+        return super.getUserName();
     }
 
     @Override

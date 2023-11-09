@@ -91,7 +91,7 @@ public class CustomerRepository{
                     String content = "";
 
                     ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-                    InputStream is = CustomerRepository.class.getResourceAsStream("/credentials.json");
+                    InputStream is = classLoader.getResourceAsStream("/credentials.json");
 
                     Scanner reader = new Scanner(is, "UTF-8");
                     while (reader.hasNextLine()) {
@@ -158,7 +158,7 @@ public class CustomerRepository{
                     String content = "";
 
                     ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-                    InputStream is = CustomerRepository.class.getResourceAsStream("/credentials.json");
+                    InputStream is = classLoader.getResourceAsStream("/credentials.json");
 
                     assert is != null;
                     Scanner reader = new Scanner(is, "UTF-8");

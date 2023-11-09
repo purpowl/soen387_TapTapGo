@@ -64,7 +64,7 @@ public class CustomerIdentityMap {
     public static boolean authenticateCustomer(String username, String password) throws FileNotFoundException {
         String content = "";
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        InputStream is = CustomerRepository.class.getResourceAsStream("/credentials.json");
+        InputStream is = classLoader.getResourceAsStream("/credentials.json");
 
         assert is != null;
         Scanner reader = new Scanner(is, "UTF-8");

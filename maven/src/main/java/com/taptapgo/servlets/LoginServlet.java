@@ -25,20 +25,21 @@ public class LoginServlet extends HttpServlet {
         String previousPage = request.getParameter("from");
 
         if(CustomerIdentityMap.authenticateCustomer(username, pwd)){
-            // set the owner of session to staff
+            // set the owner of session
             // auto logout every 30 mins
             if (CustomerIdentityMap.getCustomerbyUserName(username) != null) {
                 HttpSession session = request.getSession();
                 session.setAttribute("isRegisteredCustomer", true);
+                session.setAttribute("registeredCustomer", CustomerIdentityMap.getCustomerbyUserName(username));
                 session.setMaxInactiveInterval(30 * 60);
+                response.sendRedirect("user-account.jsp");
             }
-
-
-//            HttpSession session = request.getSession();
-//            session.setAttribute("isStaff", true);
-//            session.setMaxInactiveInterval(30 * 60);
-            // redirect to previous page
-            response.sendRedirect(previousPage);
+            else {
+                HttpSession session = request.getSession();
+                session.setAttribute("isStaff", true);
+                session.setMaxInactiveInterval(30 * 60);
+                response.sendRedirect(previousPage);
+            }
         }else{
             // output wrong password message
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.jsp");
