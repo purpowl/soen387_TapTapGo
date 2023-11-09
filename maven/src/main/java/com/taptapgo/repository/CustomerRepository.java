@@ -1,18 +1,9 @@
 package com.taptapgo.repository;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.*;
-
 import com.taptapgo.Customer;
-import java.io.InputStream;
 import java.util.Scanner;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -65,24 +56,6 @@ public class CustomerRepository{
     }
 
     public static Customer read(String userID) {
-//        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-//        InputStream is = CustomerRepository.class.getResourceAsStream("/credentials.json");
-//        assert is != null;
-//        InputStreamReader isr = new InputStreamReader(is);
-//        JsonObject credentials = JsonParser.parseReader(isr).getAsJsonObject();
-//        JsonArray usersJsonArray = credentials.getAsJsonArray("users");
-
-
-//        String content = "";
-//        try {
-//            Scanner reader = new Scanner(new File("credentials.json"));
-//            while (reader.hasNextLine()) {
-//                content += reader.nextLine() + "\n";
-//            }
-//            reader.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
         String getQuery = "";
         if (userID.contains("gc")) {
@@ -113,25 +86,26 @@ public class CustomerRepository{
                     String usernameDB = "";
                     String passwordDB = "";
                     usernameDB = queryResult.getString(6);
-                    for (JsonElement user : usersJsonArray) {
-                        JsonObject userObj = user.getAsJsonObject();
-                        String usernameInFile = userObj.get("username").getAsString();
-                        if (usernameInFile.equals(usernameDB)) {
-                            passwordDB = userObj.get("password").getAsString();
-                            break;
+
+                    String content = "";
+
+                    Scanner reader = new Scanner(new File("credentials.json"));
+                    while (reader.hasNextLine()) {
+                        content += reader.nextLine() + "\n";
+                    }
+                    reader.close();
+
+                    if(!content.isEmpty()) {
+                        JSONArray usersJsonArray = new JSONArray(content);
+                        for (int i = 0; i < usersJsonArray.length(); i++) {
+                            JSONObject userObj = usersJsonArray.getJSONObject(i);
+                            String usernameInFile = userObj.getString("username");
+                            if (usernameInFile.equals(usernameDB)) {
+                                passwordDB = userObj.getString("password");
+                                break;
+                            }
                         }
                     }
-//                    if(!content.isEmpty()) {
-//                        JSONArray usersJsonArray = new JSONArray(content);
-//                        for (int i = 0; i < usersJsonArray.length(); i++) {
-//                            JSONObject userObj = usersJsonArray.getJSONObject(i);
-//                            String usernameInFile = userObj.getString("username");
-//                            if (usernameInFile.equals(usernameDB)) {
-//                                passwordDB = userObj.getString("password");
-//                                break;
-//                            }
-//                        }
-//                    }
 
                     if (passwordDB.isEmpty()) {
                         return null;

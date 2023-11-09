@@ -3,13 +3,13 @@ package com.taptapgo;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonArray;
+import java.util.Scanner;
 
 import com.taptapgo.exceptions.InsufficientInventoryException;
 import com.taptapgo.exceptions.InvalidParameterException;
 import com.taptapgo.exceptions.ProductNotFoundException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class Customer extends User {
     protected enum customerTypes {Anonymous, Registered};
@@ -74,23 +74,25 @@ public class Customer extends User {
     }
 
     public static Customer createRegisteredCustomer(String username, String password, String firstName, String lastName, String phone, String email) throws IOException {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        InputStream is = classLoader.getResourceAsStream("/credentials.json");
-        assert is != null;
-        InputStreamReader isr = new InputStreamReader(is);
-        JsonObject credentials = JsonParser.parseReader(isr).getAsJsonObject();
-        JsonArray usersJsonArray = credentials.getAsJsonArray("users");
+        String content = "";
+        Scanner reader = new Scanner(new File("credentials.json"));
+        while (reader.hasNextLine()) {
+            content += reader.nextLine() + "\n";
+        }
+        reader.close();
 
-        JsonObject newUserObj = new JsonObject();
-        newUserObj.addProperty(username, password);
+        if(!content.isEmpty()) {
+            JSONArray usersJsonArray = new JSONArray(content);
+            JSONObject newUserObj = new JSONObject();
+            newUserObj.put(username, password);
 
-        // Put the data of each object onto the json object
-        usersJsonArray.add(newUserObj);
+            // Put the data of each object onto the json object
+            usersJsonArray.put(newUserObj);
 
-        FileWriter output = new FileWriter("credentials.json");
-        output.write(usersJsonArray.toString());
-        output.close();
-
+            FileWriter output = new FileWriter("credentials.json");
+            output.write(usersJsonArray.toString());
+            output.close();
+        }
         return new Customer(username, password, firstName, lastName, phone, email);
     }
 
