@@ -116,7 +116,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-5 mb-3">
-                        <label for="billCity">City</label>
+                        <label for="billCity">Province</label>
                         <select class="custom-select d-block w-100" id="billCity" name="billCity" required="">
                             <option value="">Choose...</option>
                             <option value="AB">Alberta</option>
@@ -158,7 +158,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-5 mb-3">
-                        <label for="shipCity">City</label>
+                        <label for="shipCity">Province</label>
                         <select class="custom-select d-block w-100" id="shipCity" name="shipCity" required="">
                             <option value="">Choose...</option>
                             <option value="AB">Alberta</option>
