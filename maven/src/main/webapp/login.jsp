@@ -14,11 +14,6 @@
       <h2 class="text-center mb-3">Login</h2>
       <!-- form for staff login, calls LoginServlet doPost -->
       <form action="login" method="post">
-        <!-- Username -->
-        <div class="form-group mb-3">
-          <label for="username">Username</label>
-            <input type="username" id="pwd" name="login-username" class="form-control" placeholder="Username">
-        </div>
 
         <!-- Password -->
         <div class="form-group mb-3">
