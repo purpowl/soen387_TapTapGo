@@ -18,7 +18,6 @@ public class CustomerIdentityMap {
     private static CustomerIdentityMap instance = null;
     private static Connection db_conn;
 
-
     private CustomerIdentityMap() {
         customerMap = new HashMap<String, Customer>();
     }
@@ -209,7 +208,7 @@ public class CustomerIdentityMap {
         return null;
     }
 
-    public static Integer readMaxID(String customerType) {
+    public static Integer getMaxID(String customerType) {
         if(customerType == null) {
             return 0;
         }

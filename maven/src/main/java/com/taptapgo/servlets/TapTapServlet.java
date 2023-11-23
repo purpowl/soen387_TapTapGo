@@ -12,6 +12,7 @@ import com.taptapgo.Warehouse;
 import com.taptapgo.repository.CustomerIdentityMap;
 import com.taptapgo.repository.OrderIdentityMap;
 
+import com.taptapgo.repository.StaffRepository;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
@@ -28,7 +29,7 @@ public class TapTapServlet extends HttpServlet {
         warehouse.loadDatabase();
         Order.updateOrderCounter(OrderIdentityMap.getMaxOrderID());
         Customer.updateRegisteredIDGen(CustomerIdentityMap.getMaxID("registered"));
-        Customer.updateStaffIDGen(CustomerIdentityMap.getMaxID("staff"));
+        Customer.updateStaffIDGen(StaffRepository.getMaxID());
         context.setAttribute("warehouse", warehouse);
         Staff staff = new Staff("adminStaff", "secret");
         context.setAttribute("staff", staff);

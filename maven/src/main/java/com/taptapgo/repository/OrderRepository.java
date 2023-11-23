@@ -55,6 +55,7 @@ public class OrderRepository{
             pstmt1.setString(12, order.getShippingCity());
             pstmt1.setString(13, order.getShippingCountry());
             pstmt1.setString(14, order.getShippingPostalCode());
+
             pstmt1.setString(15, order.getCustomer().getUserID());
 
             pstmt1.executeUpdate();

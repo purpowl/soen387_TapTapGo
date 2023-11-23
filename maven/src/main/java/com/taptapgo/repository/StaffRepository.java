@@ -126,7 +126,7 @@ public class StaffRepository{
         return true;
     }
 
-    public static Integer readMaxID() {
+    public static Integer getMaxID() {
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
