@@ -12,10 +12,7 @@ import org.json.JSONObject;
 public class StaffRepository{
     private static Connection db_conn;
 
-    public boolean create(Object staff) {
-        if(!(staff instanceof Staff)){
-            return false;
-        }
+    public boolean createStaffInDatabase(Staff staff) {
 
         Staff staffToCreate = (Staff) staff;
 
@@ -57,7 +54,7 @@ public class StaffRepository{
 
     public static Staff readByUsername(String username) {
 
-        String getQuery = "SELECT StaffID, Username FROM staff WHERE Username = ?";
+        String getQuery = "SELECT UserID, Username FROM registereduser WHERE Username = ?";
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -126,27 +123,27 @@ public class StaffRepository{
         return true;
     }
 
-    public static Integer getMaxID() {
-
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-
-            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
-
-            String getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(StaffID, ' ', -1)), 2) FROM staff";
-
-            Statement stmt = db_conn.createStatement();
-            ResultSet queryResult = stmt.executeQuery(getQuery);
-
-            if (queryResult.next()) {
-                return Integer.parseInt(queryResult.getString(1));
-            } else {
-                return 0;
-            }
-
-        } catch(Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
+//    public static Integer getMaxID() {
+//
+//        try {
+//            Class.forName("com.mysql.jdbc.Driver");
+//
+//            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+//
+//            String getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(StaffID, ' ', -1)), 2) FROM registereduser WHERE Staff = 1";
+//
+//            Statement stmt = db_conn.createStatement();
+//            ResultSet queryResult = stmt.executeQuery(getQuery);
+//
+//            if (queryResult.next()) {
+//                return Integer.parseInt(queryResult.getString(1));
+//            } else {
+//                return 0;
+//            }
+//
+//        } catch(Exception e) {
+//            e.printStackTrace();
+//            return 0;
+//        }
+//    }
 }

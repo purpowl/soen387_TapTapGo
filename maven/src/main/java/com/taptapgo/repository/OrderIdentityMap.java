@@ -12,7 +12,7 @@ public class OrderIdentityMap {
     private static OrderIdentityMap instance = null;
 
     private OrderIdentityMap() {
-        orderMap = new HashMap<Integer, Order>();
+        orderMap = new HashMap<>();
     }
 
 
@@ -81,12 +81,12 @@ public class OrderIdentityMap {
      * @return A Hashmap mapping each orderID to an order object
      */
     public static synchronized HashMap<Integer, Order> getOrdersByCustomer(Customer customer) {
-        HashMap<Integer, Order> orderMapResults = new HashMap<Integer, Order>();
+        HashMap<Integer, Order> orderMapResults = new HashMap<>();
 
         for (Map.Entry<Integer, Order> orderEntry : OrderIdentityMap.getInstance().orderMap.entrySet()) {
             Order order = orderEntry.getValue();
 
-            if (order.getCustomer().equals(customer)) {
+            if (order.getCustomerID().equals(customer.getUserID())) {
                 orderMapResults.put(order.getOrderID(), order);
             }
         }

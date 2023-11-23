@@ -20,8 +20,8 @@ public class OrderRepository{
     private static Connection db_conn;
 
     public static boolean createOrder(Order order) {
-        String insertOrderRegisteredQuery = "INSERT INTO `order` (OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, CustomerID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        String insertOrderGuestQuery = "INSERT INTO `order` (OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, GCID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertOrderRegisteredQuery = "INSERT INTO `order` (OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, UserID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertOrderGuestQuery = "INSERT INTO `order` (OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, GuestID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String insertOrderItemQuery = "INSERT INTO orderitem (OrderID, ProductSKU, Quantity) VALUES (?, ?, ?)";
         Savepoint savepoint = null;
 
@@ -35,7 +35,7 @@ public class OrderRepository{
             savepoint = db_conn.setSavepoint();
 
             PreparedStatement pstmt1 = null;
-            if (order.getCustomer().customerTypeToString().equals("anonymous")) {
+            if (UserIdentityMap.getCustomerByID(order.getCustomerID()).customerTypeToString().equals("guest")) {
                 pstmt1 = db_conn.prepareStatement(insertOrderGuestQuery);
             } else {
                 pstmt1 = db_conn.prepareStatement(insertOrderRegisteredQuery);
@@ -55,8 +55,7 @@ public class OrderRepository{
             pstmt1.setString(12, order.getShippingCity());
             pstmt1.setString(13, order.getShippingCountry());
             pstmt1.setString(14, order.getShippingPostalCode());
-
-            pstmt1.setString(15, order.getCustomer().getUserID());
+            pstmt1.setString(15, order.getCustomerID());
 
             pstmt1.executeUpdate();
 
@@ -112,7 +111,7 @@ public class OrderRepository{
      * @return An Order object, this will be null if no order is found with the corresponding ID
      */
     public static Order readOrderByID(int orderID) {
-        String getOrderQuery = "SELECT OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, CustomerID, GCID FROM `order` WHERE OrderID = ?";
+        String getOrderQuery = "SELECT OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, UserID, GuestID FROM `order` WHERE OrderID = ?";
         String getOrderItemsQuery = "SELECT ProductSKU, Quantity FROM orderitem WHERE OrderID = ?";
         
         try {
@@ -148,9 +147,9 @@ public class OrderRepository{
                 queryResult.close();
 
                 if (customerID != null) {
-                    customer = CustomerIdentityMap.getCustomerByID(customerID);
+                    customer = UserIdentityMap.getCustomerByID(customerID);
                 } else {
-                    customer = CustomerIdentityMap.getCustomerByID(guestCustomerID);
+                    customer = UserIdentityMap.getCustomerByID(guestCustomerID);
                 }
 
 
@@ -170,7 +169,7 @@ public class OrderRepository{
 
                 db_conn.close();
 
-                return Order.loadOrder(orderID, totalAmount, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNum, shipDate, orderItems);
+                return Order.loadOrder(orderID, totalAmount, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNum, shipDate, orderItems, (customerID != null) ? customerID : guestCustomerID);
             } else {
                 // If order is not found, return null
                 return null;
@@ -190,7 +189,7 @@ public class OrderRepository{
      * @return A Hashmap mapping orderID to an Order object. This hashmap will be empty if no order is found.
      */
     public static HashMap<Integer, Order> readOrderByCustomer(Customer customer, HashMap<Integer, Order> ordersLoaded) {
-        String getOrderQuery = "SELECT OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode FROM `order` WHERE CustomerID = ?";
+        String getOrderQuery = "SELECT OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode FROM `order` WHERE UserID = ?";
         String getOrderItemsQuery = "SELECT ProductSKU, Quantity FROM orderitem WHERE OrderID = ?";
         HashMap<Integer, Order> orderResults = new HashMap<Integer, Order>();
 
@@ -242,9 +241,8 @@ public class OrderRepository{
                     orderItems.put(product, quantity);
                 }
 
-                
                 // Create an order and load to result hashmap
-                Order newOrder = Order.loadOrder(orderID, totalAmount, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNum, shipDate, orderItems);
+                Order newOrder = Order.loadOrder(orderID, totalAmount, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNum, shipDate, orderItems, customer.getUserID());
                 orderResults.put(newOrder.getOrderID(), newOrder);
 
             }
@@ -301,7 +299,7 @@ public class OrderRepository{
      * @return A Hashmap mapping orderID to an order object.
      */
     public static HashMap<Integer, Order> loadAllOrders(HashMap<Integer, Order> ordersLoaded){
-        String getOrderQuery = "SELECT OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, GCID, CustomerID FROM `order`";
+        String getOrderQuery = "SELECT OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, GuestID, UserID FROM `order`";
         String getOrderItemsQuery = "SELECT ProductSKU, Quantity FROM orderitem WHERE OrderID = ?";
         HashMap<Integer, Order> orderResults = new HashMap<Integer, Order>();
 
@@ -337,14 +335,14 @@ public class OrderRepository{
                 String shipCountry = queryResult.getString(15);
                 String shipPostalCode = queryResult.getString(16);
                 String guestCustomerID = queryResult.getString(17);
-                String registeredCustomerID = queryResult.getString(18);
+                String customerID = queryResult.getString(18);
                 Customer customer = null;
 
                 // Load customer object to memory
-                if (registeredCustomerID != null) {
-                    customer = CustomerIdentityMap.getCustomerByID(registeredCustomerID);
+                if (customerID != null) {
+                    customer = UserIdentityMap.getCustomerByID(customerID);
                 } else {
-                    customer = CustomerIdentityMap.getCustomerByID(guestCustomerID);
+                    customer = UserIdentityMap.getCustomerByID(guestCustomerID);
                 }
 
 
@@ -363,7 +361,7 @@ public class OrderRepository{
 
                 
                 // Create an order and load to result hashmap
-                Order newOrder = Order.loadOrder(orderID, totalAmount, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNum, shipDate, orderItems);
+                Order newOrder = Order.loadOrder(orderID, totalAmount, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNum, shipDate, orderItems, (customerID != null) ? customerID : guestCustomerID);
                 orderResults.put(newOrder.getOrderID(), newOrder);
 
             }

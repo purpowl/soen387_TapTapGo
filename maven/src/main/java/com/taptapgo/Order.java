@@ -30,7 +30,7 @@ public class Order {
     protected HashMap<Product, Integer> orderProducts;
     protected String customerID;
 
-    private Order(String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, String shipAddress, String shipCity, String shipCountry, String shipPostalCode, HashMap<Product, Integer> products) {
+    private Order(String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, String shipAddress, String shipCity, String shipCountry, String shipPostalCode, HashMap<Product, Integer> products, String customerID) {
         orderCount.incrementAndGet();
         orderID = Integer.parseInt(String.format("%05d", orderCount.get()));
         this.billAddress = billAddress;
@@ -49,9 +49,10 @@ public class Order {
         this.cardNum = cardNum;
         this.orderProducts = products;
         this.totalPrice = this.calculateOrderTotal();
+        this.customerID = customerID;
     }
 
-    private Order(int orderID, float orderTotal, String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, Date payDate, String shipAddress, String shipCity, String shipCountry, String shipPostalCode, String shipStatus, String trackingNumber, Date shipDate, HashMap<Product, Integer> products) {
+    private Order(int orderID, float orderTotal, String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, Date payDate, String shipAddress, String shipCity, String shipCountry, String shipPostalCode, String shipStatus, String trackingNumber, Date shipDate, HashMap<Product, Integer> products, String customerID) {
         this.orderID = orderID;
         this.totalPrice = orderTotal;
         this.billAddress = billAddress;
@@ -68,6 +69,7 @@ public class Order {
         this.paymentMethod = payMethod;
         this.cardNum = cardNum;
         this.orderProducts = products;
+        this.customerID = customerID;
 
         switch (shipStatus) {
             case "packing":
@@ -85,12 +87,12 @@ public class Order {
         }
     }
 
-    public static Order loadOrder(int orderID, float orderTotal, String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, Date payDate, String shipAddress, String shipCity, String shipCountry, String shipPostalCode, String shipStatus, String trackingNumber, Date shipDate, HashMap<Product, Integer> products) {
-        return new Order(orderID, orderTotal, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNumber, shipDate, products);
+    public static Order loadOrder(int orderID, float orderTotal, String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, Date payDate, String shipAddress, String shipCity, String shipCountry, String shipPostalCode, String shipStatus, String trackingNumber, Date shipDate, HashMap<Product, Integer> products, String customerID) {
+        return new Order(orderID, orderTotal, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNumber, shipDate, products, customerID);
     }
 
-    public static Order createOrder(String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, String shipAddress, String shipCity, String shipCountry, String shipPostalCode, HashMap<Product, Integer> products) {
-        return new Order(billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, shipAddress, shipCity, shipCountry, shipPostalCode, products);
+    public static Order createOrder(String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, String shipAddress, String shipCity, String shipCountry, String shipPostalCode, HashMap<Product, Integer> products, String customerID) {
+        return new Order(billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, shipAddress, shipCity, shipCountry, shipPostalCode, products, customerID);
     }
 
     public static boolean addOrderToDB(Order order) {
@@ -266,5 +268,9 @@ public class Order {
     public void setOrderProducts(HashMap<Product,Integer> orderProducts) {
         this.orderProducts = orderProducts;
     }
+
+    public String getCustomerID() {return this.customerID;}
+
+    public void setCustomerID(String customerID) {this.customerID = customerID;}
 
 }

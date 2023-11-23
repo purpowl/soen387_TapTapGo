@@ -15,10 +15,10 @@ public class CustomerRepository{
     public static boolean create(Customer customer) {
         String insertQuery = "";
         if (customer.getUserID().contains("gc")) {
-            insertQuery = "INSERT INTO guestcustomer (GCID, FirstName, LastName, Phone, Email) VALUES (?, ?, ?, ?, ?)";
+            insertQuery = "INSERT INTO guestuser (GuestID, FirstName, LastName, Phone, Email) VALUES (?, ?, ?, ?, ?)";
         }
         else if (customer.getUserID().contains("rc")) {
-            insertQuery = "INSERT INTO registeredcustomer (CustomerID, FirstName, LastName, Phone, Email, Username) VALUES (?, ?, ?, ?, ?, ?)";
+            insertQuery = "INSERT INTO registereduser (UserID, FirstName, LastName, Phone, Email, Username) VALUES (?, ?, ?, ?, ?, ?)";
         }
         else {
             return false;
@@ -60,10 +60,10 @@ public class CustomerRepository{
 
         String getQuery = "";
         if (userID.contains("gc")) {
-            getQuery = "SELECT GCID, FirstName, LastName, Phone, Email FROM guestcustomer WHERE GCID = ?";
+            getQuery = "SELECT GuestID, FirstName, LastName, Phone, Email FROM guestuser WHERE GuestID = ?";
         }
         else if (userID.contains("rc")) {
-            getQuery = "SELECT CustomerID, FirstName, LastName, Phone, Email, Username FROM registeredcustomer WHERE CustomerID = ?";
+            getQuery = "SELECT UserID, FirstName, LastName, Phone, Email, Username FROM registereduser WHERE UserID = ?";
         }
 
         try {
@@ -134,7 +134,7 @@ public class CustomerRepository{
 
     public static Customer readByUsername(String username) {
 
-        String getQuery = "SELECT CustomerID, FirstName, LastName, Phone, Email, Username FROM registeredcustomer WHERE Username = ?";
+        String getQuery = "SELECT UserID, FirstName, LastName, Phone, Email, Username FROM registereduser WHERE Username = ?";
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -214,10 +214,10 @@ public class CustomerRepository{
 
         String getQuery = "";
         if (customerType.equals("guest")) {
-            getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(GCID, ' ', -1)), 3) FROM guestcustomer";
+            getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(GuestID, ' ', -1)), 3) FROM guestuser";
         }
         else if (customerType.equals("registered")) {
-            getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(CustomerID, ' ', -1)), 3) FROM registeredcustomer";
+            getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(UserID, ' ', -1)), 3) FROM registereduser";
         }
         else {
             return 0;

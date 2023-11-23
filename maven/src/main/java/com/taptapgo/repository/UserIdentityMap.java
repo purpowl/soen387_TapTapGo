@@ -1,30 +1,28 @@
 package com.taptapgo.repository;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.taptapgo.Customer;
-import com.taptapgo.Product;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class CustomerIdentityMap {
-    private HashMap<String, Customer> customerMap;
-    private static CustomerIdentityMap instance = null;
+public class UserIdentityMap {
+    private HashMap<String, Customer> userMap;
+    private static UserIdentityMap instance = null;
     private static Connection db_conn;
 
-    private CustomerIdentityMap() {
-        customerMap = new HashMap<String, Customer>();
+    private UserIdentityMap() {
+        userMap = new HashMap<String, Customer>();
     }
 
-    public static CustomerIdentityMap getInstance() {
+    public static UserIdentityMap getInstance() {
         if (instance == null) {
-            instance = new CustomerIdentityMap();
+            instance = new UserIdentityMap();
         }
         return instance;
     }
@@ -33,69 +31,96 @@ public class CustomerIdentityMap {
         boolean addToDBResult = createCustomerInDatabase(customer);
 
         if (addToDBResult) {
-            CustomerIdentityMap.getInstance().customerMap.put(customer.getUserID(), customer);
+            UserIdentityMap.getInstance().userMap.put(customer.getUserID(), customer);
             return true;
         }
         return false;
     }
 
     public static Customer getCustomerByID(String customerID) {
-        Customer customerMapResult = CustomerIdentityMap.getInstance().customerMap.get(customerID);
+        Customer userMapResult = UserIdentityMap.getInstance().userMap.get(customerID);
 
-        if (customerMapResult == null) {
+        if (userMapResult == null) {
             return getCustomerFromDatabaseByID(customerID);
         } else {
-            return customerMapResult;
+            return userMapResult;
         }
     }
 
     public static Customer getCustomerbyUserName(String username) {
-        Customer customerMapResult = null;
-        for (Map.Entry<String, Customer> customer : CustomerIdentityMap.getInstance().customerMap.entrySet()) {
+        Customer userMapResult = null;
+        for (Map.Entry<String, Customer> customer : UserIdentityMap.getInstance().userMap.entrySet()) {
             if (customer.getValue().getUserName().equals(username))
-                customerMapResult = customer.getValue();
+                userMapResult = customer.getValue();
         }
 
-        if (customerMapResult == null) {
+        if (userMapResult == null) {
             return
                     getCustomerFromDatabaseByID(username);
         } else {
-            return customerMapResult;
+            return userMapResult;
         }
     }
 
-    public static boolean authenticateCustomer(String username, String password) {
-        String content = "";
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        InputStream is = classLoader.getResourceAsStream("/credentials.json");
+    public static boolean authenticateCustomer(String passcode) throws SQLException {
 
-        assert is != null;
-        Scanner reader = new Scanner(is, "UTF-8");
-        while (reader.hasNextLine()) {
-            content += reader.nextLine() + "\n";
-        }
-        reader.close();
+        BCrypt.Verifyer verifyer = BCrypt.verifyer();
 
-        if(!content.isEmpty()) {
-            JSONArray usersJsonArray = new JSONArray(content);
-            for (int i = 0; i < usersJsonArray.length(); i++) {
-                JSONObject userObj = usersJsonArray.getJSONObject(i);
-                String usernameInFile = userObj.getString("username");
-                if (usernameInFile.equals(username) && password.equals(userObj.getString("password"))) {
-                    return true;
-                }
-            }
+        String queryCustomerPasscode = "SELECT Passcode FROM registereduser";
+
+        db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+
+        PreparedStatement pstmt = db_conn.prepareStatement(queryCustomerPasscode);
+
+        ResultSet customerQueryResult = pstmt.executeQuery();
+
+        if (customerQueryResult.next()) {
+
         }
+        else {
+            PreparedStatement pstmt2 = db_conn.prepareStatement(queryStaffPasscode);
+
+        }
+
+        db_conn.close();
+
+
+        //String bcryptHashString = BCrypt.withDefaults().hashToString(12, passcode.toCharArray());
+
+
+        //BCrypt.Result result = BCrypt.verifyer().verify(passcode.toCharArray(), bcryptHashString);
+
+//        String content = "";
+//        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+//        InputStream is = classLoader.getResourceAsStream("/credentials.json");
+//
+//        assert is != null;
+//        Scanner reader = new Scanner(is, "UTF-8");
+//        while (reader.hasNextLine()) {
+//            content += reader.nextLine() + "\n";
+//        }
+//        reader.close();
+//
+//        if(!content.isEmpty()) {
+//            JSONArray usersJsonArray = new JSONArray(content);
+//            for (int i = 0; i < usersJsonArray.length(); i++) {
+//                JSONObject userObj = usersJsonArray.getJSONObject(i);
+//                String usernameInFile = userObj.getString("username");
+//                if (usernameInFile.equals(username) && password.equals(userObj.getString("password"))) {
+//                    return true;
+//                }
+//            }
+//        }
         return false;
     }
 
     private static boolean createCustomerInDatabase(Customer customer) {
         String insertQuery = "";
         if (customer.getUserID().contains("gc")) {
-            insertQuery = "INSERT INTO guestcustomer (GCID, FirstName, LastName, Phone, Email) VALUES (?, ?, ?, ?, ?)";
+            insertQuery = "INSERT INTO guestuser (GuestID, FirstName, LastName, Phone, Email) VALUES (?, ?, ?, ?, ?)";
         }
         else if (customer.getUserID().contains("rc")) {
-            insertQuery = "INSERT INTO registeredcustomer (CustomerID, FirstName, LastName, Phone, Email, Username) VALUES (?, ?, ?, ?, ?, ?)";
+            insertQuery = "INSERT INTO registereduser (CustomerID, FirstName, LastName, Phone, Email, Username) VALUES (?, ?, ?, ?, ?, ?)";
         }
         else {
             return false;
@@ -136,10 +161,10 @@ public class CustomerIdentityMap {
     private static Customer getCustomerFromDatabaseByID(String userID) {
         String getQuery = "";
         if (userID.contains("gc")) {
-            getQuery = "SELECT GCID, FirstName, LastName, Phone, Email FROM guestcustomer WHERE GCID = ?";
+            getQuery = "SELECT GuestID, FirstName, LastName, Phone, Email FROM guestuser WHERE GuestID = ?";
         }
         else if (userID.contains("rc")) {
-            getQuery = "SELECT CustomerID, FirstName, LastName, Phone, Email, Username FROM registeredcustomer WHERE CustomerID = ?";
+            getQuery = "SELECT UserID, FirstName, LastName, Phone, Email, Username FROM registereduser WHERE UserID = ?";
         }
 
         try {
@@ -215,10 +240,10 @@ public class CustomerIdentityMap {
 
         String getQuery = "";
         if (customerType.equals("guest")) {
-            getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(GCID, ' ', -1)), 3) FROM guestcustomer";
+            getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(GuestID, ' ', -1)), 3) FROM guestuser";
         }
         else if (customerType.equals("registered")) {
-            getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(CustomerID, ' ', -1)), 3) FROM registeredcustomer";
+            getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(UserID, ' ', -1)), 3) FROM registereduser";
         }
         else {
             return 0;

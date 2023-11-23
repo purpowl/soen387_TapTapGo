@@ -8,7 +8,7 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import com.taptapgo.repository.CustomerIdentityMap;
+import com.taptapgo.repository.UserIdentityMap;
 import com.taptapgo.repository.StaffRepository;
 
 @WebServlet(name = "loginServlet", value = "/login")
@@ -18,37 +18,36 @@ public class LoginServlet extends HttpServlet {
                           HttpServletResponse response) throws ServletException, IOException {
 
         // get request parameters for password
-        String username = request.getParameter("login-username");
         String pwd = request.getParameter("login-password");
         String previousPage = request.getParameter("from");
 
-        if(CustomerIdentityMap.authenticateCustomer(username, pwd)){
-            // set the owner of session
-            // auto logout every 30 mins
-            if (CustomerIdentityMap.getCustomerbyUserName(username) != null) {
-                HttpSession session = request.getSession();
-                session.setAttribute("isStaff", null);
-                session.setAttribute("staff", null);
-                session.setAttribute("isRegisteredCustomer", true);
-                session.setAttribute("registered_user", CustomerIdentityMap.getCustomerbyUserName(username));
-                session.setMaxInactiveInterval(30 * 60);
-                response.sendRedirect("user-account.jsp");
-            }
-            else {
-                HttpSession session = request.getSession();
-                session.setAttribute("isRegisteredCustomer", null);
-                session.setAttribute("registered_user", null);
-                session.setAttribute("isStaff", true);
-                session.setAttribute("staff", StaffRepository.readByUsername(username));
-                session.setMaxInactiveInterval(30 * 60);
-                response.sendRedirect(previousPage);
-            }
-        }else{
-            // output wrong password message
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.jsp");
-            PrintWriter out= response.getWriter();
-            out.println("<font color=red>Username or password is wrong.</font>");
-            rd.include(request, response);
-        }
+//        if(UserIdentityMap.authenticateCustomer(pwd)){
+//            // set the owner of session
+//            // auto logout every 30 mins
+//            if (UserIdentityMap.getCustomerbyUserName(username) != null) {
+//                HttpSession session = request.getSession();
+//                session.setAttribute("isStaff", null);
+//                session.setAttribute("staff", null);
+//                session.setAttribute("isRegisteredCustomer", true);
+//                session.setAttribute("registered_user", UserIdentityMap.getCustomerbyUserName(username));
+//                session.setMaxInactiveInterval(30 * 60);
+//                response.sendRedirect("user-account.jsp");
+//            }
+//            else {
+//                HttpSession session = request.getSession();
+//                session.setAttribute("isRegisteredCustomer", null);
+//                session.setAttribute("registered_user", null);
+//                session.setAttribute("isStaff", true);
+//                session.setAttribute("staff", StaffRepository.readByUsername(username));
+//                session.setMaxInactiveInterval(30 * 60);
+//                response.sendRedirect(previousPage);
+//            }
+//        }else{
+//            // output wrong password message
+//            RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.jsp");
+//            PrintWriter out= response.getWriter();
+//            out.println("<font color=red>Username or password is wrong.</font>");
+//            rd.include(request, response);
+//        }
     }
 }

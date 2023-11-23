@@ -1,42 +1,70 @@
 package com.taptapgo;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+import com.taptapgo.exceptions.InvalidParameterException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class User {
-    public static final int USER_COOKIE_DURATION_SEC = 300;
+public class User {
     private static AtomicInteger registeredIDGen = new AtomicInteger(0);
-    private static AtomicInteger staffIDGen = new AtomicInteger(0);
     protected String userID;
-    protected String username;
-    protected String password;
+    protected String firstName;
+    protected String lastName;
+    protected String phone;
+    protected String email;
+    protected Customer customer;
+    protected Staff staff;
 
-
-    public User(String sessionID) {
-        // guestIDGen.incrementAndGet();
-        // this.userID = "gc" + String.format("%05d", guestIDGen.get());
+    public User(String sessionID) throws InvalidParameterException {
         this.userID = "gc" + sessionID;
-        this.username = null;
-        this.password = null;
+        this.firstName = null;
+        this.lastName = null;
+        this.phone = null;
+        this.email = null;
+        this.customer = new Customer("guest");
+        this.staff = null;
     }
 
-    public User(String userType, String username, String password) {
-        if (userType.equals("staff")) {
-            staffIDGen.incrementAndGet();
-            this.userID = "s" + String.format("%05d", staffIDGen.get());
-            this.username = username;
+    public User(String firstName, String lastName, String phone, String email, boolean isStaff) throws InvalidParameterException {
+        registeredIDGen.incrementAndGet();
+        this.userID = "rc" + String.format("%05d", registeredIDGen.get());
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+        this.customer = new Customer("registered");
+        if (isStaff) {
+            this.staff = new Staff();
         }
-        else if (userType.equals("registered")) {
-            registeredIDGen.incrementAndGet();
-            this.userID = "rc" + String.format("%05d", registeredIDGen.get());
-            this.username = username;
-        }
-        this.password = password;
+        else
+            this.staff = null;
     }
 
-    public User(String userType, String userID, String username, String password) {
+    public User(String userID, String firstName, String lastName, String phone, String email, boolean isStaff) throws InvalidParameterException {
         this.userID = userID;
-        this.username = username;
-        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+        this.customer = new Customer("registered");
+        if (isStaff) {
+            this.staff = new Staff();
+        }
+        else
+            this.staff = null;
+    }
+
+    public static User loadRegisteredUser(String UserID, String firstName, String lastName, String phone, String email, boolean isStaff) throws InvalidParameterException {
+        // check if the password matches the user with userID in db
+        return new User(firstName, lastName, phone, email, isStaff);
+    }
+
+    public static User createRegisteredUser(String UserID, String firstName, String lastName, String phone, String email, boolean isStaff) throws InvalidParameterException {
+        return new User(UserID, firstName, lastName, phone, email, isStaff);
+        //this.encryptedPasscode = BCrypt.withDefaults().hashToString(12, password.toCharArray());;
+    }
+
+    public static User createGuestUser(String sessionID) throws InvalidParameterException {
+        return new User(sessionID);
     }
 
 //    public boolean changeUsername(String oldUsername, String newUsername, String password){
@@ -57,24 +85,66 @@ public abstract class User {
 //        else return false;
 //    };
 
-    // if the user has a password, authenticate them
-    public boolean authenticate(String inputPassword) {
-        if (inputPassword != null && this.password != null) return (inputPassword.equals(password));
-        else return false;
-    }
-
     public String getUserID() {
         return this.userID;
     }
 
-    public String getUserName() {
-        return this.username;
-    }
     public static void updateRegisteredIDGen(int maxID) {
         registeredIDGen = new AtomicInteger(maxID);
-    } 
-
-    public static void updateStaffIDGen(int maxID) {
-        staffIDGen = new AtomicInteger(maxID);
     }
-}
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Staff getStaff() {
+        return (staff != null) ? staff : null;
+    }
+
+    public Customer getCustomer() {
+        return (customer != null) ? customer : null;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null){
+            return false;
+        }
+        if (!(object.getClass().equals(this.getClass()))){
+            return false;
+        }
+
+        User otherUser = (User) object;
+
+        if(otherUser.userID.equals(this.userID) && otherUser.firstName.equals(this.firstName) && otherUser.lastName.equals(this.lastName)){
+            return true;
+        }
+        return false;
+    }
+
+ }

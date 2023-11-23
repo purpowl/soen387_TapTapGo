@@ -4,8 +4,6 @@ import com.taptapgo.exceptions.DatabaseException;
 import com.taptapgo.exceptions.InvalidParameterException;
 import com.taptapgo.exceptions.ProductAreadyExistsException;
 import com.taptapgo.exceptions.ProductNotFoundException;
-import com.taptapgo.repository.CustomerIdentityMap;
-import com.taptapgo.repository.OrderIdentityMap;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,15 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-public class Staff extends User{
-    public Staff(String username, String password) {
-        super("staff", username, password);
-    }
-
-    public Staff(String staffID, String username, String password) {
-        super("staff", staffID, username, password);
-    }
-
+public class Staff {
 
     public void createProduct(String SKU, String name, float price, String vendor, String desc, int amount) throws ProductAreadyExistsException, InvalidParameterException {
         // check product doesn't already exist in warehouse
@@ -117,19 +107,6 @@ public class Staff extends User{
 
         // return built string
         return stringBuilder.toString();
-    }
-
-    // method to write to csv file locally
-    public void downloadProductCatalog(String[] data) throws IOException {
-        File csvOutputFile = new File("Product_List.csv");
-
-        // get the String for product list
-        String productCatalog = getProductCatalog();
-
-        // write the product catalog to a csv file
-        try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
-            pw.print(productCatalog);
-        }
     }
 
     private String escapeSpecialCharacters(String data) {

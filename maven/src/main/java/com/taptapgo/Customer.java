@@ -12,100 +12,96 @@ import com.taptapgo.repository.CustomerRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class Customer extends User {
-    protected enum customerTypes {Anonymous, Registered};
+public class Customer {
+    protected enum customerTypes {Guest, Registered};
 
     protected HashMap<Product, Integer> cart;
     protected customerTypes customerType;
-    protected String firstName;
-    protected String lastName;
-    protected String phone;
-    protected String email;
 
-    private Customer(String sessionID) {
-        super(sessionID);
+    public Customer(String type) throws InvalidParameterException {
         this.cart = new HashMap<>();
-        this.firstName = null;
-        this.lastName = null;
-        this.phone = null;
-        this.email = null;
-        this.customerType = customerTypes.Anonymous;
+        if (type.equals("guest"))
+            this.customerType = customerTypes.Guest;
+        else if (type.equals("registered"))
+            this.customerType = customerTypes.Registered;
+        else
+            throw new InvalidParameterException("Invalid customer type. Cannot create new customer.");
     }
 
-    private Customer(String username, String password, String firstName, String lastName, String phone, String email) {
-        super("registered", username, password);
-        this.cart = new HashMap<>();
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.email = email;
-        this.customerType = customerTypes.Registered;
-    }
+//    private Customer(String username, String password, String firstName, String lastName, String phone, String email) {
+//        super("registered", username, password);
+//        this.cart = new HashMap<>();
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+//        this.phone = phone;
+//        this.email = email;
+//        this.customerType = customerTypes.Registered;
+//    }
+//
+//    private Customer(String sessionID, String firstName, String lastName, String phone, String email) {
+//        super(sessionID);
+//        this.cart = new HashMap<>();
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+//        this.phone = phone;
+//        this.email = email;
+//        this.customerType = customerTypes.Anonymous;
+//    }
+//
+//    private Customer(String userID, String username, String password, String firstName, String lastName, String phone, String email) {
+//        super("registered", userID, username, password);
+//        this.cart = new HashMap<>();
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+//        this.phone = phone;
+//        this.email = email;
+//        this.customerType = customerTypes.Registered;
+//    }
 
-    private Customer(String sessionID, String firstName, String lastName, String phone, String email) {
-        super(sessionID);
-        this.cart = new HashMap<>();
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.email = email;
-        this.customerType = customerTypes.Anonymous;
-    }
+//    public static Customer loadGuestCustomer(String GuestID, String firstName, String lastName, String phone, String email) {
+//        return new Customer(GuestID, firstName, lastName, phone, email);
+//    }
+//
+//    public static Customer loadRegisteredCustomer(String CustomerID, String username, String password, String firstName, String lastName, String phone, String email) {
+//        return new Customer(CustomerID, username, password, firstName, lastName, phone, email);
+//    }
+//
+//    public static Customer createGuestCustomer(String userID, String firstName, String lastName, String phone, String email) {
+//        return new Customer(userID, firstName, lastName, phone, email);
+//    }
 
-    private Customer(String userID, String username, String password, String firstName, String lastName, String phone, String email) {
-        super("registered", userID, username, password);
-        this.cart = new HashMap<>();
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.email = email;
-        this.customerType = customerTypes.Registered;
-    }
-
-    public static Customer loadGuestCustomer(String GCID, String firstName, String lastName, String phone, String email) {
-        return new Customer(GCID, firstName, lastName, phone, email);
-    }
-
-    public static Customer loadRegisteredCustomer(String CustomerID, String username, String password, String firstName, String lastName, String phone, String email) {
-        return new Customer(CustomerID, username, password, firstName, lastName, phone, email);
-    }
-
-    public static Customer createGuestCustomer(String userID, String firstName, String lastName, String phone, String email) {
-        return new Customer(userID, firstName, lastName, phone, email);
-    }
-
-    public static Customer createRegisteredCustomer(String username, String password, String firstName, String lastName, String phone, String email) throws IOException {
-        String content = "";
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        InputStream is = classLoader.getResourceAsStream("/credentials.json");
-
-        assert is != null;
-        Scanner reader = new Scanner(is, "UTF-8");
-        //Scanner reader = new Scanner(new File("/credentials.json"));
-        while (reader.hasNextLine()) {
-            content += reader.nextLine() + "\n";
-        }
-        reader.close();
-
-        if(!content.isEmpty()) {
-            JSONArray usersJsonArray = new JSONArray(content);
-            JSONObject newUserObj = new JSONObject();
-            newUserObj.put(username, password);
-
-            // Put the data of each object onto the json object
-            usersJsonArray.put(newUserObj);
-
-//            try (OutputStream out = new FileOutputStream;
-//                 Writer writer = new OutputStreamWriter(out,"UTF-8")) {
-//                writer.write(data);
-//            }
-
-            FileWriter output = new FileWriter("/credentials.json");
-            output.write(usersJsonArray.toString());
-            output.close();
-        }
-        return new Customer(username, password, firstName, lastName, phone, email);
-    }
+//    public static Customer createRegisteredCustomer(String username, String password, String firstName, String lastName, String phone, String email) throws IOException {
+//        String content = "";
+//        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+//        InputStream is = classLoader.getResourceAsStream("/credentials.json");
+//
+//        assert is != null;
+//        Scanner reader = new Scanner(is, "UTF-8");
+//        //Scanner reader = new Scanner(new File("/credentials.json"));
+//        while (reader.hasNextLine()) {
+//            content += reader.nextLine() + "\n";
+//        }
+//        reader.close();
+//
+//        if(!content.isEmpty()) {
+//            JSONArray usersJsonArray = new JSONArray(content);
+//            JSONObject newUserObj = new JSONObject();
+//            newUserObj.put(username, password);
+//
+//            // Put the data of each object onto the json object
+//            usersJsonArray.put(newUserObj);
+//
+////            try (OutputStream out = new FileOutputStream;
+////                 Writer writer = new OutputStreamWriter(out,"UTF-8")) {
+////                writer.write(data);
+////            }
+//
+//            FileWriter output = new FileWriter("/credentials.json");
+//            output.write(usersJsonArray.toString());
+//            output.close();
+//        }
+//        return new Customer(username, password, firstName, lastName, phone, email);
+//    }
 
     public HashMap<Product, Integer> getCart() {
         return this.cart;
@@ -179,61 +175,12 @@ public class Customer extends User {
         this.cart = new HashMap<>();
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
     public String customerTypeToString() {
-        if (this.customerType == customerTypes.Anonymous) {
-            return "anonymous";
+        if (this.customerType == customerTypes.Guest) {
+            return "guest";
         } else {
             return "registered";
         }
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUsername() {
-        return super.getUserName();
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (object == null){
-            return false;
-        }
-        if (!(object.getClass().equals(this.getClass()))){
-            return false;
-        }
-
-        Customer otherCustomer = (Customer) object;
-
-        if(otherCustomer.userID.equals(this.userID) && otherCustomer.firstName.equals(this.firstName) && otherCustomer.lastName.equals(this.lastName)){
-            return true;
-        }
-        return false;
-    }
 }

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import com.taptapgo.Customer;
 import com.taptapgo.Order;
 import com.taptapgo.Product;
-import com.taptapgo.repository.CustomerIdentityMap;
+import com.taptapgo.repository.UserIdentityMap;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -20,6 +20,7 @@ public class CheckoutServlet extends HttpServlet{
         HttpSession currentSession = request.getSession();
         boolean isRegistered = false;
         Customer customer = null;
+        String userID = null;
 
         if(currentSession.getAttribute("registered_user") != null) {
             isRegistered = true;
@@ -32,11 +33,11 @@ public class CheckoutServlet extends HttpServlet{
             String lastName = request.getParameter("lastName");
             String email = request.getParameter("email");
 
-            String userID = (String) currentSession.getAttribute("userID");
-            customer = CustomerIdentityMap.getCustomerByID(userID);
+            userID = (String) currentSession.getAttribute("userID");
+            customer = UserIdentityMap.getCustomerByID(userID);
             if(customer == null) {
                 customer = Customer.createGuestCustomer(userID, firstName, lastName, userID, email);
-                boolean db_result = CustomerIdentityMap.createCustomer(customer);
+                boolean db_result = UserIdentityMap.createCustomer(customer);
                 if (!db_result) {
                     response.sendRedirect(request.getContextPath() + "/checkout.jsp?checkout=dbcustfail");
                     return;
@@ -83,7 +84,7 @@ public class CheckoutServlet extends HttpServlet{
             }
         }
 
-        Order newOrder = Order.createOrder(billAddress, billCity, billCountry, billPostalCode, paymentMethod, ccNumberLast4Digits, shipAddress, shipCity, shipCountry, shipPostalCode, cart);
+        Order newOrder = Order.createOrder(billAddress, billCity, billCountry, billPostalCode, paymentMethod, ccNumberLast4Digits, shipAddress, shipCity, shipCountry, shipPostalCode, cart, customer.getUserID());
         boolean db_result = Order.addOrderToDB(newOrder);
 
         if (!db_result) {
