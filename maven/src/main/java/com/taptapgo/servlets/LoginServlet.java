@@ -13,8 +13,6 @@ import com.taptapgo.repository.StaffRepository;
 
 @WebServlet(name = "loginServlet", value = "/login")
 public class LoginServlet extends HttpServlet {
-    // staff password - universal
-
 
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException, IOException {
@@ -38,10 +36,10 @@ public class LoginServlet extends HttpServlet {
             }
             else {
                 HttpSession session = request.getSession();
-                session.setAttribute("isStaff", true);
-                session.setAttribute("staff", StaffRepository.readByUsername(username));
                 session.setAttribute("isRegisteredCustomer", null);
                 session.setAttribute("registered_user", null);
+                session.setAttribute("isStaff", true);
+                session.setAttribute("staff", StaffRepository.readByUsername(username));
                 session.setMaxInactiveInterval(30 * 60);
                 response.sendRedirect(previousPage);
             }

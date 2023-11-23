@@ -4,7 +4,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class User {
     public static final int USER_COOKIE_DURATION_SEC = 300;
-    private static AtomicInteger guestIDGen = new AtomicInteger(0);
     private static AtomicInteger registeredIDGen = new AtomicInteger(0);
     private static AtomicInteger staffIDGen = new AtomicInteger(0);
     protected String userID;
@@ -71,16 +70,11 @@ public abstract class User {
     public String getUserName() {
         return this.username;
     }
-
-    public static void updateGuestIDGen(int maxID) {
-        guestIDGen = new AtomicInteger(maxID);
-    } 
-
     public static void updateRegisteredIDGen(int maxID) {
-        guestIDGen = new AtomicInteger(maxID);
+        registeredIDGen = new AtomicInteger(maxID);
     } 
 
     public static void updateStaffIDGen(int maxID) {
-        guestIDGen = new AtomicInteger(maxID);
+        staffIDGen = new AtomicInteger(maxID);
     }
 }

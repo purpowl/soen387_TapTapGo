@@ -169,7 +169,7 @@ public class OrderRepository{
 
                 db_conn.close();
 
-                return Order.loadOrder(orderID, totalAmount, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNum, shipDate, customer, orderItems);
+                return Order.loadOrder(orderID, totalAmount, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNum, shipDate, orderItems);
             } else {
                 // If order is not found, return null
                 return null;
@@ -243,7 +243,7 @@ public class OrderRepository{
 
                 
                 // Create an order and load to result hashmap
-                Order newOrder = Order.loadOrder(orderID, totalAmount, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNum, shipDate, customer, orderItems);
+                Order newOrder = Order.loadOrder(orderID, totalAmount, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNum, shipDate, orderItems);
                 orderResults.put(newOrder.getOrderID(), newOrder);
 
             }
@@ -362,7 +362,7 @@ public class OrderRepository{
 
                 
                 // Create an order and load to result hashmap
-                Order newOrder = Order.loadOrder(orderID, totalAmount, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNum, shipDate, customer, orderItems);
+                Order newOrder = Order.loadOrder(orderID, totalAmount, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNum, shipDate, orderItems);
                 orderResults.put(newOrder.getOrderID(), newOrder);
 
             }

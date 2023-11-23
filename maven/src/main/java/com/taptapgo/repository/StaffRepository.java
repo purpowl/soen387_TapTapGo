@@ -126,7 +126,7 @@ public class StaffRepository{
         return true;
     }
 
-    public Integer readMaxID() {
+    public static Integer readMaxID() {
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -141,12 +141,12 @@ public class StaffRepository{
             if (queryResult.next()) {
                 return Integer.parseInt(queryResult.getString(1));
             } else {
-                return null;
+                return 0;
             }
 
         } catch(Exception e) {
             e.printStackTrace();
-            return null;
+            return 0;
         }
     }
 }

@@ -83,7 +83,7 @@ public class CheckoutServlet extends HttpServlet{
             }
         }
 
-        Order newOrder = Order.createOrder(customer, billAddress, billCity, billCountry, billPostalCode, paymentMethod, ccNumberLast4Digits, shipAddress, shipCity, shipCountry, shipPostalCode);
+        Order newOrder = Order.createOrder(billAddress, billCity, billCountry, billPostalCode, paymentMethod, ccNumberLast4Digits, shipAddress, shipCity, shipCountry, shipPostalCode, cart);
         boolean db_result = Order.addOrderToDB(newOrder);
 
         if (!db_result) {

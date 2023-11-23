@@ -132,17 +132,6 @@ public class Staff extends User{
         }
     }
 
-    private String getRandomString() {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder randStrBuilder = new StringBuilder();
-        Random rnd = new Random();
-        while (randStrBuilder.length() < 18) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * chars.length());
-            randStrBuilder.append(chars.charAt(index));
-        }
-        return randStrBuilder.toString();
-    }
-
     private String escapeSpecialCharacters(String data) {
         if (data != null && !data.isEmpty()) {
             data = data.replaceAll("\\R", " ");

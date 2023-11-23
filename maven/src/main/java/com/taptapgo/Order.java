@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Order {
-    public enum ShipmentStatus {Packing, Shipped, Delivered, Canceled};
+    public enum ShipmentStatus {Packing, Shipped, Delivered, Canceled}
     private static AtomicInteger orderCount = new AtomicInteger(0);
     protected int orderID;
     protected float totalPrice;
@@ -27,10 +27,10 @@ public class Order {
     protected Date shipDate;
     protected String paymentMethod;
     protected int cardNum;      // Last 4 digits only
-    protected Customer customer;
     protected HashMap<Product, Integer> orderProducts;
+    protected String customerID;
 
-    private Order(Customer customer, String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, String shipAddress, String shipCity, String shipCountry, String shipPostalCode) {
+    private Order(String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, String shipAddress, String shipCity, String shipCountry, String shipPostalCode, HashMap<Product, Integer> products) {
         orderCount.incrementAndGet();
         orderID = Integer.parseInt(String.format("%05d", orderCount.get()));
         this.billAddress = billAddress;
@@ -47,13 +47,11 @@ public class Order {
         this.shipDate = null;
         this.paymentMethod = payMethod;
         this.cardNum = cardNum;
-        this.customer = customer;
-        this.orderProducts = customer.getCart();
-        customer.clearCart();
+        this.orderProducts = products;
         this.totalPrice = this.calculateOrderTotal();
     }
 
-    private Order(int orderID, float orderTotal, String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, Date payDate, String shipAddress, String shipCity, String shipCountry, String shipPostalCode, String shipStatus, String trackingNumber, Date shipDate, Customer customer, HashMap<Product, Integer> products) {
+    private Order(int orderID, float orderTotal, String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, Date payDate, String shipAddress, String shipCity, String shipCountry, String shipPostalCode, String shipStatus, String trackingNumber, Date shipDate, HashMap<Product, Integer> products) {
         this.orderID = orderID;
         this.totalPrice = orderTotal;
         this.billAddress = billAddress;
@@ -69,28 +67,30 @@ public class Order {
         this.shipDate = shipDate;
         this.paymentMethod = payMethod;
         this.cardNum = cardNum;
-        this.customer = customer;
         this.orderProducts = products;
 
-        if (shipStatus.equals("packing")){
-            this.shippingStatus = ShipmentStatus.Packing;
-        } else if(shipStatus.equals("shipped")) {
-            this.shippingStatus = ShipmentStatus.Shipped;
-        } else if(shipStatus.equals("delivered")) {
-            this.shippingStatus = ShipmentStatus.Delivered;
-        } else {
-            this.shippingStatus = ShipmentStatus.Canceled;
+        switch (shipStatus) {
+            case "packing":
+                this.shippingStatus = ShipmentStatus.Packing;
+                break;
+            case "shipped":
+                this.shippingStatus = ShipmentStatus.Shipped;
+                break;
+            case "delivered":
+                this.shippingStatus = ShipmentStatus.Delivered;
+                break;
+            default:
+                this.shippingStatus = ShipmentStatus.Canceled;
+                break;
         }
     }
 
-    public static Order loadOrder(int orderID, float orderTotal, String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, Date payDate, String shipAddress, String shipCity, String shipCountry, String shipPostalCode, String shipStatus, String trackingNumber, Date shipDate, Customer customer, HashMap<Product, Integer> products) {
-        return new Order(orderID, orderTotal, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNumber, shipDate, customer, products);
+    public static Order loadOrder(int orderID, float orderTotal, String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, Date payDate, String shipAddress, String shipCity, String shipCountry, String shipPostalCode, String shipStatus, String trackingNumber, Date shipDate, HashMap<Product, Integer> products) {
+        return new Order(orderID, orderTotal, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNumber, shipDate, products);
     }
 
-    public static Order createOrder(Customer customer, String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, String shipAddress, String shipCity, String shipCountry, String shipPostalCode) {
-        Order newOrder = new Order(customer, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, shipAddress, shipCity, shipCountry, shipPostalCode);
-        
-        return newOrder;
+    public static Order createOrder(String billAddress, String billCity, String billCountry, String billPostalCode, String payMethod, int cardNum, String shipAddress, String shipCity, String shipCountry, String shipPostalCode, HashMap<Product, Integer> products) {
+        return new Order(billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, shipAddress, shipCity, shipCountry, shipPostalCode, products);
     }
 
     public static boolean addOrderToDB(Order order) {
@@ -171,14 +171,19 @@ public class Order {
     }
 
     public void setShippingStatus(String shipStatus) {
-        if (shipStatus.equals("packing")){
-            this.shippingStatus = ShipmentStatus.Packing;
-        } else if(shipStatus.equals("shipped")) {
-            this.shippingStatus = ShipmentStatus.Shipped;
-        } else if(shipStatus.equals("delivered")) {
-            this.shippingStatus = ShipmentStatus.Delivered;
-        } else {
-            this.shippingStatus = ShipmentStatus.Canceled;
+        switch (shipStatus) {
+            case "packing":
+                this.shippingStatus = ShipmentStatus.Packing;
+                break;
+            case "shipped":
+                this.shippingStatus = ShipmentStatus.Shipped;
+                break;
+            case "delivered":
+                this.shippingStatus = ShipmentStatus.Delivered;
+                break;
+            default:
+                this.shippingStatus = ShipmentStatus.Canceled;
+                break;
         }
     }
 
@@ -252,14 +257,6 @@ public class Order {
 
     public void setCardNum(int cardNum) {
         this.cardNum = cardNum;
-    }
-
-    public Customer getCustomer() {
-        return this.customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
     }
 
     public HashMap<Product,Integer> getOrderProducts() {

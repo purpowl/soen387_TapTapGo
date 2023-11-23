@@ -84,9 +84,8 @@ public class CustomerRepository{
                 String email = queryResult.getString(5);
 
                 if (id.contains("rc")) {
-                    String usernameDB = "";
+                    String usernameDB = queryResult.getString(6);
                     String passwordDB = "";
-                    usernameDB = queryResult.getString(6);
 
                     String content = "";
 
@@ -209,8 +208,8 @@ public class CustomerRepository{
     }
 
     public static Integer readMaxID(String customerType) {
-        if(!(customerType instanceof String)) {
-            return null;
+        if(customerType == null) {
+            return 0;
         }
 
         String getQuery = "";
@@ -219,9 +218,6 @@ public class CustomerRepository{
         }
         else if (customerType.equals("registered")) {
             getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(CustomerID, ' ', -1)), 3) FROM registeredcustomer";
-        }
-        else if (customerType.equals("staff")) {
-            getQuery = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(StaffID, ' ', -1)), 3) FROM staff";
         }
         else {
             return 0;
@@ -245,5 +241,30 @@ public class CustomerRepository{
             e.printStackTrace();
             return 0;
         }
+    }
+
+    public static String authenticate(String username, String password) {
+        String content = "";
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream is = classLoader.getResourceAsStream("/credentials.json");
+
+        assert is != null;
+        Scanner reader = new Scanner(is, "UTF-8");
+        while (reader.hasNextLine()) {
+            content += reader.nextLine() + "\n";
+        }
+        reader.close();
+
+        if(!content.isEmpty()) {
+            JSONArray usersJsonArray = new JSONArray(content);
+            for (int i = 0; i < usersJsonArray.length(); i++) {
+                JSONObject userObj = usersJsonArray.getJSONObject(i);
+                String usernameInFile = userObj.getString("username");
+                if (usernameInFile.equals(username) && password.equals(userObj.getString("password"))) {
+                    return userObj.getString("password");
+                }
+            }
+        }
+        return null;
     }
 }
