@@ -4,8 +4,9 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.taptapgo.Customer;
 import com.taptapgo.Order;
+import com.taptapgo.User;
+import com.taptapgo.exceptions.InvalidParameterException;
 
 public class OrderIdentityMap {
     private HashMap<Integer, Order> orderMap;
@@ -77,21 +78,21 @@ public class OrderIdentityMap {
     /**
      * Get all orders of a specific customer
      * 
-     * @param customer The customer to get orders for
+     * @param user The registered user to get orders for
      * @return A Hashmap mapping each orderID to an order object
      */
-    public static synchronized HashMap<Integer, Order> getOrdersByCustomer(Customer customer) {
+    public static synchronized HashMap<Integer, Order> getOrdersByUser(User user) throws InvalidParameterException {
         HashMap<Integer, Order> orderMapResults = new HashMap<>();
 
         for (Map.Entry<Integer, Order> orderEntry : OrderIdentityMap.getInstance().orderMap.entrySet()) {
             Order order = orderEntry.getValue();
 
-            if (order.getCustomerID().equals(customer.getUserID())) {
+            if (order.getCustomerID().equals(user.getUserID())) {
                 orderMapResults.put(order.getOrderID(), order);
             }
         }
 
-        HashMap<Integer, Order> orderRepoResults = OrderRepository.readOrderByCustomer(customer, orderMapResults);
+        HashMap<Integer, Order> orderRepoResults = OrderRepository.readOrderByUser(user, orderMapResults);
         orderMapResults.putAll(orderRepoResults);
         OrderIdentityMap.getInstance().orderMap.putAll(orderRepoResults);
 

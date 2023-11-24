@@ -4,12 +4,7 @@ import com.taptapgo.exceptions.DatabaseException;
 import com.taptapgo.exceptions.InvalidParameterException;
 import com.taptapgo.exceptions.ProductAreadyExistsException;
 import com.taptapgo.exceptions.ProductNotFoundException;
-
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

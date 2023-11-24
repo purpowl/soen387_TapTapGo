@@ -1,7 +1,7 @@
 package com.taptapgo;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.taptapgo.exceptions.InvalidParameterException;
+import com.taptapgo.repository.UserIdentityMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class User {
@@ -14,7 +14,7 @@ public class User {
     protected Customer customer;
     protected Staff staff;
 
-    public User(String sessionID) throws InvalidParameterException {
+    private User(String sessionID) throws InvalidParameterException {
         this.userID = "gc" + sessionID;
         this.firstName = null;
         this.lastName = null;
@@ -24,7 +24,17 @@ public class User {
         this.staff = null;
     }
 
-    public User(String firstName, String lastName, String phone, String email, boolean isStaff) throws InvalidParameterException {
+    private User(String sessionID, String firstName, String lastName, String phone, String email) throws InvalidParameterException {
+        this.userID = "gc" + sessionID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+        this.customer = new Customer("guest");
+        this.staff = null;
+    }
+
+    private User(String firstName, String lastName, String phone, String email, boolean isStaff) throws InvalidParameterException {
         registeredIDGen.incrementAndGet();
         this.userID = "rc" + String.format("%05d", registeredIDGen.get());
         this.firstName = firstName;
@@ -39,7 +49,7 @@ public class User {
             this.staff = null;
     }
 
-    public User(String userID, String firstName, String lastName, String phone, String email, boolean isStaff) throws InvalidParameterException {
+    private User(String userID, String firstName, String lastName, String phone, String email, boolean isStaff) throws InvalidParameterException {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -55,35 +65,52 @@ public class User {
 
     public static User loadRegisteredUser(String UserID, String firstName, String lastName, String phone, String email, boolean isStaff) throws InvalidParameterException {
         // check if the password matches the user with userID in db
-        return new User(firstName, lastName, phone, email, isStaff);
+        return new User(UserID, firstName, lastName, phone, email, isStaff);
     }
 
-    public static User createRegisteredUser(String UserID, String firstName, String lastName, String phone, String email, boolean isStaff) throws InvalidParameterException {
-        return new User(UserID, firstName, lastName, phone, email, isStaff);
-        //this.encryptedPasscode = BCrypt.withDefaults().hashToString(12, password.toCharArray());;
+    public static User createRegisteredUser(String firstName, String lastName, String phone, String email, boolean isStaff) throws InvalidParameterException {
+        return new User(firstName, lastName, phone, email, isStaff);
     }
 
     public static User createGuestUser(String sessionID) throws InvalidParameterException {
         return new User(sessionID);
     }
 
-//    public boolean changeUsername(String oldUsername, String newUsername, String password){
-//        if (oldUsername == null || newUsername == null) return false;
-//        else if (oldUsername.equals(newUsername)) return false;
-//        else if (this.username.equals(oldUsername) && this.password.equals(password)) {
-//            this.username = newUsername;
-//            return true;
-//        }
-//        else return false;
-//    }
+    public static User createGuestUserWithInfo(String sessionID, String firstName, String lastName, String phone, String email) throws InvalidParameterException {
+        return new User(sessionID, firstName, lastName, phone, email);
+    }
 
-//    public boolean changePassword(String username, String oldPassword, String newPassword){
-//        if (this.password != null && authenticate(username, oldPassword)) {
-//            this.password = newPassword;
-//            return true;
-//        }
-//        else return false;
-//    };
+    public boolean isRegisteredUser() {
+        return this.getCustomer().customerTypeToString().equals("registered");
+    }
+
+    public boolean isStaff() {
+        return this.staff != null;
+    }
+
+    public boolean addUserToDB(String passcode) throws InvalidParameterException {
+        if (this.isRegisteredUser()) {
+            return UserIdentityMap.addRegisteredUserToDB(this, passcode);
+        }
+        else {
+            return UserIdentityMap.addGuestUserToDB(this);
+        }
+    }
+
+    /**
+     * Set the passcode for a registered user, raises error if passcode already exists
+     * @param newPasscode the passcode we want to set
+     * @return true if successfully set, false if not
+     */
+    public boolean setPasscode(String newPasscode) throws InvalidParameterException {
+        // only registered customer can change passcode, guest customer must go through sign up
+        if (!this.isRegisteredUser()) {
+            throw new InvalidParameterException("User must be registered to change passcode");
+        }
+
+        // change the user passcode
+        return UserIdentityMap.changeUserPasscodeInDB(this.userID, newPasscode);
+    }
 
     public String getUserID() {
         return this.userID;
@@ -141,10 +168,6 @@ public class User {
 
         User otherUser = (User) object;
 
-        if(otherUser.userID.equals(this.userID) && otherUser.firstName.equals(this.firstName) && otherUser.lastName.equals(this.lastName)){
-            return true;
-        }
-        return false;
+        return otherUser.userID.equals(this.userID) && otherUser.firstName.equals(this.firstName) && otherUser.lastName.equals(this.lastName);
     }
-
  }

@@ -11,10 +11,8 @@ import java.util.Map;
 import java.sql.Connection;
 import java.sql.Date;
 
-import com.taptapgo.Customer;
-import com.taptapgo.Order;
-import com.taptapgo.Product;
-import com.taptapgo.Warehouse;
+import com.taptapgo.*;
+import com.taptapgo.exceptions.InvalidParameterException;
 
 public class OrderRepository{
     private static Connection db_conn;
@@ -34,11 +32,12 @@ public class OrderRepository{
             db_conn.setAutoCommit(false);
             savepoint = db_conn.setSavepoint();
 
-            PreparedStatement pstmt1 = null;
-            if (UserIdentityMap.getCustomerByID(order.getCustomerID()).customerTypeToString().equals("guest")) {
-                pstmt1 = db_conn.prepareStatement(insertOrderGuestQuery);
-            } else {
+            PreparedStatement pstmt1;
+
+            if (UserIdentityMap.getUserByID(order.getCustomerID()).isRegisteredUser()) {
                 pstmt1 = db_conn.prepareStatement(insertOrderRegisteredQuery);
+            } else {
+                pstmt1 = db_conn.prepareStatement(insertOrderGuestQuery);
             }
 
             pstmt1.setInt(1, order.getOrderID());
@@ -95,11 +94,9 @@ public class OrderRepository{
                 ex.printStackTrace();
             }
             e.printStackTrace();
-
             return false;
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException | InvalidParameterException e) {
             e.printStackTrace();
-
             return false;
         }
     }
@@ -143,18 +140,10 @@ public class OrderRepository{
                 String shipPostalCode = queryResult.getString(15);
                 String customerID = queryResult.getString(16);
                 String guestCustomerID = queryResult.getString(17);
-                Customer customer = null;
                 queryResult.close();
 
-                if (customerID != null) {
-                    customer = UserIdentityMap.getCustomerByID(customerID);
-                } else {
-                    customer = UserIdentityMap.getCustomerByID(guestCustomerID);
-                }
-
-
                 // Extract all items that are in this order
-                HashMap<Product, Integer> orderItems = new HashMap<Product, Integer>();
+                HashMap<Product, Integer> orderItems = new HashMap<>();
                 PreparedStatement pstmt2 = db_conn.prepareStatement(getOrderItemsQuery);
                 pstmt2.setInt(1, orderID);
                 queryResult = pstmt2.executeQuery();
@@ -184,14 +173,18 @@ public class OrderRepository{
 
     /**
      * Get all matching orders from the database given a customer object
-     * @param customer the customer that we are search orders for
+     * @param user the user that we are searching orders for
      * @param ordersLoaded A Hashmap of all orders that are already loaded in memory, so we avoid reloading these orders
      * @return A Hashmap mapping orderID to an Order object. This hashmap will be empty if no order is found.
      */
-    public static HashMap<Integer, Order> readOrderByCustomer(Customer customer, HashMap<Integer, Order> ordersLoaded) {
+    public static HashMap<Integer, Order> readOrderByUser(User user, HashMap<Integer, Order> ordersLoaded) throws InvalidParameterException {
+        // reading orders can only be done by registered users
+        if (!user.isRegisteredUser())
+            throw new InvalidParameterException("Cannot get order history for guest users!");
+
         String getOrderQuery = "SELECT OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode FROM `order` WHERE UserID = ?";
         String getOrderItemsQuery = "SELECT ProductSKU, Quantity FROM orderitem WHERE OrderID = ?";
-        HashMap<Integer, Order> orderResults = new HashMap<Integer, Order>();
+        HashMap<Integer, Order> orderResults = new HashMap<>();
 
         try {
             // Open database connection
@@ -200,7 +193,7 @@ public class OrderRepository{
 
             // Query the database to get all orders of this customer
             PreparedStatement pstmt = db_conn.prepareStatement(getOrderQuery);
-            pstmt.setString(1, customer.getUserID());
+            pstmt.setString(1, user.getUserID());
             ResultSet queryResult = pstmt.executeQuery();
 
             while (queryResult.next()) {
@@ -225,11 +218,9 @@ public class OrderRepository{
                 String shipCity = queryResult.getString(14);
                 String shipCountry = queryResult.getString(15);
                 String shipPostalCode = queryResult.getString(16);
-                
-
 
                 // Extract all order items within this order
-                HashMap<Product, Integer> orderItems = new HashMap<Product, Integer>();
+                HashMap<Product, Integer> orderItems = new HashMap<>();
                 PreparedStatement pstmt2 = db_conn.prepareStatement(getOrderItemsQuery);
                 pstmt2.setInt(1, orderID);
                 ResultSet queryResult2 = pstmt2.executeQuery();
@@ -242,7 +233,7 @@ public class OrderRepository{
                 }
 
                 // Create an order and load to result hashmap
-                Order newOrder = Order.loadOrder(orderID, totalAmount, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNum, shipDate, orderItems, customer.getUserID());
+                Order newOrder = Order.loadOrder(orderID, totalAmount, billAddress, billCity, billCountry, billPostalCode, payMethod, cardNum, payDate, shipAddress, shipCity, shipCountry, shipPostalCode, shipStatus, trackingNum, shipDate, orderItems, user.getUserID());
                 orderResults.put(newOrder.getOrderID(), newOrder);
 
             }
@@ -301,7 +292,7 @@ public class OrderRepository{
     public static HashMap<Integer, Order> loadAllOrders(HashMap<Integer, Order> ordersLoaded){
         String getOrderQuery = "SELECT OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, GuestID, UserID FROM `order`";
         String getOrderItemsQuery = "SELECT ProductSKU, Quantity FROM orderitem WHERE OrderID = ?";
-        HashMap<Integer, Order> orderResults = new HashMap<Integer, Order>();
+        HashMap<Integer, Order> orderResults = new HashMap<>();
 
         try {
             // Open database connection
@@ -336,18 +327,9 @@ public class OrderRepository{
                 String shipPostalCode = queryResult.getString(16);
                 String guestCustomerID = queryResult.getString(17);
                 String customerID = queryResult.getString(18);
-                Customer customer = null;
-
-                // Load customer object to memory
-                if (customerID != null) {
-                    customer = UserIdentityMap.getCustomerByID(customerID);
-                } else {
-                    customer = UserIdentityMap.getCustomerByID(guestCustomerID);
-                }
-
 
                 // Load all order items of this order to memory
-                HashMap<Product, Integer> orderItems = new HashMap<Product, Integer>();
+                HashMap<Product, Integer> orderItems = new HashMap<>();
                 PreparedStatement pstmt2 = db_conn.prepareStatement(getOrderItemsQuery);
                 pstmt2.setInt(1, orderID);
                 ResultSet queryResult2 = pstmt2.executeQuery();
