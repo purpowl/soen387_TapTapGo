@@ -110,6 +110,7 @@ public class CheckoutServlet extends HttpServlet{
             response.sendRedirect(request.getContextPath() + "/checkout.jsp?checkout=dborderfail");
         } else {
             currentSession.setAttribute("order", newOrder);
+            user.getCustomer().clearCart();
             response.sendRedirect(request.getContextPath() + "/order-confirmation.jsp");
         }
     }
