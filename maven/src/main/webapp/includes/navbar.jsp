@@ -48,10 +48,10 @@
         </li>
         <% } %>
 
-        <!-- Logout button - staff members see logout button -->
-        <% if (session.getAttribute("isStaff") != null || session.getAttribute("isRegisteredUser") != null) { %>
+        <!-- Logout button - registered users see logout button -->
+        <% if (session.getAttribute("isRegisteredUser") != null) { %>
         <li><a class="nav-link" href="logout">Log Out</a></li>
-        <% } else { %>
+        <% } %>
         
       </ul>
       <!-- Left links -->
@@ -107,7 +107,6 @@
 
       </div> 
       <!-- Right elements --> 
-      <% } %>
     </div>
   <!-- Container wrapper -->
 </nav>
