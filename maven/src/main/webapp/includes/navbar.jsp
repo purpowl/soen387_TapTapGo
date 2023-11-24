@@ -69,7 +69,11 @@
         <div class="dropdown">
           <a
           class="dropdown-toggle d-flex align-items-center hidden-arrow"
-          href="${pageContext.request.contextPath}/login.jsp?from=${pageContext.request.requestURI}"
+          <% if (session.getAttribute("isRegisteredUser") == null) { %>
+            href="${pageContext.request.contextPath}/login.jsp?from=${pageContext.request.requestURI}"
+          <% } else { %>
+            href="${pageContext.request.contextPath}/user-account.jsp"
+          <% } %>
           id="navbarDropdownMenuAvatar"
           role="button"
           data-mdb-toggle="dropdown"
