@@ -1,25 +1,20 @@
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="com.taptapgo.Product" %>
-<%@ page import="com.taptapgo.Customer" %>
 <%@ page import="jakarta.servlet.http.HttpSession" %>
 <%@ page contentType="text/html;charset=UTF-8"%>
 
 <% 
     HttpSession currentSession = request.getSession();
-    boolean isRegistered = false;
+    boolean isRegistered = currentSession.getAttribute("registered_user") != null;
 
-    if(currentSession.getAttribute("registered_user") != null) {
-        isRegistered = true;
-    }
-
-    Object cart_object = currentSession.getAttribute("cart"); 
+    Object cart_object = currentSession.getAttribute("cart");
     Object cart_modified_object = currentSession.getAttribute("cart_modified");
     HashMap<Product, Integer> cart;
 
     if (cart_object == null) {
         System.out.println("CART IS NULL!!!!");
-        cart = new HashMap<Product, Integer>();
+        cart = new HashMap<>();
     } else {
         cart = (HashMap<Product, Integer>) cart_object;
     }
@@ -92,14 +87,9 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="username">Username</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">@</span>
-                        </div>
-                        <input type="text" class="form-control" id="username" name="username" placeholder="Username" required="">
-                        <div class="invalid-feedback" style="width: 100%;"> Your username is required. </div>
-                    </div>
+                    <label for="phone">Email <span class="text-muted">(Optional)</span></label>
+                    <input type="text" class="form-control" id="phone" name="phone" placeholder="123-456-7890">
+                    <div class="invalid-feedback"> Please enter a valid phone number for carrier's contact.</div>
                 </div>
                 <div class="mb-3">
                     <label for="email">Email <span class="text-muted">(Optional)</span></label>

@@ -2,13 +2,9 @@ package com.taptapgo.servlets;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.Random;
-
 import com.taptapgo.*;
 import com.taptapgo.repository.UserIdentityMap;
 import com.taptapgo.repository.OrderIdentityMap;
-
-import com.taptapgo.repository.StaffRepository;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
@@ -24,7 +20,7 @@ public class TapTapServlet extends HttpServlet {
         Warehouse warehouse = Warehouse.getInstance();
         warehouse.loadDatabase();
         Order.updateOrderCounter(OrderIdentityMap.getMaxOrderID());
-        User.updateRegisteredIDGen(UserIdentityMap.getMaxID("registered"));
+        User.updateRegisteredIDGen(UserIdentityMap.getMaxRegisteredUserID());
         context.setAttribute("warehouse", warehouse);
     }
 
@@ -35,7 +31,7 @@ public class TapTapServlet extends HttpServlet {
 
         // Create cart for new anonymous user
         if (cart_object == null){
-            HashMap<Product, Integer> cart = new HashMap<Product, Integer>();
+            HashMap<Product, Integer> cart = new HashMap<>();
             currentSession.setAttribute("cart", cart);
         }
 

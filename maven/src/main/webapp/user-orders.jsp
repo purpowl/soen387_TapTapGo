@@ -2,11 +2,12 @@
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="com.taptapgo.Customer" %>
 <%@ page import="com.taptapgo.Order" %>
 <%@ page import="com.taptapgo.Product" %>
 <%@ page import="com.taptapgo.repository.OrderIdentityMap" %>
 <%@ page import="jakarta.servlet.http.HttpSession" %>
+<%@ page import="com.taptapgo.User" %>
+<%@ page import="com.taptapgo.exceptions.InvalidParameterException" %>
 
 <%
   HttpSession currentSession = request.getSession();
@@ -21,9 +22,15 @@
     response.sendRedirect(request.getContextPath() + "/orders.jsp");
   }
 
-  Object customer_object = currentSession.getAttribute("registered_user");
-  Customer customer = (Customer) customer_object;
-  HashMap<Integer, Order> orderList = OrderIdentityMap.getOrdersByCustomer(customer);
+  Object user_object = currentSession.getAttribute("registered_user");
+  User user = (User) user_object;
+  HashMap<Integer, Order> orderList;
+  try {
+    orderList = OrderIdentityMap.getOrdersByUser(user);
+  } catch (InvalidParameterException e) {
+    e.printStackTrace();
+    return;
+  }
   SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 %>
 <html>

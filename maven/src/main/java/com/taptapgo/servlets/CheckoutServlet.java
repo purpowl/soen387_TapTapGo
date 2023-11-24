@@ -3,9 +3,10 @@ package com.taptapgo.servlets;
 import java.io.IOException;
 import java.util.HashMap;
 
-import com.taptapgo.Customer;
 import com.taptapgo.Order;
 import com.taptapgo.Product;
+import com.taptapgo.User;
+import com.taptapgo.exceptions.InvalidParameterException;
 import com.taptapgo.repository.UserIdentityMap;
 
 import jakarta.servlet.annotation.WebServlet;
@@ -19,33 +20,46 @@ public class CheckoutServlet extends HttpServlet{
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
         HttpSession currentSession = request.getSession();
         boolean isRegistered = false;
-        Customer customer = null;
-        String userID = null;
+        User user = null;
+        String userID;
 
         if(currentSession.getAttribute("registered_user") != null) {
             isRegistered = true;
 
-            customer = (Customer) currentSession.getAttribute("registered_user");
+            user = (User) currentSession.getAttribute("registered_user");
         }
 
         if(!isRegistered) {
             String firstName = request.getParameter("firstName");
             String lastName = request.getParameter("lastName");
             String email = request.getParameter("email");
-
+            String phone = request.getParameter("phone");
             userID = (String) currentSession.getAttribute("userID");
-            customer = UserIdentityMap.getCustomerByID(userID);
-            if(customer == null) {
-                customer = Customer.createGuestCustomer(userID, firstName, lastName, userID, email);
-                boolean db_result = UserIdentityMap.createCustomer(customer);
+
+            try {
+                user = UserIdentityMap.getUserByID(userID);
+            } catch (InvalidParameterException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            if(user == null) {
+                try {
+                    user = User.createGuestUserWithInfo(userID, firstName, lastName, phone, email);
+                } catch (InvalidParameterException e) {
+                    throw new RuntimeException(e);
+                }
+
+                boolean db_result = UserIdentityMap.addGuestUserToDB(user);
                 if (!db_result) {
                     response.sendRedirect(request.getContextPath() + "/checkout.jsp?checkout=dbcustfail");
                     return;
                 }
-            } else {
-                customer.setFirstName(firstName);
-                customer.setLastName(lastName);
-                customer.setEmail(email);
+            }
+            else {
+                user.setFirstName(firstName);
+                user.setLastName(lastName);
+                user.setEmail(email);
             }
         }
 
@@ -55,7 +69,7 @@ public class CheckoutServlet extends HttpServlet{
             response.sendRedirect(request.getContextPath() + "/cart.jsp");
             return;
         }
-        customer.loadCart(cart);
+        user.getCustomer().loadCart(cart);
 
         String billAddress = request.getParameter("billAddress");
         String billCity = request.getParameter("billCity");
@@ -67,7 +81,7 @@ public class CheckoutServlet extends HttpServlet{
         String shipPostalCode = request.getParameter("shipPostalCode");
         String paymentMethod = request.getParameter("paymentMethod");
         String ccNumber = request.getParameter("cc-number");
-        int ccNumberLast4Digits = 0;
+        int ccNumberLast4Digits;
 
         // Handle bad inputs for credit card number
         if (ccNumber.length() != 16) {
@@ -84,16 +98,14 @@ public class CheckoutServlet extends HttpServlet{
             }
         }
 
-        Order newOrder = Order.createOrder(billAddress, billCity, billCountry, billPostalCode, paymentMethod, ccNumberLast4Digits, shipAddress, shipCity, shipCountry, shipPostalCode, cart, customer.getUserID());
+        Order newOrder = Order.createOrder(billAddress, billCity, billCountry, billPostalCode, paymentMethod, ccNumberLast4Digits, shipAddress, shipCity, shipCountry, shipPostalCode, cart, user.getUserID());
         boolean db_result = Order.addOrderToDB(newOrder);
 
         if (!db_result) {
             response.sendRedirect(request.getContextPath() + "/checkout.jsp?checkout=dborderfail");
-            return;
         } else {
             currentSession.setAttribute("order", newOrder);
             response.sendRedirect(request.getContextPath() + "/order-confirmation.jsp");
-            return;
         }
     }
 }
