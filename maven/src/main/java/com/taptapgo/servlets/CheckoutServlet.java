@@ -111,6 +111,7 @@ public class CheckoutServlet extends HttpServlet{
         } else {
             currentSession.setAttribute("order", newOrder);
             user.getCustomer().clearCart();
+            currentSession.setAttribute("cart", new HashMap<>());
             response.sendRedirect(request.getContextPath() + "/order-confirmation.jsp");
         }
     }
