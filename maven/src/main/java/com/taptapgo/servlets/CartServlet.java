@@ -39,7 +39,7 @@ public class CartServlet extends HttpServlet{
 
     public static HashMap<Product, Integer> loadCart(HttpServletRequest request) {
         // Get cookies
-        HashMap<Product, Integer> cart = new HashMap<Product, Integer>();
+        HashMap<Product, Integer> cart = new HashMap<>();
         Cookie[] cookies = request.getCookies();
         String cart_content_json = "[]";
         for(Cookie cookie : cookies){

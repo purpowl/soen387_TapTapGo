@@ -1,10 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
-<%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="com.taptapgo.Order" %>
 <%@ page import="com.taptapgo.Product" %>
-<%@ page import="com.taptapgo.repository.OrderIdentityMap" %>
 <%@ page import="jakarta.servlet.http.HttpSession" %>
 <html>
 <head>
@@ -33,7 +31,6 @@
       boolean searched = false;
       HttpSession currentSession = request.getSession();
       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-      
 
       if (createStatus != null) {
           if (createStatus.equals("success")) {

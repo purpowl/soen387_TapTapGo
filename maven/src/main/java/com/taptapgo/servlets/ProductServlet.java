@@ -45,7 +45,7 @@ public class ProductServlet extends HttpServlet {
             String amount_str = request.getParameter("amount");
 
             // Put the fields into a dictionary
-            HashMap<String, Object> updateFields = new HashMap<String, Object>();
+            HashMap<String, Object> updateFields = new HashMap<>();
             if (!name.isEmpty()) {
                 updateFields.put("name", name);
             }

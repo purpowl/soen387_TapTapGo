@@ -116,15 +116,11 @@ public class Product {
 
         Product anotherProduct = (Product) anotherObject;
 
-        if (!this.SKU.equals(anotherProduct.SKU)) {
-            return false;
-        } else {
-            return true;
-        }
+        return this.SKU.equals(anotherProduct.SKU);
     }
 
     /**
-     * An utility function to round up prices
+     * A utility function to round up prices
      * @param value the value/price that you want to round up (to 2 decimal places)
      * @return the string representation of the value, to be printed out
      */
@@ -137,7 +133,7 @@ public class Product {
     }
 
     /**
-     * An utility function to round up prices
+     * A utility function to round up prices
      * @param value the value/price that you want to round up (to 2 decimal places)
      * @return the string representation of the value, to be printed out
      */

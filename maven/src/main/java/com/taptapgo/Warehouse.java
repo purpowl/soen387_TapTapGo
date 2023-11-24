@@ -11,7 +11,7 @@ public class Warehouse {
     private HashMap<Product, Integer> product_list;
 
     private Warehouse() {
-        product_list = new HashMap<Product, Integer>();
+        product_list = new HashMap<>();
     }
 
     public static synchronized Warehouse getInstance() {
@@ -108,7 +108,7 @@ public class Warehouse {
     /**
      * Looks for amount of a product in the warehouse based on its slug
      *
-     * @param SKU the identifier for the product
+     * @param slug the identifier for the product
      * @return the product object found. Null if the product is not found.
      */
     public Integer getProductInventoryBySlug(String slug){

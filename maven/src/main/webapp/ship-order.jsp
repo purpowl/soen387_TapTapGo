@@ -1,16 +1,12 @@
 
 <%@ page contentType="text/html;charset=UTF-8"%>
-<%@ page import="jakarta.servlet.http.HttpSession" %>
 <%@ page import="com.taptapgo.Order" %>
-<%@ page import="com.taptapgo.Staff" %>
 <%
     // only staff can access this page, redirect to login page otherwise
     session = request.getSession(false);
     if (session == null || session.getAttribute("isStaff") == null) {
         response.sendRedirect("login.jsp");
     }
-    Staff staff = (Staff) session.getAttribute("staff");
-    String staffID = staff.getUserID();
     Order order = (Order) session.getAttribute("order");
 %>
 <html>

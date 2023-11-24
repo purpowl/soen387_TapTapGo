@@ -16,10 +16,7 @@ public class OrderDetailServlet extends HttpServlet{
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
         String orderID_str = request.getPathInfo().substring(1);
         HttpSession currentSession = request.getSession();
-        boolean isStaff = false;
-        if (currentSession.getAttribute("staff") != null) {
-            isStaff = true;
-        } 
+        boolean isStaff = currentSession.getAttribute("staff") != null;
 
         Integer orderID = null;
             // Error handling for incorrect format orderID

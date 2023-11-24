@@ -2,14 +2,11 @@ package com.taptapgo.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import com.taptapgo.Staff;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import com.taptapgo.repository.UserIdentityMap;
-import com.taptapgo.repository.StaffRepository;
 
 @WebServlet(name = "loginServlet", value = "/login")
 public class LoginServlet extends HttpServlet {
@@ -18,7 +15,7 @@ public class LoginServlet extends HttpServlet {
                           HttpServletResponse response) throws ServletException, IOException {
 
         // get request parameters for password
-        String pwd = request.getParameter("login-password");
+        String passcode = request.getParameter("passcode");
         String previousPage = request.getParameter("from");
 
 //        if(UserIdentityMap.authenticateCustomer(pwd)){

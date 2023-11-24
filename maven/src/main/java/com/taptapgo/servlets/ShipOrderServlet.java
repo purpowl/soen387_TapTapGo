@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpSession;
 public class ShipOrderServlet extends HttpServlet{
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
         String orderID_str = request.getPathInfo().substring(1);
-        Integer orderID = null;
+        Integer orderID;
 
         try{
             orderID = Integer.parseInt(orderID_str);

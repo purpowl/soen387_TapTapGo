@@ -5,7 +5,6 @@
 <%@ page import="java.util.Map" %>
 <%@ page import="com.taptapgo.Product" %>
 <%@ page contentType="text/html;charset=UTF-8"%>
-<%@ page import="jakarta.servlet.http.HttpSession" %>
 <%
   // only staff can access this page, redirect to login page otherwise
   session = request.getSession(false);

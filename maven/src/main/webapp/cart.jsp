@@ -16,7 +16,7 @@
 
     if (cart_object == null) {
         System.out.println("CART IS NULL!!!!");
-        cart = new HashMap<Product, Integer>();
+        cart = new HashMap<>();
     } else {
         cart = (HashMap<Product, Integer>) cart_object;
     }
@@ -43,7 +43,7 @@
                         %>
                         <div class="row">
                             <div class="col-12 text-center">
-                                <h5 style="color: red;">Failed to add product to cart!</>
+                                <h5 style="color: red;">Failed to add product to cart!</h5>
                             </div>
                         </div>
                         <%

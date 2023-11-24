@@ -17,8 +17,8 @@
 
         <!-- Password -->
         <div class="form-group mb-3">
-          <label for="password">Password</label>
-            <input type="password" id="pwd" name="login-password" class="form-control" placeholder="Password">
+          <label for="passcode">Passcode</label>
+            <input type="password" id="passcode" name="login-password" class="form-control" placeholder="Password">
             <!-- pass the previous page to servlet to redirect once login is successful -->
             <input type="hidden" name="from" value="${param.from}">
         </div>
