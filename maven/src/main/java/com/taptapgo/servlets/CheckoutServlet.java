@@ -25,7 +25,6 @@ public class CheckoutServlet extends HttpServlet{
 
         if(currentSession.getAttribute("registered_user") != null) {
             isRegistered = true;
-
             user = (User) currentSession.getAttribute("registered_user");
         }
 
@@ -47,7 +46,7 @@ public class CheckoutServlet extends HttpServlet{
                 try {
                     user = User.createGuestUserWithInfo(userID, firstName, lastName, phone, email);
 
-                    boolean db_result = false;
+                    boolean db_result;
 
                     db_result = UserIdentityMap.addGuestUserToDB(user);
 

@@ -1,4 +1,26 @@
+<%@ page import="com.taptapgo.Product" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="com.taptapgo.User" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%
+  session = request.getSession(false);
+  // if user is not registered
+  if (session.getAttribute("isRegisteredUser") == null) {
+    // create new cart if they don't have a cart yet
+    if (session.getAttribute("cart") == null) {
+      HashMap<Product, Integer> cart = new HashMap<>();
+      session.setAttribute("cart", cart);
+    }
+    // create guest ID if they don't have one
+    if (session.getAttribute("userID") == null){
+      session.setAttribute("userID", "gc" + session.getId());
+    }
+    else {
+      // else get their registered user ID
+      session.setAttribute("userID", ((User) session.getAttribute("registered_user")).getUserID());
+    }
+  }
+%>
 <!DOCTYPE html>
 <html>
   <head>
