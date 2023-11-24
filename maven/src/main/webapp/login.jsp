@@ -1,4 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
+<%
+  // only guest users can access this page, redirect to account page otherwise
+  session = request.getSession(false);
+  if (session.getAttribute("isRegisteredUser") != null || session.getAttribute("isStaff") != null) {
+    response.sendRedirect("user-account.jsp");
+  }
+%>
 <html>
 <head>
   <%@include file="includes/header.jsp" %>
@@ -10,6 +17,22 @@
 <div class="container">
   <!-- Login -->
   <div class="card w-100 mx-auto my-5 border-0">
+    <!-- Error Handling -->
+    <%
+      String createStatus = request.getParameter("create");
+
+      if (createStatus != null) {
+        if (createStatus.equals("fail")) {
+    %>
+    <div class="row">
+      <div class="col-12">
+        <p style="color: red;">Login failed. Wrong password.</p>
+      </div>
+    </div>
+    <%
+        }
+      }
+    %>
     <div class="card-body p-5">
       <h2 class="text-center mb-3">Login</h2>
       <!-- form for staff login, calls LoginServlet doPost -->

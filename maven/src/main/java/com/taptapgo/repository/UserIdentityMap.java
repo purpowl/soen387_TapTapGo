@@ -18,6 +18,10 @@ public class UserIdentityMap {
         userMap = new HashMap<>();
     }
 
+    /**
+     * get identity map instance, create one if none exists yet
+     * @return UserIdentityMap object
+     */
     public static UserIdentityMap getInstance() {
         if (instance == null) {
             instance = new UserIdentityMap();
@@ -25,7 +29,13 @@ public class UserIdentityMap {
         return instance;
     }
 
-    public static synchronized boolean addGuestUserToDB(User user) {
+    /**
+     * add a guest user to database and identity map
+     * @param user a User object
+     * @return boolean true if succeed, false if failed
+     * @throws InvalidParameterException from createGuestUserInDatabase
+     */
+    public static synchronized boolean addGuestUserToDB(User user) throws InvalidParameterException {
         boolean addToDBResult = createGuestUserInDatabase(user);
 
         if (addToDBResult) {
@@ -35,6 +45,13 @@ public class UserIdentityMap {
         return false;
     }
 
+    /**
+     * add a registered user to database and identity map
+     * @param user a User object
+     * @return boolean true if success, false if not
+     * @throws InvalidParameterException if user is not guest
+     * @throws InvalidParameterException from createRegisteredUserInDB
+     */
     public static synchronized boolean addRegisteredUserToDB(User user, String passcode) throws InvalidParameterException {
         boolean addToDBResult = createRegisteredUserInDB(user, passcode);
 
@@ -45,10 +62,18 @@ public class UserIdentityMap {
         return false;
     }
 
+    /**
+     * get a user given their userID
+     * @param userID a string
+     * @return User object if succeed, null if failed
+     * @throws InvalidParameterException from getUserFromDatabaseByID
+     */
     public static synchronized User getUserByID(String userID) throws InvalidParameterException {
         User userMapResult = UserIdentityMap.getInstance().userMap.get(userID);
+
         if (userMapResult == null) {
             User userFound = getUserFromDatabaseByID(userID);
+
             // add user to Identity Map if found
             if (userFound != null)
                 UserIdentityMap.getInstance().userMap.put(userID, userFound);
@@ -59,7 +84,19 @@ public class UserIdentityMap {
         }
     }
 
-    private static synchronized boolean createGuestUserInDatabase(User user) {
+    /**
+     * private helper method to create a new guest user in the database
+     * @param user a User object
+     * @return boolean true if success, false if not
+     * @throws InvalidParameterException if user is not guest
+     */
+    private static synchronized boolean createGuestUserInDatabase(User user) throws InvalidParameterException {
+
+        // check if user is guest
+        if (user.isRegisteredUser()) {
+            throw new InvalidParameterException("Guest user required.");
+        }
+
         String insertQuery = "INSERT INTO guestuser (GuestID, FirstName, LastName, Phone, Email) VALUES (?, ?, ?, ?, ?)";
         Savepoint savepoint = null;
 
@@ -87,7 +124,7 @@ public class UserIdentityMap {
 
             return result == 1;
         }
-        catch(SQLException e) {
+        catch(SQLException | ClassNotFoundException e) {
             try {
                 if (db_conn != null && savepoint != null) {
                     db_conn.rollback(savepoint);
@@ -109,7 +146,18 @@ public class UserIdentityMap {
         }
     }
 
+    /**
+     * private helper method to create a new registered user in the database
+     * @param user a User object
+     * @return boolean true if success, false if not
+     * @throws InvalidParameterException if user is not registered or passcode provided is not unique
+     */
     private static synchronized boolean createRegisteredUserInDB(User user, String passcode) throws InvalidParameterException {
+        // check if user is registered
+        if (!user.isRegisteredUser()) {
+            throw new InvalidParameterException("Registered user required.");
+        }
+
         // check if passcode exists in database
         String passcodeOwner = authenticate(passcode);
 
@@ -119,6 +167,7 @@ public class UserIdentityMap {
             throw new InvalidParameterException("Invalid passcode.");
         }
 
+        // hash passcode
         String hashedPasscode = BCrypt.withDefaults().hashToString(12, passcode.toCharArray());
 
         Savepoint savepoint = null;
@@ -173,9 +222,16 @@ public class UserIdentityMap {
         }
     }
 
+    /**
+     * private helper method to get a user from the database using their ID
+     * @param userID a string
+     * @return User object if succeed, null if failed
+     * @throws InvalidParameterException if userID is not for guest or registered
+     */
     private static synchronized User getUserFromDatabaseByID(String userID) throws InvalidParameterException {
         String query;
 
+        // create different queries for different user types guest and registered
         if (userID.startsWith("gc")) {
             query = "SELECT GuestID, FirstName, LastName, Phone, Email FROM guestuser WHERE GuestID = ?";
         }
@@ -203,25 +259,36 @@ public class UserIdentityMap {
                 String phone = queryResult.getString(4);
                 String email = queryResult.getString(5);
 
-                queryResult.close();
-                db_conn.close();
-
+                // get isStaff for registered customer
+                // create a new user from the attributes acquired
                 if (id.startsWith("rc")) {
                     boolean isStaff = queryResult.getInt(6) == 1;
+                    queryResult.close();
+                    db_conn.close();
                     return User.loadRegisteredUser(id, firstName, lastName, phone, email, isStaff);
                 }
                 else {
+                    queryResult.close();
+                    db_conn.close();
                     return User.createGuestUserWithInfo(id, firstName, lastName, phone, email);
                 }
             }
         }
-        catch (SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
+        catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+        catch(Exception e) {
+            e.printStackTrace();
             return null;
         }
         return null;
     }
 
+    /**
+     * get largest userID from the database
+     * @return Integer object if succeed, null if failed
+     */
     public static synchronized Integer getMaxRegisteredUserID() {
         String query = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(UserID, ' ', -1)), 3) FROM registereduser";
 
@@ -233,30 +300,36 @@ public class UserIdentityMap {
             Statement stmt = db_conn.createStatement();
             ResultSet queryResult = stmt.executeQuery(query);
 
-            stmt.close();
-            db_conn.close();
-
             if (queryResult.next()) {
-                return Integer.parseInt(queryResult.getString(2));
+                // get the userID without the first 2 characters
+                Integer maxUserID = Integer.parseInt(queryResult.getString(1));
+                stmt.close();
+                db_conn.close();
+                return maxUserID;
             } else {
+                stmt.close();
+                db_conn.close();
                 return 0;
             }
 
-        } catch(Exception e) {
+        } catch(SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        catch(Exception e) {
             e.printStackTrace();
             return 0;
         }
     }
 
     /**
-     * Change the passcode for a user,
-     * called by registered user's setPasscode method
+     * Change the passcode for a user in database
      *
      * @param userID user we want to change passcode for
      * @param newPasscode new passcode to set
      * @return true on success, false on failure
      */
-    public static boolean changeUserPasscodeInDB(String userID, String newPasscode) throws InvalidParameterException {
+    public static synchronized boolean changeUserPasscodeInDB(String userID, String newPasscode) throws InvalidParameterException {
         // check if passcode exists in database
         String passcodeOwner = authenticate(newPasscode);
 
@@ -272,6 +345,7 @@ public class UserIdentityMap {
             }
         }
 
+        // hash the passcode
         String hashedPasscode = BCrypt.withDefaults().hashToString(12, newPasscode.toCharArray());
 
         String changePasscodeQuery = "UPDATE `registeredorder` SET Passcode = ? WHERE UserID = ?";
@@ -286,6 +360,7 @@ public class UserIdentityMap {
             db_conn.setAutoCommit(false);
             savepoint = db_conn.setSavepoint();
 
+            // make SQL statement to update user passcode
             PreparedStatement pstmt = db_conn.prepareStatement(changePasscodeQuery);
             pstmt.setString(1, hashedPasscode);
             pstmt.setString(2, userID);
@@ -297,7 +372,7 @@ public class UserIdentityMap {
             db_conn.close();
 
             return true;
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             try {
                 if (db_conn != null && savepoint != null) {
                     db_conn.rollback(savepoint); // Rollback the transaction if an exception occurs
@@ -308,21 +383,22 @@ public class UserIdentityMap {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
+
             e.printStackTrace();
             return false;
-        } catch (ClassNotFoundException e) {
+        }
+        catch(Exception e) {
             e.printStackTrace();
-
             return false;
         }
     }
 
     /**
-     * check if a given passcode already exists in database
-     * @param passcode the passcode we want to check for uniqueness
+     * check if a given passcode exists in database
+     * @param passcode the passcode we want to check
      * @return UserID of the user with the passcode, null if no match found
      */
-    private static synchronized String authenticate(String passcode) {
+    public static synchronized String authenticate(String passcode) {
 
         BCrypt.Verifyer verifyer = BCrypt.verifyer();
         String getPasscodeQuery = "SELECT UserID, Passcode FROM registereduser";
@@ -332,22 +408,34 @@ public class UserIdentityMap {
 
             db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
 
-            Statement stmt = db_conn.createStatement();
-            ResultSet hashedPasscodes = stmt.executeQuery(getPasscodeQuery);
-            stmt.close();
-            db_conn.close();
+            PreparedStatement pstmt = db_conn.prepareStatement(getPasscodeQuery);
+            ResultSet queryResult = pstmt.executeQuery();
 
-            while (hashedPasscodes.next()) {
-                String hashedPassword = hashedPasscodes.getString(2);
+            // run through the hashedpasscodes from database
+            while (queryResult.next()) {
+                String hashedPasscode = queryResult.getString(2);
 
-                BCrypt.Result result = verifyer.verify(passcode.toCharArray(), hashedPassword);
+                String userID;
+
+                // check if it matches the input passcode
+                BCrypt.Result result = verifyer.verify(passcode.toCharArray(), hashedPasscode);
+
+                // return user ID if match found
                 if (result.verified) {
-                    return hashedPasscodes.getString(1);
+                    userID =  queryResult.getString(1);
+                    db_conn.close();
+                    return userID;
                 }
             }
+            db_conn.close();
             return null;
 
-        } catch(Exception e) {
+        }
+        catch(SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+        catch(Exception e) {
             e.printStackTrace();
             return null;
         }
