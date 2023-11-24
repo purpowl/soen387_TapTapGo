@@ -6,7 +6,7 @@
     if (session == null || session.getAttribute("isRegisteredUser") == null) {
         response.sendRedirect("login.jsp");
     }
-    // reference to customer and order list
+    // reference to user
     User user = (User) session.getAttribute("registered_user");
 %>
 <html>
@@ -49,8 +49,8 @@
             <div class="card w-100">
                 <div class="card-body">
                     <a href= "<%=request.getContextPath()%>/modify-username-pwd.jsp">
-                        <h5 style="color: hsl(221, 100%, 33%)" class="card-title">Modify Username & Password</h5>
-                        <p class="card-text">Manage passwords and email</p>
+                        <h5 style="color: hsl(221, 100%, 33%)" class="card-title">Modify Passcode</h5>
+                        <p class="card-text">Manage passcode</p>
                     </a>
                 </div>
             </div>
