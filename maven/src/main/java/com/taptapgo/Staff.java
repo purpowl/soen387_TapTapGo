@@ -4,6 +4,9 @@ import com.taptapgo.exceptions.DatabaseException;
 import com.taptapgo.exceptions.InvalidParameterException;
 import com.taptapgo.exceptions.ProductAreadyExistsException;
 import com.taptapgo.exceptions.ProductNotFoundException;
+import com.taptapgo.repository.OrderIdentityMap;
+import com.taptapgo.repository.UserIdentityMap;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

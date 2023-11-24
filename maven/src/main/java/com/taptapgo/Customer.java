@@ -15,6 +15,8 @@ public class Customer {
 
     public Customer(String type) throws InvalidParameterException {
         this.cart = new HashMap<>();
+
+        // set customer type
         if (type.equals("guest"))
             this.customerType = customerTypes.Guest;
         else if (type.equals("registered"))

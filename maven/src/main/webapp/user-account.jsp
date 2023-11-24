@@ -1,9 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ page import="com.taptapgo.User" %>
 <%
-    // only staff can access this page, redirect to login page otherwise
+    // only registered users can access this page, redirect to login page otherwise
     session = request.getSession(false);
-    if (session == null || session.getAttribute("isRegisteredCustomer") == null) {
+    if (session == null || session.getAttribute("isRegisteredUser") == null) {
         response.sendRedirect("login.jsp");
     }
     // reference to customer and order list

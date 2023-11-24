@@ -46,13 +46,19 @@ public class CheckoutServlet extends HttpServlet{
             if(user == null) {
                 try {
                     user = User.createGuestUserWithInfo(userID, firstName, lastName, phone, email);
-                } catch (InvalidParameterException e) {
-                    throw new RuntimeException(e);
-                }
 
-                boolean db_result = UserIdentityMap.addGuestUserToDB(user);
-                if (!db_result) {
+                    boolean db_result = false;
+
+                    db_result = UserIdentityMap.addGuestUserToDB(user);
+
+                    if (!db_result) {
+                        response.sendRedirect(request.getContextPath() + "/checkout.jsp?checkout=dbcustfail");
+                        return;
+                    }
+                }
+                catch (InvalidParameterException e) {
                     response.sendRedirect(request.getContextPath() + "/checkout.jsp?checkout=dbcustfail");
+                    e.printStackTrace();
                     return;
                 }
             }
