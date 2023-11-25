@@ -19,8 +19,8 @@ public class OrderRepository{
     private static Connection db_conn;
 
     public static boolean createOrder(Order order) {
-        String insertOrderRegisteredQuery = "INSERT INTO `order` (OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, UserID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        String insertOrderGuestQuery = "INSERT INTO `order` (OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, GuestID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertOrderRegisteredQuery = "INSERT INTO `order` (OrderID, OrderPayDate, TotalAmt, PayMethod, \"4CreditDigits\", BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, UserID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertOrderGuestQuery = "INSERT INTO `order` (OrderID, OrderPayDate, TotalAmt, PayMethod, \"4CreditDigits\", BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, GuestID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String insertOrderItemQuery = "INSERT INTO orderitem (OrderID, ProductSKU, Quantity) VALUES (?, ?, ?)";
         Savepoint savepoint = null;
 
@@ -110,7 +110,7 @@ public class OrderRepository{
      * @return An Order object, this will be null if no order is found with the corresponding ID
      */
     public static Order readOrderByID(int orderID) {
-        String getOrderQuery = "SELECT OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, UserID, GuestID FROM `order` WHERE OrderID = ?";
+        String getOrderQuery = "SELECT OrderPayDate, TotalAmt, PayMethod, \"4CreditDigits\", BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, UserID, GuestID FROM `order` WHERE OrderID = ?";
         String getOrderItemsQuery = "SELECT ProductSKU, Quantity FROM orderitem WHERE OrderID = ?";
         
         try {
@@ -126,7 +126,7 @@ public class OrderRepository{
 
             if (queryResult.next()) {
                 // If an order is found, extract all order information
-                Date payDate = queryResult.getDate(1);
+                Date payDate = Date.valueOf(queryResult.getString(1));
                 float totalAmount = queryResult.getFloat(2);
                 String payMethod = queryResult.getString(3);
                 int cardNum = queryResult.getInt(4);
@@ -136,7 +136,7 @@ public class OrderRepository{
                 String billPostalCode = queryResult.getString(8);
                 String shipStatus = queryResult.getString(9);
                 String trackingNum = queryResult.getString(10);
-                Date shipDate = queryResult.getDate(11);
+                Date shipDate = Date.valueOf(queryResult.getString(11));
                 String shipAddress = queryResult.getString(12);
                 String shipCity = queryResult.getString(13);
                 String shipCountry = queryResult.getString(14);
@@ -185,7 +185,7 @@ public class OrderRepository{
         if (!user.isRegisteredUser())
             throw new InvalidParameterException("Cannot get order history for guest users!");
 
-        String getOrderQuery = "SELECT OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode FROM `order` WHERE UserID = ?";
+        String getOrderQuery = "SELECT OrderID, OrderPayDate, TotalAmt, PayMethod, \"4CreditDigits\", BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode FROM `order` WHERE UserID = ?";
         String getOrderItemsQuery = "SELECT ProductSKU, Quantity FROM orderitem WHERE OrderID = ?";
         HashMap<Integer, Order> orderResults = new HashMap<>();
 
@@ -207,7 +207,7 @@ public class OrderRepository{
                 if(ordersLoaded.get(orderID) != null) {
                     continue;
                 }
-                Date payDate = queryResult.getDate(2);
+                Date payDate = Date.valueOf(queryResult.getString(2));
                 float totalAmount = queryResult.getFloat(3);
                 String payMethod = queryResult.getString(4);
                 int cardNum = queryResult.getInt(5);
@@ -217,7 +217,7 @@ public class OrderRepository{
                 String billPostalCode = queryResult.getString(9);
                 String shipStatus = queryResult.getString(10);
                 String trackingNum = queryResult.getString(11);
-                Date shipDate = queryResult.getDate(12);
+                Date shipDate = Date.valueOf(queryResult.getString(12));
                 String shipAddress = queryResult.getString(13);
                 String shipCity = queryResult.getString(14);
                 String shipCountry = queryResult.getString(15);
@@ -295,7 +295,7 @@ public class OrderRepository{
      * @return A Hashmap mapping orderID to an order object.
      */
     public static HashMap<Integer, Order> loadAllOrders(HashMap<Integer, Order> ordersLoaded){
-        String getOrderQuery = "SELECT OrderID, OrderPayDate, TotalAmt, PayMethod, 4CreditDigits, BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, GuestID, UserID FROM `order`";
+        String getOrderQuery = "SELECT OrderID, OrderPayDate, TotalAmt, PayMethod, \"4CreditDigits\", BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, GuestID, UserID FROM `order`";
         String getOrderItemsQuery = "SELECT ProductSKU, Quantity FROM orderitem WHERE OrderID = ?";
         HashMap<Integer, Order> orderResults = new HashMap<>();
 
@@ -316,7 +316,7 @@ public class OrderRepository{
                 if(ordersLoaded.get(orderID) != null) {
                     continue;
                 }
-                Date payDate = queryResult.getDate(2);
+                Date payDate = Date.valueOf(queryResult.getString(2));
                 float totalAmount = queryResult.getFloat(3);
                 String payMethod = queryResult.getString(4);
                 int cardNum = queryResult.getInt(5);
@@ -326,7 +326,7 @@ public class OrderRepository{
                 String billPostalCode = queryResult.getString(9);
                 String shipStatus = queryResult.getString(10);
                 String trackingNum = queryResult.getString(11);
-                Date shipDate = queryResult.getDate(12);
+                Date shipDate = Date.valueOf(queryResult.getString(12));
                 String shipAddress = queryResult.getString(13);
                 String shipCity = queryResult.getString(14);
                 String shipCountry = queryResult.getString(15);
