@@ -278,10 +278,6 @@ public class UserIdentityMap {
             e.printStackTrace();
             return null;
         }
-        catch(Exception e) {
-            e.printStackTrace();
-            return null;
-        }
         return null;
     }
 
@@ -313,10 +309,6 @@ public class UserIdentityMap {
             }
 
         } catch(SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return 0;
-        }
-        catch(Exception e) {
             e.printStackTrace();
             return 0;
         }
@@ -432,10 +424,6 @@ public class UserIdentityMap {
 
         }
         catch(SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-        catch(Exception e) {
             e.printStackTrace();
             return null;
         }
