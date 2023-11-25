@@ -48,7 +48,7 @@
         <div class="col-sm">
             <div class="card w-100">
                 <div class="card-body">
-                    <a href= "<%=request.getContextPath()%>/modify-username-pwd.jsp">
+                    <a href= "<%=request.getContextPath()%>/modify-pwd.jsp">
                         <h5 style="color: hsl(221, 100%, 33%)" class="card-title">Modify Passcode</h5>
                         <p class="card-text">Manage passcode</p>
                     </a>
