@@ -202,7 +202,7 @@ public class User {
         }
 
         // change the user passcode
-        return UserIdentityMap.changeUserPasscodeInDB(this.userID, newPasscode);
+        return UserIdentityMap.changeUserPasscode(this.userID, newPasscode);
     }
 
     public String getUserID() {

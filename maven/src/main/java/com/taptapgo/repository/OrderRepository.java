@@ -26,8 +26,6 @@ public class OrderRepository{
 
         try {
             // Open DB connection
-            // Class.forName("com.mysql.jdbc.Driver");
-            // db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
             Class.forName("org.sqlite.JDBC");
             URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
@@ -117,8 +115,6 @@ public class OrderRepository{
         
         try {
             // Open database connection
-            // Class.forName("com.mysql.jdbc.Driver");
-            // db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
             Class.forName("org.sqlite.JDBC");
             URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
@@ -195,8 +191,6 @@ public class OrderRepository{
 
         try {
             // Open database connection
-            // Class.forName("com.mysql.jdbc.Driver");
-            // db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
             Class.forName("org.sqlite.JDBC");
             URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
@@ -270,8 +264,6 @@ public class OrderRepository{
 
         try {
             // Open database connection
-            // Class.forName("com.mysql.jdbc.Driver");
-            // db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
             Class.forName("org.sqlite.JDBC");
             URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
@@ -309,8 +301,6 @@ public class OrderRepository{
 
         try {
             // Open database connection
-            // Class.forName("com.mysql.jdbc.Driver");
-            // db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
             Class.forName("org.sqlite.JDBC");
             URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
@@ -389,8 +379,6 @@ public class OrderRepository{
 
         try {
             // Open DB connection
-            // Class.forName("com.mysql.jdbc.Driver");
-            // db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
             Class.forName("org.sqlite.JDBC");
             URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
