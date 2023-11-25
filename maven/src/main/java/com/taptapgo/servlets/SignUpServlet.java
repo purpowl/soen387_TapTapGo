@@ -21,7 +21,6 @@ public class SignUpServlet extends HttpServlet {
             String phone = request.getParameter("phone");
             String email = request.getParameter("email");
             String passcode = request.getParameter("passcode");
-            System.out.println(passcode.length());
 
             // check passcode validity
             if ((passcode.length() < 4) || !(StringUtils.isAlphanumeric(passcode))) {
