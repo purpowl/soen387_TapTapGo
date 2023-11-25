@@ -3,6 +3,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
+import java.util.HashMap;
+
+import com.taptapgo.Product;
 
 @WebServlet(name = "logoutServlet", value = "/logout")
 public class LogoutServlet extends HttpServlet {
@@ -11,6 +14,9 @@ public class LogoutServlet extends HttpServlet {
         // log staff out
         if (session != null) {
             session.invalidate();
+            HashMap<Product, Integer> cart = new HashMap<Product, Integer>();
+            session.setAttribute("cart", cart);
+            session.setAttribute("userID", "gc" + session.getId());
         }
         response.sendRedirect("index.jsp");
     }

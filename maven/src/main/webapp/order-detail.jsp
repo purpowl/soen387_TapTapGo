@@ -19,7 +19,6 @@
     <div class="card-header my-3">View Order Detail</div>
     <div class="row">
         <input type="hidden" name="method" value="post">
-        <input type="hidden" name="slug" value="<%=slug%>">
         <div class="col-sm-12">
         <!-- Account details card-->
           <div class=" card w-100 mx-auto mt-3 mb-5">
