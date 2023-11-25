@@ -20,6 +20,13 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.44.0.0</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-mxj</artifactId>
             <version>5.0.12</version>
@@ -79,7 +86,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>credentials.json</include>
+                    <include>taptapgo.db</include>
                 </includes>
             </resource>
         </resources>

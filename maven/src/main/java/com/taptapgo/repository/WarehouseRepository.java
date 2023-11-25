@@ -1,5 +1,6 @@
 package com.taptapgo.repository;
 
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Savepoint;
@@ -22,9 +23,12 @@ public class WarehouseRepository {
 
         try {
             // Open DB connection
-            Class.forName("com.mysql.jdbc.Driver");
-            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
-            
+            // Class.forName("com.mysql.jdbc.Driver");
+            // db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+
             // Save checkpoint to rollback in case insert fail
             db_conn.setAutoCommit(false);
             savepoint = db_conn.setSavepoint();
@@ -79,9 +83,12 @@ public class WarehouseRepository {
 
         try {
             // Open DB connection
-            Class.forName("com.mysql.jdbc.Driver");
-            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
-            
+            // Class.forName("com.mysql.jdbc.Driver");
+            // db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+
             PreparedStatement pstmt1 = db_conn.prepareStatement(getProductsQuery);
             ResultSet productsResult = pstmt1.executeQuery();
 
@@ -129,9 +136,12 @@ public class WarehouseRepository {
 
         try {
             // Open DB connection
-            Class.forName("com.mysql.jdbc.Driver");
-            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
-            
+            // Class.forName("com.mysql.jdbc.Driver");
+            // db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+
             // Save checkpoint to rollback in case update fail
             db_conn.setAutoCommit(false);
             savepoint = db_conn.setSavepoint();
@@ -175,9 +185,12 @@ public class WarehouseRepository {
 
         try {
             // Open DB connection
-            Class.forName("com.mysql.jdbc.Driver");
-            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
-            
+            // Class.forName("com.mysql.jdbc.Driver");
+            // db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+
             // Save checkpoint to rollback in case update fail
             db_conn.setAutoCommit(false);
             savepoint = db_conn.setSavepoint();
@@ -263,9 +276,12 @@ public class WarehouseRepository {
 
         try {
             // Open DB connection
-            Class.forName("com.mysql.jdbc.Driver");
-            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
-            
+            // Class.forName("com.mysql.jdbc.Driver");
+            // db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+
             // Save checkpoint to rollback in case update fail
             db_conn.setAutoCommit(false);
             savepoint = db_conn.setSavepoint();
