@@ -348,7 +348,7 @@ public class UserIdentityMap {
         // hash the passcode
         String hashedPasscode = BCrypt.withDefaults().hashToString(12, newPasscode.toCharArray());
 
-        String changePasscodeQuery = "UPDATE `registeredorder` SET Passcode = ? WHERE UserID = ?";
+        String changePasscodeQuery = "UPDATE `registereduser` SET Passcode = ? WHERE UserID = ?";
         Savepoint savepoint = null;
 
         try {
