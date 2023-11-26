@@ -23,7 +23,7 @@ public class OrderRepository{
     public static boolean createOrder(Order order) {
         String insertOrderRegisteredQuery = "INSERT INTO `order` (OrderID, OrderPayDate, TotalAmt, PayMethod, \"4CreditDigits\", BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, UserID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String insertOrderGuestQuery = "INSERT INTO `order` (OrderID, OrderPayDate, TotalAmt, PayMethod, \"4CreditDigits\", BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, GuestID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        String insertOrderItemQuery = "INSERT INTO orderitem (OrderID, ProductSKU, Quantity) VALUES (?, ?, ?)";
+        String insertOrderItemQuery = "INSERT INTO orderitem (OrderID, ProductSKU, Name, Description, Price, Vendor, Slug, ImagePath, Quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         Savepoint savepoint = null;
 
         try {
@@ -68,12 +68,18 @@ public class OrderRepository{
 
                 PreparedStatement pstmt2 = db_conn.prepareStatement(insertOrderItemQuery);
                 if (!Warehouse.getInstance().removeProduct(product, amount)) {
-                    throw new SQLException();
+                    throw new SQLException("Failed to remove product from Warehouse");
                 }
 
                 pstmt2.setInt(1, order.getOrderID());
                 pstmt2.setString(2, product.getSKU());
-                pstmt2.setInt(3, amount);
+                pstmt2.setString(3, product.getName());
+                pstmt2.setString(4, product.getDescription());
+                pstmt2.setFloat(5, product.getPrice());
+                pstmt2.setString(6, product.getVendor());
+                pstmt2.setString(7, product.getSlug());
+                pstmt2.setNull(8, java.sql.Types.VARCHAR);
+                pstmt2.setInt(9, amount);
 
                 pstmt2.executeUpdate();
 
@@ -113,7 +119,7 @@ public class OrderRepository{
      */
     public static Order readOrderByID(int orderID) {
         String getOrderQuery = "SELECT OrderPayDate, TotalAmt, PayMethod, \"4CreditDigits\", BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, UserID, GuestID FROM `order` WHERE OrderID = ?";
-        String getOrderItemsQuery = "SELECT ProductSKU, Quantity FROM orderitem WHERE OrderID = ?";
+        String getOrderItemsQuery = "SELECT ProductSKU, Name, Description, Price, Vendor, Slug, Quantity FROM orderitem WHERE OrderID = ?";
         
         try {
             // Open database connection
@@ -159,8 +165,13 @@ public class OrderRepository{
 
                 while (queryResult.next()) {
                     String productSKU = queryResult.getString(1);
-                    int quantity = queryResult.getInt(2);
-                    Product product = Warehouse.getInstance().findProductBySKU(productSKU);
+                    String productName = queryResult.getString(2);
+                    String productDesc = queryResult.getString(3);
+                    Float productPrice = queryResult.getFloat(4);
+                    String productVendor = queryResult.getString(5);
+                    String slug = queryResult.getString(6);
+                    int quantity = queryResult.getInt(7);
+                    Product product = new Product(productSKU, productName, productDesc, productVendor, slug, productPrice);
                     orderItems.put(product, quantity);
                 }
                 queryResult.close();
@@ -192,7 +203,7 @@ public class OrderRepository{
             throw new InvalidParameterException("Cannot get order history for guest users!");
 
         String getOrderQuery = "SELECT OrderID, OrderPayDate, TotalAmt, PayMethod, \"4CreditDigits\", BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode FROM `order` WHERE UserID = ?";
-        String getOrderItemsQuery = "SELECT ProductSKU, Quantity FROM orderitem WHERE OrderID = ?";
+        String getOrderItemsQuery = "SELECT ProductSKU, Name, Description, Price, Vendor, Slug, Quantity FROM orderitem WHERE OrderID = ?";
         HashMap<Integer, Order> orderResults = new HashMap<>();
 
         try {
@@ -241,8 +252,13 @@ public class OrderRepository{
 
                 while (queryResult2.next()) {
                     String productSKU = queryResult2.getString(1);
-                    int quantity = queryResult2.getInt(2);
-                    Product product = Warehouse.getInstance().findProductBySKU(productSKU);
+                    String productName = queryResult2.getString(2);
+                    String productDesc = queryResult2.getString(3);
+                    Float productPrice = queryResult2.getFloat(4);
+                    String productVendor = queryResult2.getString(5);
+                    String slug = queryResult2.getString(6);
+                    int quantity = queryResult2.getInt(7);
+                    Product product = new Product(productSKU, productName, productDesc, productVendor, slug, productPrice);
                     orderItems.put(product, quantity);
                 }
 
@@ -306,7 +322,7 @@ public class OrderRepository{
      */
     public static HashMap<Integer, Order> loadAllOrders(HashMap<Integer, Order> ordersLoaded){
         String getOrderQuery = "SELECT OrderID, OrderPayDate, TotalAmt, PayMethod, \"4CreditDigits\", BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, TrackingNumber, ShipDate, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, GuestID, UserID FROM `order`";
-        String getOrderItemsQuery = "SELECT ProductSKU, Quantity FROM orderitem WHERE OrderID = ?";
+        String getOrderItemsQuery = "SELECT ProductSKU, Name, Description, Price, Vendor, Slug, Quantity FROM orderitem WHERE OrderID = ?";
         HashMap<Integer, Order> orderResults = new HashMap<>();
 
         try {
@@ -356,8 +372,13 @@ public class OrderRepository{
 
                 while (queryResult2.next()) {
                     String productSKU = queryResult2.getString(1);
-                    int quantity = queryResult2.getInt(2);
-                    Product product = Warehouse.getInstance().findProductBySKU(productSKU);
+                    String productName = queryResult2.getString(2);
+                    String productDesc = queryResult2.getString(3);
+                    Float productPrice = queryResult2.getFloat(4);
+                    String productVendor = queryResult2.getString(5);
+                    String slug = queryResult2.getString(6);
+                    int quantity = queryResult2.getInt(7);
+                    Product product = new Product(productSKU, productName, productDesc, productVendor, slug, productPrice);
                     orderItems.put(product, quantity);
                 }
 
