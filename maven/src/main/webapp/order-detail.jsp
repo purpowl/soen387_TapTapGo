@@ -231,6 +231,8 @@
         <div class="col-sm-12">
             <% if (session.getAttribute("isStaff") != null) { %>
             <a href="<%=request.getContextPath()%>/manage-order.jsp" class="btn btn-secondary">Back</a>
+            <% } else if (session.getAttribute("isRegisteredUser") != null) { %>
+            <a href="<%=request.getContextPath()%>/user-orders.jsp" class="btn btn-secondary">Back</a>
             <% } else { %>
             <a href="<%=request.getContextPath()%>/orders.jsp" class="btn btn-secondary">Back</a>
             <% } %>
