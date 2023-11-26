@@ -59,7 +59,7 @@
     
     <!-- Order ID Table -->
     <div class="row mb-3">
-        <div class="col-lg-12 my-3">
+        <div class="col-sm-12 my-3">
             <div class="card">
                 <div class="card-body p-0 table-responsive">
                     <!-- Order Item table -->
@@ -118,17 +118,17 @@
 
     <!-- Show Customer information on the order for staff -->
     <%  if (session.getAttribute("isStaff") != null) { %>
-    <div class="row">
+    <div class="row mb-3">
         <input type="hidden" name="method" value="post">
         <div class="col-sm-12">
             <!-- Account details card-->
-            <div class=" card w-100 mx-auto mt-3 mb-5">
+            <div class=" card w-100 mx-auto mt-3 mb-3">
                 <div class="card-body">
                     <form>
                     <fieldset disabled>
                         <!-- Form Row-->
                         <h4 class="mb-3">Order</h4>
-                        <div class="row mb-3">
+                        <div class="row mb-4">
                             <div class="col-md-6">
                                 <label class="small mb-1" for="OrderID">Order #</label>
                                 <input class="form-control" id="OrderID" type="text" value="TODO">
@@ -151,13 +151,13 @@
                             </div>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label class="small mb-1" for="CustomerID">Customer #</label>
                             <input class="form-control" id="CustomerID" type="text" value="TODO">
                         </div>
 
                         <h4 class="mb-3">Payment</h4>
-                        <div class="row mb-3">
+                        <div class="row mb-4">
                             <div class="col-md-6">
                                 <label class="small mb-1" for="PaymentMethod">Payment Method</label>
                                 <input class="form-control" id="PaymentMethod" type="text" value="TODO">
@@ -173,7 +173,7 @@
                             <label class="small mb-1" for="BillingAddress">Billing Address</label>
                             <input class="form-control" id="BillingAddress" type="text" value="TODO">
                         </div>
-                        <div class="row mb-3">
+                        <div class="row mb-4">
                             <div class="col-md-4">
                                 <label class="small mb-1" for="BillCity">City</label>
                                 <input class="form-control" id="BillCity" type="text" value="TODO">
@@ -219,7 +219,6 @@
                             </div>
                         </div>
                     </fieldset>
-                    
                     </form>
                 </div>
             </div>
