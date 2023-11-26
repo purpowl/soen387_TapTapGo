@@ -4,8 +4,6 @@ import com.taptapgo.exceptions.DatabaseException;
 import com.taptapgo.exceptions.InvalidParameterException;
 import com.taptapgo.exceptions.ProductAreadyExistsException;
 import com.taptapgo.exceptions.ProductNotFoundException;
-import com.taptapgo.repository.OrderIdentityMap;
-import com.taptapgo.repository.UserIdentityMap;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,7 +13,7 @@ import java.util.Map.Entry;
 
 public class Staff {
 
-    public void createProduct(String SKU, String name, float price, String vendor, String desc, int amount) throws ProductAreadyExistsException, InvalidParameterException {
+    public static void createProduct(String SKU, String name, float price, String vendor, String desc, int amount) throws ProductAreadyExistsException, InvalidParameterException {
         // check product doesn't already exist in warehouse
         if (Warehouse.getInstance().findProductBySKU(SKU) != null) 
             throw new ProductAreadyExistsException();
@@ -29,7 +27,7 @@ public class Staff {
         }
     }
 
-    public void updateProduct(String slug, HashMap<String, Object> fieldsToUpdate) throws ProductNotFoundException, InvalidParameterException, DatabaseException {
+    public static void updateProduct(String slug, HashMap<String, Object> fieldsToUpdate) throws ProductNotFoundException, InvalidParameterException, DatabaseException {
         Product productToUpdate = Warehouse.getInstance().findProductBySlug(slug);
         // check if product exists in warehouse
         if (productToUpdate == null) throw new ProductNotFoundException();
@@ -72,7 +70,7 @@ public class Staff {
         }
     }
 
-    public void deleteProduct(String slug) throws ProductNotFoundException{
+    public static void deleteProduct(String slug) throws ProductNotFoundException{
         Product productToDelete = Warehouse.getInstance().findProductBySlug(slug);
 
         if (productToDelete == null) throw new ProductNotFoundException();
@@ -81,7 +79,7 @@ public class Staff {
         }
     }
 
-    public String getProductCatalog() throws IOException{
+    public static String getProductCatalog() throws IOException{
         StringBuilder stringBuilder = new StringBuilder();
         // get product list
         HashMap<Product, Integer> productList = Warehouse.getInstance().getProductList();
@@ -107,7 +105,7 @@ public class Staff {
         return stringBuilder.toString();
     }
 
-    private String escapeSpecialCharacters(String data) {
+    private static String escapeSpecialCharacters(String data) {
         if (data != null && !data.isEmpty()) {
             data = data.replaceAll("\\R", " ");
             if (data.contains(",") || data.contains("\"") || data.contains("'")) {

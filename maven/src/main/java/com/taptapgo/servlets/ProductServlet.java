@@ -7,7 +7,6 @@ import com.taptapgo.Product;
 import com.taptapgo.Staff;
 import com.taptapgo.Warehouse;
 
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -62,11 +61,8 @@ public class ProductServlet extends HttpServlet {
                 updateFields.put("amount", amount_str);
             }
 
-            // get staff attribute to create new product
-            ServletContext context = getServletContext();
-            Staff staff = (Staff) context.getAttribute("staff");
             try {
-                staff.updateProduct(slug, updateFields);
+                Staff.updateProduct(slug, updateFields);
 
                 // output message for successful product modification and reset page
                 response.sendRedirect(request.getContextPath() + "/manage-product.jsp?modify=success");
@@ -76,12 +72,8 @@ public class ProductServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/manage-product.jsp?modify=fail");
             }
         } else if (method.equals("delete")) {
-            /* Delete the product for DELETE method */
-            ServletContext context = getServletContext();
-            Staff staff = (Staff) context.getAttribute("staff");
-
             try {
-                staff.deleteProduct(slug);
+                Staff.deleteProduct(slug);
 
                 // output message for successful product deletion and reset page
                 response.sendRedirect(request.getContextPath() + "/manage-product.jsp?delete=success");

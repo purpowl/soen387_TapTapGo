@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -21,10 +20,7 @@ public class DownloadCatalogServlet extends HttpServlet {
         response.setHeader("Content-Type", "text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=\"Product_List.csv\"");
 
-        // get staff attribute then get product list String
-        ServletContext context = getServletContext();
-        Staff staff = (Staff) context.getAttribute("staff");
-        String fileContents = staff.getProductCatalog();
+        String fileContents = Staff.getProductCatalog();
         
         try{
             // send response to download csv

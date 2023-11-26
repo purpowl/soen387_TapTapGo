@@ -3,7 +3,7 @@
     // only staff can access this page, redirect to login page otherwise
     session = request.getSession(false);
     if (session == null || session.getAttribute("isStaff") == null) {
-        response.sendRedirect("login.jsp");
+        response.sendRedirect(request.getContextPath() + "/login.jsp");
     }
 %>
 <html>

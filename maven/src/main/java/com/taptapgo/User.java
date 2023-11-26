@@ -1,7 +1,12 @@
 package com.taptapgo;
 
+import com.taptapgo.exceptions.InsufficientInventoryException;
 import com.taptapgo.exceptions.InvalidParameterException;
+import com.taptapgo.exceptions.ProductNotFoundException;
 import com.taptapgo.repository.UserIdentityMap;
+
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class User {
@@ -11,8 +16,9 @@ public class User {
     protected String lastName;
     protected String phone;
     protected String email;
-    protected Customer customer;
-    protected Staff staff;
+    protected HashMap<Product, Integer> cart;
+    protected boolean isStaff;
+    protected boolean isRegisteredUser;
 
     /**
      * private User constructor to create guest user with only session ID
@@ -25,10 +31,8 @@ public class User {
         this.lastName = null;
         this.phone = null;
         this.email = null;
-        // create guest customer instance
-        this.customer = new Customer("guest");
-        // guest cannot be staff
-        this.staff = null;
+        this.isStaff = false;
+        this.isRegisteredUser = false;
     }
 
     /**
@@ -46,10 +50,9 @@ public class User {
         this.lastName = lastName;
         this.phone = phone;
         this.email = email;
-        // create guest customer instance
-        this.customer = new Customer("guest");
         // guest cannot be staff
-        this.staff = null;
+        this.isStaff = false;
+        this.isRegisteredUser = false;
     }
 
     /**
@@ -68,15 +71,8 @@ public class User {
         this.lastName = lastName;
         this.phone = phone;
         this.email = email;
-        // create registered customer instance
-        this.customer = new Customer("registered");
-
-        // if user is also staff, create staff instance
-        if (isStaff) {
-            this.staff = new Staff();
-        }
-        else
-            this.staff = null;
+        this.isStaff = isStaff;
+        this.isRegisteredUser = true;
     }
 
     /**
@@ -95,15 +91,8 @@ public class User {
         this.lastName = lastName;
         this.phone = phone;
         this.email = email;
-        // create registered customer instance
-        this.customer = new Customer("registered");
-
-        // if user is also staff, create staff instance
-        if (isStaff) {
-            this.staff = new Staff();
-        }
-        else
-            this.staff = null;
+        this.isStaff = isStaff;
+        this.isRegisteredUser = true;
     }
 
     /**
@@ -164,7 +153,7 @@ public class User {
      * @return true if registered, false if not
      */
     public boolean isRegisteredUser() {
-        return this.getCustomer().customerTypeToString().equals("registered");
+        return this.isRegisteredUser;
     }
 
     /**
@@ -172,7 +161,7 @@ public class User {
      * @return true if staff, false if not
      */
     public boolean isStaff() {
-        return this.staff != null;
+        return this.isStaff;
     }
 
     /**
@@ -213,6 +202,78 @@ public class User {
         registeredIDGen = new AtomicInteger(maxID);
     }
 
+    public HashMap<Product, Integer> getCart() {
+        return this.cart;
+    }
+
+    public void loadCart(HashMap<Product, Integer> cart) {
+        this.cart = cart;
+    }
+
+    // find the product and its quantity in cart by SKU
+    public Product findCartProductEntryBySKU(String SKU) {
+        for (Entry<Product, Integer> entry : cart.entrySet()) {
+            Product productToFind = entry.getKey();
+            if (productToFind != null && productToFind.getSKU().equals(SKU)) return productToFind;
+        }
+        return null;
+    }
+
+    public void addProductToCart(String SKU, int amount) throws InvalidParameterException, InsufficientInventoryException, ProductNotFoundException {
+        // check if amount is postive
+        if (amount <= 0) throw new InvalidParameterException("Product amount must be greater than 0.");
+
+        // check that the product exists in the warehouse
+        Product product = Warehouse.getInstance().findProductBySKU(SKU);
+        if (product == null) {
+            throw new ProductNotFoundException();
+        }
+        // if product exists, check that the amount to add does not exceed warehouse inventory
+        else {
+            Product productInCart = findCartProductEntryBySKU(SKU);
+            Integer amountInWarehouse = Warehouse.getInstance().getProductInventoryBySKU(SKU);
+            if ((productInCart != null && cart.get(productInCart)+amount <= amountInWarehouse) || (productInCart == null && amount <= amountInWarehouse)) {
+                // add to cart
+                if (productInCart != null) cart.merge(productInCart, amount, (oldAmount, newAmount) -> oldAmount + newAmount);
+                else cart.put(Warehouse.getInstance().findProductBySKU(SKU), amount);
+            }
+            else throw new InsufficientInventoryException();
+        }
+    }
+
+    public void removeProductFromCart(String SKU) throws ProductNotFoundException {
+        // check if cart is empty
+        if (!cart.isEmpty()) {
+            Product productInCart = findCartProductEntryBySKU(SKU);
+            // remove product if it's found in cart
+            if (productInCart == null) throw new ProductNotFoundException("Product not found in cart.");
+            else cart.remove(productInCart);
+        }
+    }
+
+    public void modifyProductCountInCart(String SKU, int amount) throws InvalidParameterException, ProductNotFoundException, InsufficientInventoryException {
+        // check if amount is positive
+        if (amount <= 0) throw new InvalidParameterException("Product amount must be greater than 0.");
+
+        // check if cart is empty
+        if (!cart.isEmpty()) {
+            Product productInCart = findCartProductEntryBySKU(SKU);
+
+            // check if product exists in cart
+            if (productInCart == null) throw new ProductNotFoundException("Product not found in cart.");
+            else {
+                // check if the new amount does not exceed warehouse inventory
+                Integer amountInWarehouse = Warehouse.getInstance().getProductInventoryBySKU(SKU);
+                if (amount > amountInWarehouse) throw new InsufficientInventoryException();
+                else cart.put(productInCart, amount);
+            }
+        }
+    }
+
+    public void clearCart() {
+        this.cart = new HashMap<>();
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -240,14 +301,6 @@ public class User {
     }
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Staff getStaff() {
-        return (staff != null) ? staff : null;
-    }
-
-    public Customer getCustomer() {
-        return (customer != null) ? customer : null;
     }
 
     @Override
