@@ -119,6 +119,16 @@ public class Product {
         return this.SKU.equals(anotherProduct.SKU);
     }
 
+    @Override
+    public String toString(){
+        String output = "";
+        output += "Product: " + name + "\n";
+        output += "Description: " + description + "\n";
+        output += "Price: " + Float.toString(price) + "\n";
+        
+        return output;
+    }
+
     /**
      * A utility function to round up prices
      * @param value the value/price that you want to round up (to 2 decimal places)
