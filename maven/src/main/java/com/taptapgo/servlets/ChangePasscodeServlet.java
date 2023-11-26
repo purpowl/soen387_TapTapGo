@@ -47,6 +47,7 @@ public class ChangePasscodeServlet extends HttpServlet {
                 e.printStackTrace();
                 // output fail message
                 response.sendRedirect(request.getContextPath() + "/modify-pwd.jsp?modify=fail");
+                return;
             }
         }
         else {

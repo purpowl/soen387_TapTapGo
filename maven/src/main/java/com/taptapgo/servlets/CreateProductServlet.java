@@ -1,7 +1,6 @@
 package com.taptapgo.servlets;
 
 import java.io.IOException;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import com.taptapgo.Staff;
@@ -22,10 +21,6 @@ public class CreateProductServlet extends HttpServlet {
             String vendor = request.getParameter("vendor");
             String amount_str = request.getParameter("amount");
 
-            // get staff attribute to create new product
-            ServletContext context = getServletContext();
-            Staff staff = (Staff) context.getAttribute("staff");
-
             int amount = 0;
             float price = 0;
 
@@ -43,7 +38,7 @@ public class CreateProductServlet extends HttpServlet {
                 }
             }
 
-            staff.createProduct(SKU, name, price, vendor, desc, amount);
+            Staff.createProduct(SKU, name, price, vendor, desc, amount);
 
         } catch (Exception e) {
             // output message for failed product creation and redirect to products page

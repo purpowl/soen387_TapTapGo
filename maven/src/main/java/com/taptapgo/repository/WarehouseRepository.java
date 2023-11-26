@@ -277,19 +277,21 @@ public class WarehouseRepository {
             db_conn.setAutoCommit(false);
             savepoint = db_conn.setSavepoint();
 
-            // Load the values into prepared statement
-            PreparedStatement pstmt = db_conn.prepareStatement(updateProductQuery);
-            for (int i = 0; i < valueList.size(); i++) {
-                if(priceValueIndex != null && priceValueIndex == i){
-                    Float priceValue = Float.parseFloat(valueList.get(i).toString());
-                    pstmt.setFloat((i+1), priceValue);
-                } else {
-                    String value = valueList.get(i).toString();
-                    pstmt.setString((i+1), value);
+            // Check if product info update is needed
+            if (valueList.size() > 0) {
+                PreparedStatement pstmt = db_conn.prepareStatement(updateProductQuery);
+                for (int i = 0; i < valueList.size(); i++) {
+                    if(priceValueIndex != null && priceValueIndex == i){
+                        Float priceValue = Float.parseFloat(valueList.get(i).toString());
+                        pstmt.setFloat((i+1), priceValue);
+                    } else {
+                        String value = valueList.get(i).toString();
+                        pstmt.setString((i+1), value);
+                    }
                 }
+                pstmt.setString(valueList.size()+1, productSKU);
+                pstmt.executeUpdate();
             }
-            pstmt.setString(valueList.size()+1, productSKU);
-            pstmt.executeUpdate();
 
             // Check if amount update is needed
             if (amount != null) {

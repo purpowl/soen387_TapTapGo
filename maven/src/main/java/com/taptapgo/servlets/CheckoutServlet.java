@@ -74,7 +74,7 @@ public class CheckoutServlet extends HttpServlet{
             response.sendRedirect(request.getContextPath() + "/cart.jsp");
             return;
         }
-        user.getCustomer().loadCart(cart);
+        user.loadCart(cart);
 
         String billAddress = request.getParameter("billAddress");
         String billCity = request.getParameter("billCity");
@@ -110,7 +110,7 @@ public class CheckoutServlet extends HttpServlet{
             response.sendRedirect(request.getContextPath() + "/checkout.jsp?checkout=dborderfail");
         } else {
             currentSession.setAttribute("order", newOrder);
-            user.getCustomer().clearCart();
+            user.clearCart();
             currentSession.setAttribute("cart", new HashMap<>());
             response.sendRedirect(request.getContextPath() + "/order-confirmation.jsp");
         }
