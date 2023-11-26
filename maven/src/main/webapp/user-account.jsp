@@ -24,7 +24,7 @@
         <div class="col-sm">
             <div class="card w-100">
                 <div class="card-body">
-                    <a href="<%=request.getContextPath()%>/orders">
+                    <a href="<%=request.getContextPath()%>/user-orders.jsp">
                         <h5 style="color: hsl(221, 100%, 33%)" class="card-title">Your Orders</h5>
                         <p class="card-text">Track orders and view all your past orders</p>
                     </a>

@@ -43,31 +43,26 @@
 
 <div class="container mb-5">
 
-  <!-- Search box -->
-  <div class="d-flex justify-content-end">
-    <form class="form-inline">
-      <input class="form-control mr-sm-2" type="search" placeholder="Enter OrderID to search" aria-label="Search">
-      <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
-    </form>
-  </div>
-
   <!-- Page Indicator -->
   <div class="card-header my-3 ">Order Details</div>
   
-  <!-- Container Wrapper -->
+    <!-- Container Wrapper -->
   <div class="row">
-    <div class="col-lg-12">
-      <div class="card mt-4">
+    <div class="col-lg-12 my-3">
+      <div class="card">
         <div class="card-body p-0 table-responsive">
           <!-- Order Info table -->
           <table class="table mb-0">
             <thead class="table-dark">
               <tr>
-                <th scope="col">ORDER ID</th>
-                <th scope="col">ORDER PLACED</th>
+                <th scope="col">ORDER #</th>
+                <th scope="col">PAY DATE</th>
                 <th scope="col">TOTAL</th>
                 <th scope="col">SHIP TO</th>
                 <th scope="col">ORDER STATUS</th>
+                <th scope="col">TRACKING #</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
@@ -76,24 +71,26 @@
                   Order order = orderEntry.getValue();
               %>
               <tr>
-                <td><%=order.getOrderID()%></td> <!-- TODO -->
-                <td><%=formatter.format(order.getPayDate())%></td> <!-- TODO-->
-                <td>$<%=Product.roundPrice(order.getTotalPrice())%></td> <!-- TODO-->
-                <td><%=order.getShippingAddress()%></td> <!-- TODO: Address without City, Country, Postal Code-->
-                <td><%=order.shipStatusToString()%></td><!-- TODO-->
-              </tr>
-              <!-- For each product in the cart, display the image and the description -->
-              <% 
-                  for (Map.Entry<Product, Integer> productEntry : order.getOrderProducts().entrySet()) {
-                    Product product = productEntry.getKey();
-              %>
-              <tr>
-                  <th><img src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="product" class="" width="150"></th>  <!-- TODO -->
-                  <td style="vertical-align: middle;"><%=product.getName()%></td> <!-- TODO -->
-                  <td colspan="3" style="vertical-align: middle;"><%=product.getDescription()%></td> <!-- TODO -->
-              </tr>
-              <% 
+                <td><span class="badge badge-success"><%=order.getOrderID()%></span></td>
+                <td><%=formatter.format(order.getPayDate())%></td>
+                <td>$<%=Product.roundPrice(order.getTotalPrice())%></td>
+                <td><%=order.getShippingAddress()%></td>
+                <td><%=order.shipStatusToString()%></td>
+                <%
+                  if (order.getTrackingNumber() == null) {
+                %>
+                  <td>N/A</td>
+                <%
+                  } else {
+                %>
+                  <td><%=order.getTrackingNumber()%></td>
+                <%
                   }
+                %>
+                <!-- View Order Detail button -->
+                <td> <a href="<%=request.getContextPath()%>/order-detail.jsp?orderID=<%=order.getOrderID()%>" class="btn btn-sm btn-outline-secondary">View order</a></td> 
+              </tr>
+              <%
                 }
               %>
             </tbody>

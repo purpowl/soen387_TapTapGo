@@ -63,6 +63,7 @@
                 <th scope="col">ORDER STATUS</th>
                 <th scope="col">TRACKING #</th>
                 <th scope="col"></th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
@@ -92,6 +93,11 @@
                 %>
                 <!-- View Order Detail button -->
                 <td> <a href="<%=request.getContextPath()%>/order-detail.jsp?orderID=<%=order.getOrderID()%>" class="btn btn-sm btn-outline-secondary">View order</a></td> 
+                <!-- Registed user can see the link "Claim order" to claim order-->
+                <% if (session.getAttribute("isRegisteredUser") != null) { %>
+                  <!-- Claim Order button -->
+                  <td> <a style="background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" class="btn btn-sm">Claim order</a></td> <!-- TODO: Add logic to Claim order button -->
+                <% } %>
               </tr>
               <%
                 }
