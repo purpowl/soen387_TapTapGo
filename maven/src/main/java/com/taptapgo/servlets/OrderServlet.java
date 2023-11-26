@@ -16,12 +16,8 @@ public class OrderServlet extends HttpServlet{
     
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
         HttpSession currentSession = request.getSession();
-        Object staff_object = currentSession.getAttribute("staff");
-        Object registeredUser_object = currentSession.getAttribute("registered_user");
 
-        if(registeredUser_object != null) {
-            response.sendRedirect(request.getContextPath() + "/user-orders.jsp");
-        } else if (staff_object != null) {
+        if (currentSession.getAttribute("isStaff") != null) {
             response.sendRedirect(request.getContextPath() + "/ship-orders.jsp");
         } else {
             response.sendRedirect(request.getContextPath() + "/orders.jsp");

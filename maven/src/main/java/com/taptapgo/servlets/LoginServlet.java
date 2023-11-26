@@ -29,6 +29,7 @@ public class LoginServlet extends HttpServlet {
                 // set user related session attributes
                 session.setAttribute("isRegisteredUser", true);
                 session.setAttribute("registered_user", user);
+                session.setAttribute("userID", userID);
 
                 // set staff related session attributes
                 if (user.isStaff()) {

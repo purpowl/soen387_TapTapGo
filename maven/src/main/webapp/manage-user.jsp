@@ -1,6 +1,4 @@
 <%@ page import="com.taptapgo.User" %>
-<%@ page import="com.taptapgo.Staff" %>
-<%@ page import="com.taptapgo.Customer" %>
 <%@ page import="com.taptapgo.repository.UserIdentityMap" %>
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.Map" %>
@@ -9,8 +7,11 @@
   // only staff can access this page, redirect to login page otherwise
   session = request.getSession(false);
   if (session == null || session.getAttribute("isStaff") == null) {
-    response.sendRedirect("login.jsp");
+    response.sendRedirect(request.getContextPath() + "/login.jsp");
   }
+
+  HashMap<String, User> allUsers = UserIdentityMap.loadAllUsers();
+  String currentUserID = (String) session.getAttribute("userID");
 %>
 <html>
 <head>
@@ -42,7 +43,6 @@
           <table class="table mb-0">
             <thead class="table-dark">
               <tr>
-                <th scope="col">USER ID</th>
                 <th scope="col">NAME</th>
                 <th scope="col">ROLE</th>
                 <th scope="col">EMAIL</th>
@@ -51,23 +51,44 @@
               </tr>
             </thead>
             <tbody>
+              <%
+                for (Map.Entry<String, User> user_entry : allUsers.entrySet()) {
+                  User user = user_entry.getValue();
+                  if (user.getUserID().equals(currentUserID)) {
+                    continue;
+                  }
+              %>
               <tr>
-                <td><span class="badge badge-success"></span>User ID</td>
-                <td>First Name + Last Name</td>
-                <td>Role</td>
-                <td>Email</td>
-                <td>Phone</td>
+                <td><%=user.getFirstName() + " " + user.getLastName()%></td>
+                <%
+                  if (user.isStaff()) {
+                %>
+                    <td>Staff</td>
+                <% } else { %>
+                    <td>Customer</td>
+                <% } %>
+                <td><%=user.getEmail()%></td>
+                <td><%=user.getPhone()%></td>
                 <!-- Remove Staff/Make Staff button-->
-                <%  if (session.getAttribute("isStaff") != null) { %>
+                <%  if (user.isStaff()) { %>
                 <td>
-                  <button class="btn btn-sm btn-outline-danger">Remove Staff</button>
+                  <form class="mb-0" action="<%=request.getContextPath()%>/staff" method="post">
+                    <input type="hidden" name="userID" value="<%=user.getUserID()%>">
+                    <input type="hidden" name="action" value="revoke">
+                    <button class="btn btn-sm btn-outline-danger" type="submit">Remove Staff</button>
+                  </form>
                 </td>
                 <% } else { %>
                 <td>
-                  <button class="btn btn-sm btn-outline-secondary">Make Staff</button>
+                  <form class="mb-0" action="<%=request.getContextPath()%>/staff" method="post">
+                    <input type="hidden" name="userID" value="<%=user.getUserID()%>">
+                    <input type="hidden" name="action" value="promote">
+                    <button class="btn btn-sm btn-outline-secondary" type="submit">Make Staff</button>
+                  </form>
                 </td>
                 <% } %>
               </tr>
+              <% } %>
             </tbody>
           </table>
         </div>

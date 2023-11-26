@@ -158,4 +158,20 @@ public class UserIdentityMap {
 
         return instance.userMap;
     }
+
+    public static synchronized boolean setStaff(String userID, boolean isStaff) {
+        User userInMemory = UserIdentityMap.getInstance().userMap.get(userID);
+
+        if(userInMemory != null) {
+            if(UserRepository.setStaff(userID, isStaff)) {
+                userInMemory.setStaff(isStaff);
+
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return UserRepository.setStaff(userID, isStaff);
+        }
+    }
 }
