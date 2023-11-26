@@ -51,8 +51,10 @@ public class OrderServlet extends HttpServlet{
                 e.printStackTrace();
                 if (isStaff) {
                     response.sendRedirect(request.getContextPath() + "/ship-orders.jsp?search=fail");
+                    return;
                 } else {
                     response.sendRedirect(request.getContextPath() + "/orders.jsp?search=fail");
+                    return;
                 }
             }
             

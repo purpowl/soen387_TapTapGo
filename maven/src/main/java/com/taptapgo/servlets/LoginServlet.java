@@ -42,7 +42,7 @@ public class LoginServlet extends HttpServlet {
                 session.setMaxInactiveInterval(30 * 60);
 
                 // redirect to user account page
-                response.sendRedirect("user-account.jsp");
+                response.sendRedirect(request.getContextPath() + "/user-account.jsp");
             }
             catch (InvalidParameterException e) {
                 e.printStackTrace();

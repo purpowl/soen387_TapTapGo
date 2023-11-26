@@ -80,7 +80,7 @@
     %>
     <div class="row">
         <div class="col-12">
-            <p style="color: red;">Product successfully modified!</p>
+            <p style="color: red;">Failed to delete product!</p>
         </div>
     </div>
     <%

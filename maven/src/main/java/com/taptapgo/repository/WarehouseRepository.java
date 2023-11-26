@@ -84,6 +84,7 @@ public class WarehouseRepository {
             Class.forName("org.sqlite.JDBC");
             URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+            System.out.println("Database URL: " + dbUrl.toString());
 
             PreparedStatement pstmt1 = db_conn.prepareStatement(getProductsQuery);
             ResultSet productsResult = pstmt1.executeQuery();

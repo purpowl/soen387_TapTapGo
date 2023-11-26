@@ -87,6 +87,7 @@ public class ProductServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/products.jsp?delete=success");
             } catch (Exception e) {
                 // output message if there's an issue deleting product and reset page
+                e.printStackTrace();
                 response.sendRedirect(request.getContextPath() + "/products.jsp?delete=fail");
             }
         }

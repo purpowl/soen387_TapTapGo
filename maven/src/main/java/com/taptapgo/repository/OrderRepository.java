@@ -8,6 +8,8 @@ import java.sql.Savepoint;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
+
+
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.Date;
@@ -136,7 +138,11 @@ public class OrderRepository{
                 String billPostalCode = queryResult.getString(8);
                 String shipStatus = queryResult.getString(9);
                 String trackingNum = queryResult.getString(10);
-                Date shipDate = Date.valueOf(queryResult.getString(11));
+                String shipDate_string = queryResult.getString(11);
+                Date shipDate = null;
+                if (shipDate_string != null) {
+                    shipDate = Date.valueOf(shipDate_string);
+                }
                 String shipAddress = queryResult.getString(12);
                 String shipCity = queryResult.getString(13);
                 String shipCountry = queryResult.getString(14);
@@ -217,7 +223,11 @@ public class OrderRepository{
                 String billPostalCode = queryResult.getString(9);
                 String shipStatus = queryResult.getString(10);
                 String trackingNum = queryResult.getString(11);
-                Date shipDate = Date.valueOf(queryResult.getString(12));
+                String shipDate_string = queryResult.getString(12);
+                Date shipDate = null;
+                if (shipDate_string != null) {
+                    shipDate = Date.valueOf(shipDate_string);
+                }
                 String shipAddress = queryResult.getString(13);
                 String shipCity = queryResult.getString(14);
                 String shipCountry = queryResult.getString(15);
@@ -326,7 +336,11 @@ public class OrderRepository{
                 String billPostalCode = queryResult.getString(9);
                 String shipStatus = queryResult.getString(10);
                 String trackingNum = queryResult.getString(11);
-                Date shipDate = Date.valueOf(queryResult.getString(12));
+                String shipDate_string = queryResult.getString(12);
+                Date shipDate = null;
+                if (shipDate_string != null) {
+                    shipDate = Date.valueOf(shipDate_string);
+                }
                 String shipAddress = queryResult.getString(13);
                 String shipCity = queryResult.getString(14);
                 String shipCountry = queryResult.getString(15);

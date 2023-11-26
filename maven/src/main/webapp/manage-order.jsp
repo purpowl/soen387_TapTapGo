@@ -46,9 +46,9 @@
               <tr>
                 <th scope="col">ORDER #</th>
                 <th scope="col">ORDER PLACED</th>
+                <th scope="col">TOTAL PRICE</th>
                 <th scope="col">SHIP TO</th>
                 <th scope="col">ORDER STATUS</th>
-                <th scope="col">SHIP DATE</th>
                 <th scope="col">TRACKING #</th>
               </tr>
             </thead>
@@ -108,7 +108,7 @@
                 %>
                 <td>
                     <a href="<%=request.getContextPath()%>/order-detail.jsp">
-                        <button class="btn btn-secondary btn-block">View order detail</button>
+                        <button class="btn btn-secondary btn-block">View detail</button>
                     </a>
                 </td> 
                 <td colspan="4"></td> 

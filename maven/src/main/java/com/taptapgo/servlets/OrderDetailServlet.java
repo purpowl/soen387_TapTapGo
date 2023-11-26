@@ -19,33 +19,39 @@ public class OrderDetailServlet extends HttpServlet{
         boolean isStaff = currentSession.getAttribute("staff") != null;
 
         Integer orderID = null;
-            // Error handling for incorrect format orderID
-            try {
-                orderID = Integer.parseInt(orderID_str);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                if (isStaff) {
-                    response.sendRedirect(request.getContextPath() + "/ship-orders.jsp?search=fail");
-                } else {
-                    response.sendRedirect(request.getContextPath() + "/orders.jsp?search=fail");
-                }
-            }
-            
-            Order order = OrderIdentityMap.getOrderByID(orderID);
-            if (order == null) {
-                if(isStaff) {
-                    response.sendRedirect(request.getContextPath() + "/ship-orders.jsp?search=fail");
-                } else {
-                    response.sendRedirect(request.getContextPath() + "/orders.jsp?search=fail");
-                }
+        // Error handling for incorrect format orderID
+        try {
+            orderID = Integer.parseInt(orderID_str);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            if (isStaff) {
+                response.sendRedirect(request.getContextPath() + "/ship-orders.jsp?search=fail");
+                return;
             } else {
-                currentSession.setAttribute("order", order);
-
-                if(isStaff) {
-                    response.sendRedirect(request.getContextPath() + "/ship-orders.jsp?search=success");
-                } else {
-                    response.sendRedirect(request.getContextPath() + "/orders.jsp?search=success");
-                }
+                response.sendRedirect(request.getContextPath() + "/orders.jsp?search=fail");
+                return;
             }
+        }
+        
+        Order order = OrderIdentityMap.getOrderByID(orderID);
+        if (order == null) {
+            if(isStaff) {
+                response.sendRedirect(request.getContextPath() + "/ship-orders.jsp?search=fail");
+                return;
+            } else {
+                response.sendRedirect(request.getContextPath() + "/orders.jsp?search=fail");
+                return;
+            }
+        } else {
+            currentSession.setAttribute("order", order);
+
+            if(isStaff) {
+                response.sendRedirect(request.getContextPath() + "/ship-orders.jsp?search=success");
+                return;
+            } else {
+                response.sendRedirect(request.getContextPath() + "/orders.jsp?search=success");
+                return;
+            }
+        }
     }
 }

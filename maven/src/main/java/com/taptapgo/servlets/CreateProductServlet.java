@@ -47,7 +47,9 @@ public class CreateProductServlet extends HttpServlet {
 
         } catch (Exception e) {
             // output message for failed product creation and redirect to products page
+            e.printStackTrace();
             response.sendRedirect(request.getContextPath() + "/products.jsp?create=fail");
+            return;
         }
 
         // output message for successful product creation and redirect to products page
