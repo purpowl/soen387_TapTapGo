@@ -14,7 +14,7 @@
 
     // reference to product
     Product product = (Product) warehouse.findProductBySlug(slug);
-    int inventory = (int) warehouse.getProductInventoryBySlug(slug);
+    int inventory = warehouse.getProductInventoryBySlug(slug);
 
 %>
 <html>
