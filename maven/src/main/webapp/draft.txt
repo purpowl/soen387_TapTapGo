@@ -48,3 +48,15 @@
                   }
                 }
               %>
+
+
+
+
+<%
+    // both customer and staff can access. Staff view has additional table showing customer information. Customer only see order and order items
+    session = request.getSession(false);
+    if (session == null || session.getAttribute("isStaff") == null) {
+        response.sendRedirect("login.jsp");
+    }
+
+%>
