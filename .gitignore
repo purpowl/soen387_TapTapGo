@@ -109,3 +109,4 @@ deploy.sh
 *.class
 backend/Java_Build/*
 backend/servlet/build/*
+*.bat

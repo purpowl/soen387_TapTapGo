@@ -110,6 +110,7 @@ public class UserIdentityMap {
 
     /**
      * Update the information for a user
+     * 
      * @param userID user we want to update information for
      * @param firstName the new first name to be set. This field can be Null if user doesn't want to change first name.
      * @param lastName the new last name to be set. This field can be Null if user doesn't want to change last name.
@@ -141,5 +142,18 @@ public class UserIdentityMap {
         } else {
             return UserRepository.updateUserInfo(userID, firstName, lastName, phone, email);
         }
+    }
+
+    /**
+     * Load all users from database into memory
+     * 
+     * @return A HashMap mapping each userID to an User object
+     */
+    public static synchronized HashMap<String, User> loadAllUsers() {
+        HashMap<String, User> usersFromDB = UserRepository.loadAllUsers(UserIdentityMap.getInstance().userMap);
+
+        instance.userMap.putAll(usersFromDB);
+
+        return instance.userMap;
     }
 }

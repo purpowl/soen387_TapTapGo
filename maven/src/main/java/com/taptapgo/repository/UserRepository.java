@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.taptapgo.User;
 import com.taptapgo.exceptions.InvalidParameterException;
@@ -323,6 +324,7 @@ public class UserRepository {
 
     /**
      * check if a given passcode exists in database
+     * 
      * @param passcode the passcode we want to check
      * @return UserID of the user with the passcode, null if no match found
      */
@@ -365,7 +367,15 @@ public class UserRepository {
         }
     }
 
-
+    /**
+     * Update an user's info on database
+     * @param userID  ID of the user to be updated (ID itself is not updateable)
+     * @param firstName The new first name to be used for the update. Can be null if user doesn't want to update first name
+     * @param lastName The new last name to be used for the update. Can be null if user doesn't want to update last name
+     * @param phone The new phone to be used for the update. Can be null if user doesn't want to update phone number.
+     * @param email The new email to be used for the update. Can be null if user doesn't want to update email address.
+     * @return true on success, false on failure.
+     */
     public static synchronized boolean updateUserInfo(String userID, String firstName, String lastName, String phone, String email) {
         String updateQuery = "UPDATE registeredUser SET ";
         ArrayList<String> updateFields = new ArrayList<>();
@@ -406,7 +416,6 @@ public class UserRepository {
             Class.forName("org.sqlite.JDBC");
             URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
-            System.out.println("Editing on Database URL: " + dbUrl.toString());
 
             // Save checkpoint to rollback in case update fail
             db_conn.setAutoCommit(false);
@@ -418,10 +427,112 @@ public class UserRepository {
                 pstmt.setString((i+1), updateFields.get(i));
             }
             pstmt.setString(updateFields.size()+1, userID);
-            int result = pstmt.executeUpdate();
-            if (result < 1) {
-                throw new SQLException("User information update failed!");
+            pstmt.executeUpdate();
+
+            db_conn.commit();
+            db_conn.setAutoCommit(true);
+            db_conn.close();
+
+            return true;
+        } catch (SQLException e) {
+            try {
+                if (db_conn != null && savepoint != null) {
+                    db_conn.rollback(savepoint); // Rollback the transaction if an exception occurs
+                    db_conn.setAutoCommit(true);
+                    db_conn.close();
+                }
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
+            e.printStackTrace();
+            return false;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+
+            return false;
+        }
+    }
+
+    /**
+     * Pull all users from database into memory
+     * @param usersLoaded A HashMap mapping each userID to an User object. This is a list of users that has already been loaded into memory, to avoid duplicate loading
+     * @return A HashMap mapping each userID to an User object. This is a list of users that was not loaded into memory before.
+     */
+    public static synchronized HashMap<String, User> loadAllUsers(HashMap<String, User> usersLoaded) {
+        String getUsersQuery = "SELECT UserID, FirstName, LastName, Phone, Email, isStaff FROM registereduser";
+        HashMap<String, User> userResults = new HashMap<String, User>();
+
+        try {
+            // Open database connection
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+
+            // Query the database to get all orders of this customer
+            PreparedStatement pstmt = db_conn.prepareStatement(getUsersQuery);
+            ResultSet queryResult = pstmt.executeQuery();
+
+            while(queryResult.next()){
+                // Extract all user information
+                String userID = queryResult.getString(1);
+                // If user is already loaded, skip
+                if(usersLoaded.get(userID) != null) {
+                    continue;
+                }
+
+                String firstName = queryResult.getString(2);
+                String lastName = queryResult.getString(3);
+                String phone = queryResult.getString(4);
+                String email = queryResult.getString(5);
+                int isStaff_flag = queryResult.getInt(6);
+                boolean isStaff = false;
+                if (isStaff_flag == 1) {
+                    isStaff = true;
+                }
+
+                User user = User.loadRegisteredUser(userID, firstName, lastName, phone, email, isStaff);
+                userResults.put(userID, user);
+            }
+
+            db_conn.close();
+            return userResults;
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            return userResults;
+        }
+    }
+
+    /**
+     * Set an user in the database whether to be staff or not
+     * @param userID the ID of the user to be modified
+     * @param isStaff boolean flag indicating that this user becomes staff or not
+     * @return true on success, false on failure
+     */
+    public static synchronized boolean setStaff(String userID, boolean isStaff) {
+        String updateQuery = "UPDATE registereduser SET isStaff = ? WHERE UserID = ?";
+        Savepoint savepoint = null;
+
+        try {
+             // Open database connection
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+
+            // Save checkpoint to rollback in case update fail
+            db_conn.setAutoCommit(false);
+            savepoint = db_conn.setSavepoint();
+
+            // Load the values into prepared statement
+            PreparedStatement pstmt = db_conn.prepareStatement(updateQuery);
+            if (isStaff) {
+                pstmt.setInt(1, 1);
+            } else {
+                pstmt.setInt(1, 0);
+            }
+            pstmt.setString(2, userID);
+            pstmt.executeUpdate();
 
             db_conn.commit();
             db_conn.setAutoCommit(true);
