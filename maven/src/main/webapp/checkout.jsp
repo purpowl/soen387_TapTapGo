@@ -69,7 +69,7 @@
         </div>
         <!-- Left Session - Billing Address -->
         <div class="col-md-8 order-md-1">
-            <h4 class="mb-3">Billing address</h4>
+            <h4 class="mb-3">Billing</h4>
             <form class="needs-validation" novalidate="" action="<%=request.getContextPath()%>/checkout" method="post">
                 <% 
                     if (!isRegistered) {
@@ -133,54 +133,64 @@
                         </select>
                         <div class="invalid-feedback"> Please provide a valid country. </div>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-3 mb-4">
                         <label for="billPostalCode">Postal Code</label>
                         <input type="text" class="form-control" id="billPostalCode" name="billPostalCode" placeholder="" required="">
                         <div class="invalid-feedback"> Postal Code code required. </div>
                     </div>
                 </div>
-                <hr class="mb-4">
-                <h4 class="mb-3">Shipping Address</h4>
-                <div class="mb-3">
-                    <label for="shipAddress">Address</label>
-                    <input type="text" class="form-control" id="shipAddress" name="shipAddress" placeholder="1234 Main St" required="">
-                    <div class="invalid-feedback"> Please enter your shipping address. </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5 mb-3">
-                        <label for="shipCity">Province</label>
-                        <select class="custom-select d-block w-100" id="shipCity" name="shipCity" required="">
-                            <option value="">Choose...</option>
-                            <option value="AB">Alberta</option>
-                            <option value="BC">British Columbia</option>
-                            <option value="MB">Manitoba</option>
-                            <option value="NB">New Brunswick</option>
-                            <option value="NL">Newfoundland and Labrador</option>
-                            <option value="NS">Nova Scotia</option>
-                            <option value="ON">Ontario</option>
-                            <option value="PE">Prince Edward Island</option>
-                            <option value="QC">Quebec</option>
-                            <option value="SK">Saskatchewan</option>
-                            <option value="NT">Northwest Territories</option>
-                            <option value="NU">Nunavut</option>
-                            <option value="YT">Yukon</option>
-                        </select>
-                        <div class="invalid-feedback"> Please select a valid city. </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="shipCountry">Country</label>
-                        <select class="custom-select d-block w-100" id="shipCountry" name="shipCountry" required="">
-                            <option value="">Choose...</option>
-                            <option value="CA">Canada</option>
-                        </select>
-                        <div class="invalid-feedback"> Please provide a valid country. </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="shipPostalCode">Postal Code</label>
-                        <input type="text" class="form-control" id="shipPostalCode" name="shipPostalCode" placeholder="" required="">
-                        <div class="invalid-feedback"> Postal Code code required. </div>
+                <!-- Shipping same as billing address checkbox -->
+                <div class="form-group mb-4">
+                    <div class="checkbox ">
+                        <input data-toggle="collapse" data-target="#collapseShipAddress" aria-expanded="true" aria-controls="collapseShipAddress" type="checkbox" checked/> Shipping address is the same as billing address.
                     </div>
                 </div>
+                <!-- Collapsible section -->
+                <div id="collapseShipAddress" class="collapse">
+                    <h4 class="mb-3">Shipping Address</h4>
+                    <div class="mb-3">
+                        <label for="shipAddress">Address</label>
+                        <input type="text" class="form-control" id="shipAddress" name="shipAddress" placeholder="1234 Main St" required="">
+                        <div class="invalid-feedback"> Please enter your shipping address. </div>
+                    </div>  
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <label for="shipCity">Province</label>
+                            <select class="custom-select d-block w-100" id="shipCity" name="shipCity" required="">
+                                <option value="">Choose...</option>
+                                <option value="AB">Alberta</option>
+                                <option value="BC">British Columbia</option>
+                                <option value="MB">Manitoba</option>
+                                <option value="NB">New Brunswick</option>
+                                <option value="NL">Newfoundland and Labrador</option>
+                                <option value="NS">Nova Scotia</option>
+                                <option value="ON">Ontario</option>
+                                <option value="PE">Prince Edward Island</option>
+                                <option value="QC">Quebec</option>
+                                <option value="SK">Saskatchewan</option>
+                                <option value="NT">Northwest Territories</option>
+                                <option value="NU">Nunavut</option>
+                                <option value="YT">Yukon</option>
+                            </select>
+                            <div class="invalid-feedback"> Please select a valid city. </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="shipCountry">Country</label>
+                            <select class="custom-select d-block w-100" id="shipCountry" name="shipCountry" required="">
+                                <option value="">Choose...</option>
+                                <option value="CA">Canada</option>
+                            </select>
+                            <div class="invalid-feedback"> Please provide a valid country. </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="shipPostalCode">Postal Code</label>
+                            <input type="text" class="form-control" id="shipPostalCode" name="shipPostalCode" placeholder="" required="">
+                            <div class="invalid-feedback"> Postal Code code required. </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment -->
                 <hr class="mb-4">
                 <h4 class="mb-3">Payment</h4>
                 <div class="d-block my-3">

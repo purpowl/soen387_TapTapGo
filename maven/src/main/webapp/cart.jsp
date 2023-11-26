@@ -158,15 +158,18 @@
                 </div>
             </div>
             <!-- Total Order Amount -->
-            <!-- Check Out button -->
             <div class="row mt-4">
-                <div class="col-12">
+                <!-- Continue shopping button -->
+                <div class="col-sm">
+                    <a href="<%=request.getContextPath()%>/products.jsp" class="btn btn-block btn-lg btn-outline-secondary me-2">Continue Shopping</a>
+                </div>
+                <!-- Check Out button -->
+                <div class="col-sm">
                     <a href="<%=request.getContextPath()%>/checkout.jsp">
                         <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" type="submit" class="btn btn-block btn-lg me-2">Check Out</button>                                                 
                     </a>
                 </div>
             </div>
-            <!-- Check Out button -->
         </div>
         <%@include file="includes/footer.jsp" %>
     </body>

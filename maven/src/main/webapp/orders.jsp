@@ -49,19 +49,20 @@
   
   <!-- Container Wrapper -->
   <div class="row">
-    <div class="col-lg-12">
-      <div class="card mt-4">
+    <div class="col-lg-12 my-3">
+      <div class="card">
         <div class="card-body p-0 table-responsive">
           <!-- Order Info table -->
           <table class="table mb-0">
             <thead class="table-dark">
               <tr>
                 <th scope="col">ORDER #</th>
-                <th scope="col">ORDER PLACED</th>
+                <th scope="col">PAY DATE</th>
                 <th scope="col">TOTAL</th>
                 <th scope="col">SHIP TO</th>
                 <th scope="col">ORDER STATUS</th>
                 <th scope="col">TRACKING #</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
@@ -73,11 +74,11 @@
                   Order order = (Order) order_object;
               %>
               <tr>
-                <td><span class="badge badge-success"><%=order.getOrderID()%></span></td> <!-- TODO -->
-                <td><%=formatter.format(order.getPayDate())%></td> <!-- TODO-->
-                <td>$<%=Product.roundPrice(order.getTotalPrice())%></td> <!-- TODO-->
-                <td><%=order.getShippingAddress()%></td> <!-- TODO: Address without City, Country, Postal Code-->
-                <td><%=order.shipStatusToString()%></td><!-- TODO-->
+                <td><span class="badge badge-success"><%=order.getOrderID()%></span></td>
+                <td><%=formatter.format(order.getPayDate())%></td>
+                <td>$<%=Product.roundPrice(order.getTotalPrice())%></td>
+                <td><%=order.getShippingAddress()%></td>
+                <td><%=order.shipStatusToString()%></td>
                 <%
                   if (order.getTrackingNumber() == null) {
                 %>
@@ -89,22 +90,10 @@
                 <%
                   }
                 %>
+                <!-- View Order Detail button -->
+                <td> <a href="<%=request.getContextPath()%>/order-detail.jsp?orderID=<%=order.getOrderID()%>" class="btn btn-sm btn-outline-secondary">View order</a></td> 
               </tr>
-              <!-- For each product in the cart, display the image and the description -->
-              <% 
-                  for (Map.Entry<Product, Integer> productEntry : order.getOrderProducts().entrySet()) {
-                    Product product = productEntry.getKey();
-                    int amount = productEntry.getValue();
-              %>
-              <tr>
-                  <th colspan="2"><img src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="product" class="" width="150"></th>  <!-- TODO -->
-                  <td colspan="1" style="vertical-align: middle;"><%=product.getName()%></td> <!-- TODO -->
-                  <td colspan="1" style="vertical-align: middle;">x<span><%=amount%></span></td> <!-- TODO -->
-                  <td colspan="2" style="vertical-align: middle;"><%=product.getDescription()%></td> <!-- TODO -->
-              </tr>
-              <tr>
               <%
-                  }
                 }
               %>
             </tbody>

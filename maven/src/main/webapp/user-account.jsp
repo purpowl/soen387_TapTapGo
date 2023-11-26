@@ -44,7 +44,7 @@
             </div>
         </div>
 
-        <!-- Account information -->
+        <!-- Modify Passcode -->
         <div class="col-sm">
             <div class="card w-100">
                 <div class="card-body">
@@ -56,8 +56,27 @@
             </div>
         </div>
     </div>
+
+    <div class="row mt-3">
+        <div class="col-sm"></div>
+        <!-- Logout button -->
+        <div class="col-sm">
+            <div class="card w-100">
+                <div class="card-body align-center">
+                    <% if (session.getAttribute("isRegisteredUser") != null) { %>
+                    <a href="logout">
+                        <h5 style="color: hsl(221, 100%, 33%)" class="card-title text-center">Log out</h5>
+                    </a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm"></div>
+    </div>
+
 </div>
 
 <%@include file="includes/footer.jsp" %>
 </body>
 </html>
+        

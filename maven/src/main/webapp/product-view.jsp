@@ -21,22 +21,15 @@
                     <p class="vendor"><span>Vendor: </span>${product.getVendor()}</p>
                     <p class="desc"><span>Description: </span>${product.getDescription()}</p>
                     <hr />
-                    <!-- staff members can see a button to modify product -->
-                    <% if (session.getAttribute("isStaff") != null) { %>
-                        <a style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);"
-                           class="btn btn-sm mb-3" href="<%=request.getContextPath()%>/modify-product.jsp?slug=${product.getSlug()}"
-                        >Modify
-                        </a>
-                    <% } else { %>
-                    <!-- customers see button to add to cart -->
-                    <form action="<%=request.getContextPath()%>/cart/add" method="POST">
-                        <input type="hidden" name="slug" value="${product.getSlug()}">
-                            <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);"
-                                    type="submit" class="btn btn-dark"
-                                >Add To Cart
-                            </button>
-                    </form>
-                    <% } %>
+                    <div class="mt-3 d-flex justify-content-between">
+                        <!-- Back button -->
+                        <a href="<%=request.getContextPath()%>/products.jsp" class="btn btn-secondary mb-3">Back</a>
+                        <!-- Add to cart button -->
+                        <form action="<%=request.getContextPath()%>/cart/add" method="POST">
+                            <input type="hidden" name="slug" value="${product.getSlug()}">
+                            <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" type="submit" class="btn" >Add To Cart</button>
+                        </form>
+                    </div>
                 </section>
             </div>
         </div>

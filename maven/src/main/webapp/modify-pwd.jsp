@@ -46,7 +46,7 @@
 
         <!-- Old Password-->
         <div class="form-group mb-3">
-          <label class="form-label" for="oldpwd">Passcode</label>
+          <label class="form-label" for="oldpwd">Current Passcode</label>
           <input type="password" id="oldpwd" name="oldpwd" class="form-control" placeholder="Enter current passcode" required="">
         </div>
 
@@ -58,10 +58,8 @@
 
         <!-- Buttons -->
         <div class="text-center mb-3">
+          <a href="<%=request.getContextPath()%>/user-account.jsp" class="btn btn-outline-secondary">Cancel</a>
           <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" type="submit" class="btn">Submit</button>
-          <a href="<%=request.getContextPath()%>/user-account.jsp" class="btn btn-outline-secondary">
-            Cancel
-          </a>
         </div>
       </form>
     </div>

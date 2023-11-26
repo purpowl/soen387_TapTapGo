@@ -69,11 +69,11 @@ public class ProductServlet extends HttpServlet {
                 staff.updateProduct(slug, updateFields);
 
                 // output message for successful product modification and reset page
-                response.sendRedirect(request.getContextPath() + "/products.jsp?modify=success");
+                response.sendRedirect(request.getContextPath() + "/manage-product.jsp?modify=success");
             } catch (Exception e) {
                 // output message if there's an issue modifying product and reset page
                 e.printStackTrace();
-                response.sendRedirect(request.getContextPath() + "/products.jsp?modify=fail");
+                response.sendRedirect(request.getContextPath() + "/manage-product.jsp?modify=fail");
             }
         } else if (method.equals("delete")) {
             /* Delete the product for DELETE method */
@@ -84,10 +84,10 @@ public class ProductServlet extends HttpServlet {
                 staff.deleteProduct(slug);
 
                 // output message for successful product deletion and reset page
-                response.sendRedirect(request.getContextPath() + "/products.jsp?delete=success");
+                response.sendRedirect(request.getContextPath() + "/manage-product.jsp?delete=success");
             } catch (Exception e) {
                 // output message if there's an issue deleting product and reset page
-                response.sendRedirect(request.getContextPath() + "/products.jsp?delete=fail");
+                response.sendRedirect(request.getContextPath() + "/manage-product.jsp?delete=fail");
             }
         }
         

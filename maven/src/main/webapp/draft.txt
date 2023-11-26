@@ -1,0 +1,50 @@
+<tr>
+              <!-- For each product in the order, display the image and the description -->
+              <% 
+                  for (Map.Entry<Product, Integer> productEntry : order.getOrderProducts().entrySet()) {
+                    Product product = productEntry.getKey();
+                    int amount = productEntry.getValue();
+              %>
+              <tr>
+                  <td colspan="1" style="vertical-align: middle;"><%=product.getName()%></td>
+                  <td colspan="1" style="vertical-align: middle;"><%=product.getPrice()%></td>
+                  <td colspan="1" style="vertical-align: middle;">x<span><%=amount%></span></td>
+                  <td colspan="2"><img src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="product" class="" width="150"></td>
+                  <!-- <td colspan="1" style="vertical-align: middle;"><%=product.getDescription()%></td> -->
+                  <td></td>
+              </tr>
+              <tr>
+                
+                
+                <td colspan="4"></td>
+              </tr>
+              <%
+                  }
+                }
+              %>
+
+
+  session = request.getSession(false);
+  if (session == null || session.getAttribute("isStaff") == null) {
+    response.sendRedirect("login.jsp");
+  }
+
+
+
+  <!-- For each product in the cart, display the image and the description -->
+              <% 
+                  for (Map.Entry<Product, Integer> productEntry : order.getOrderProducts().entrySet()) {
+                    Product product = productEntry.getKey();
+                    int amount = productEntry.getValue();
+              %>
+              <tr>
+                  <th colspan="2"><img src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="product" class="" width="150"></th>
+                  <td colspan="1" style="vertical-align: middle;"><%=product.getName()%></td>
+                  <td colspan="1" style="vertical-align: middle;">x<span><%=amount%></span></td>
+                  <td colspan="2" style="vertical-align: middle;"><%=product.getDescription()%></td>
+              </tr>
+              <tr>
+              <%
+                  }
+                }
+              %>

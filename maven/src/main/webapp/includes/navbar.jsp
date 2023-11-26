@@ -34,6 +34,13 @@
         </li>
         <% } %>
 
+        <!-- Create Product page - staff members can see a link to add new product -->
+        <% if (session.getAttribute("isStaff") != null) { %>
+        <li class="nav-item">
+          <a class="nav-link" href="<%=request.getContextPath()%>/manage-product.jsp">Manage Product</a>
+        </li>
+        <% } %>
+
         <!-- Ship order - staff member can see this link to ship order -->
         <% if (session.getAttribute("isStaff") != null) { %>
         <li class="nav-item">
@@ -41,16 +48,10 @@
         </li>
         <% } %>
 
-        <!-- Create Product page - staff members can see a link to add new product -->
-        <% if (session.getAttribute("isStaff") != null) { %>
-        <li class="nav-item">
-          <a class="nav-link" href="<%=request.getContextPath()%>/create-product.jsp">Create Product</a>
-        </li>
-        <% } %>
 
-        <!-- Logout button - registered users see logout button -->
-        <% if (session.getAttribute("isRegisteredUser") != null) { %>
-        <li><a class="nav-link" href="logout">Log Out</a></li>
+        <!-- Revoke/Promote user - staff member can see this link to promote customer to staff and revoke staff permission -->
+        <% if (session.getAttribute("isStaff") != null) { %>
+        <li><a class="nav-link" href="<%=request.getContextPath()%>/manage-user.jsp">Manage User</a></li>
         <% } %>
         
       </ul>
