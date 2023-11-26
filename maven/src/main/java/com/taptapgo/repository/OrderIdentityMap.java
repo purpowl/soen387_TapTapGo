@@ -138,5 +138,26 @@ public class OrderIdentityMap {
 
         return false;
     }
+
+    /**
+     * Set the customer ID of an order to a registered customer, if they choose to reclaim the order
+     * @param orderID the ID of the order to be reclaimed
+     * @param customerID the ID of the customer who is reclaiming the order
+     * @return true on success, false on failure.
+     */
+    public static synchronized boolean reclaimOrder(int orderID, String customerID) {
+        if(OrderIdentityMap.getInstance().orderMap.get(orderID) != null) {
+            if (OrderRepository.setOrderCustomerID(orderID, customerID)) {
+                Order order = instance.orderMap.get(orderID);
+                order.setCustomerID(customerID);
+
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return OrderRepository.setOrderCustomerID(orderID, customerID);
+        }
+    }
     
 }

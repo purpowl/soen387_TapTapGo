@@ -32,17 +32,16 @@ public class TapTapServlet extends HttpServlet {
         if (session.getAttribute("isRegisteredUser") == null) {
             // create new cart if they don't have a cart yet
             if (session.getAttribute("cart") == null) {
-            HashMap<Product, Integer> cart = new HashMap<>();
-            session.setAttribute("cart", cart);
+                HashMap<Product, Integer> cart = new HashMap<>();
+                session.setAttribute("cart", cart);
             }
             // create guest ID if they don't have one
             if (session.getAttribute("userID") == null){
-            session.setAttribute("userID", session.getId());
-            }
-            else {
+                session.setAttribute("userID", session.getId());
+            } 
+        } else {
             // else get their registered user ID
             session.setAttribute("userID", ((User) session.getAttribute("registered_user")).getUserID());
-            }
         }
         request.getRequestDispatcher("/index.jsp").forward(request, response);
     }

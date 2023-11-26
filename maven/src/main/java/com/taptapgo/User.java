@@ -302,6 +302,9 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+    public void setStaff(boolean isStaff) {
+        this.isStaff = isStaff;
+    }
 
     @Override
     public boolean equals(Object object) {

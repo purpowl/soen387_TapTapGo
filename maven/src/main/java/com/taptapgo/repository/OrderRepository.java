@@ -433,4 +433,57 @@ public class OrderRepository{
             return false;
         }
     }
+
+    /**
+     * Set an order userID to a registered userID, in case a registered customer wants to claim their order.
+     * 
+     * @param orderID The ID of the order to be reclaimed
+     * @param customerID The ID of the registered user to be put on the order
+     * @return true on success, false on failure.
+     */
+    public static synchronized boolean setOrderCustomerID(int orderID, String customerID) {
+        String updateOrderQuery = "UDPATE `order` SET UserID = ?, GuestID = ? WHERE OrderID = ?";
+        Savepoint savepoint = null;
+
+        try {
+            // Open DB connection
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+
+            // Save checkpoint to rollback in case update fail
+            db_conn.setAutoCommit(false);
+            savepoint = db_conn.setSavepoint();
+
+            PreparedStatement pstmt = db_conn.prepareStatement(updateOrderQuery);
+            pstmt.setString(1, customerID);
+            pstmt.setNull(2, java.sql.Types.VARCHAR);
+            pstmt.setInt(3, orderID);
+
+            pstmt.executeUpdate();
+            db_conn.commit();
+
+            db_conn.setAutoCommit(true);
+            db_conn.close();
+
+            return true;
+        } catch (SQLException e) {
+            try {
+                if (db_conn != null && savepoint != null) {
+                    db_conn.rollback(savepoint); // Rollback the transaction if an exception occurs
+                    db_conn.setAutoCommit(true);
+                    db_conn.close();
+                }
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+            return false;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+
+            return false;
+        }
+    }
 }
