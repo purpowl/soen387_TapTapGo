@@ -106,4 +106,40 @@ public class UserIdentityMap {
     public static synchronized boolean changeUserPasscode(String userID, String newPasscode) throws InvalidParameterException {
         return UserRepository.changeUserPasscodeInDB(userID, newPasscode);
     }
+
+
+    /**
+     * Update the information for a user
+     * @param userID user we want to update information for
+     * @param firstName the new first name to be set. This field can be Null if user doesn't want to change first name.
+     * @param lastName the new last name to be set. This field can be Null if user doesn't want to change last name.
+     * @param phone the new phone to be set. This field can be Null if user doesn't want to change phone number.
+     * @param email the new email to be set. This field can be Null if user doesn't want to change email address.
+     * @return true on success, false on failure
+     */
+    public static synchronized boolean updateUserInfo(String userID, String firstName, String lastName, String phone, String email) {
+        User userMapResult = UserIdentityMap.getInstance().userMap.get(userID);
+
+        if (userMapResult != null) {
+            if(UserRepository.updateUserInfo(userID, firstName, lastName, phone, email)) {
+                if(firstName != null) {
+                    userMapResult.setFirstName(firstName);
+                }
+                if (lastName != null) {
+                    userMapResult.setLastName(lastName);
+                }
+                if(phone != null) {
+                    userMapResult.setPhone(phone);
+                }
+                if(email != null) {
+                    userMapResult.setEmail(email);
+                }
+
+                return true;
+            }
+            return false;
+        } else {
+            return UserRepository.updateUserInfo(userID, firstName, lastName, phone, email);
+        }
+    }
 }

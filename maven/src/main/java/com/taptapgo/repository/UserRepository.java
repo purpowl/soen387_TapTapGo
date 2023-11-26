@@ -1,5 +1,6 @@
 package com.taptapgo.repository;
 
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import com.taptapgo.User;
 import com.taptapgo.exceptions.InvalidParameterException;
@@ -33,9 +35,9 @@ public class UserRepository {
         Savepoint savepoint = null;
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-
-            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             db_conn.setAutoCommit(false);
             savepoint = db_conn.setSavepoint();
@@ -107,9 +109,9 @@ public class UserRepository {
         String insertQuery = "INSERT INTO registereduser (UserID, FirstName, LastName, Phone, Email, Passcode, isStaff) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-
-            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             db_conn.setAutoCommit(false);
             savepoint = db_conn.setSavepoint();
@@ -175,9 +177,9 @@ public class UserRepository {
         }
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-
-            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             PreparedStatement pstmt = db_conn.prepareStatement(query);
             pstmt.setString(1, userID);
@@ -218,19 +220,20 @@ public class UserRepository {
      * @return Integer object if succeed, null if failed
      */
     protected static synchronized Integer getMaxRegisteredUserID() {
-        String query = "SELECT SUBSTRING(MAX(SUBSTRING_INDEX(UserID, ' ', -1)), 3) FROM registereduser";
+        String query = "SELECT MAX(UserID) FROM registereduser";
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-
-            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             Statement stmt = db_conn.createStatement();
             ResultSet queryResult = stmt.executeQuery(query);
 
             if (queryResult.next()) {
-                // get the userID without the first 2 characters
-                Integer maxUserID = Integer.parseInt(queryResult.getString(1));
+                // get the highest userID
+                String maxUserID_str = queryResult.getString(1);
+                Integer maxUserID = Integer.parseInt(maxUserID_str.substring(2));
                 stmt.close();
                 db_conn.close();
                 return maxUserID;
@@ -277,8 +280,9 @@ public class UserRepository {
 
         try {
             // Open DB connection
-            Class.forName("com.mysql.jdbc.Driver");
-            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Save checkpoint to rollback in case update fail
             db_conn.setAutoCommit(false);
@@ -328,9 +332,9 @@ public class UserRepository {
         String getPasscodeQuery = "SELECT UserID, Passcode FROM registereduser";
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-
-            db_conn = DriverManager.getConnection("jdbc:mysql://taptapgo.mysql.database.azure.com:3306/taptapgo?characterEncoding=UTF-8", "soen387_taptapgo", "T@pT@pG0387");
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             PreparedStatement pstmt = db_conn.prepareStatement(getPasscodeQuery);
             ResultSet queryResult = pstmt.executeQuery();
@@ -358,6 +362,89 @@ public class UserRepository {
         catch(SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+
+    public static synchronized boolean updateUserInfo(String userID, String firstName, String lastName, String phone, String email) {
+        String updateQuery = "UPDATE registeredUser SET ";
+        ArrayList<String> updateFields = new ArrayList<>();
+        Savepoint savepoint = null;
+
+        if (firstName != null) {
+            if (updateQuery.length() > 26){
+                updateQuery += ",";
+            }
+            updateQuery += "FirstName = ?";
+            updateFields.add(firstName);
+        }
+        if (lastName != null) {
+            if (updateQuery.length() > 26){
+                updateQuery += ",";
+            }
+            updateQuery += "LastName = ?";
+            updateFields.add(lastName);
+        }
+        if (phone != null) {
+            if (updateQuery.length() > 26){
+                updateQuery += ",";
+            }
+            updateQuery += "Phone = ?";
+            updateFields.add(phone);
+        }
+        if (email != null) {
+            if (updateQuery.length() > 26){
+                updateQuery += ",";
+            }
+            updateQuery += "Email = ?";
+            updateFields.add(email);
+        }
+        updateQuery += " WHERE UserID = ?";
+
+        try {
+            // Open DB connection
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+            System.out.println("Editing on Database URL: " + dbUrl.toString());
+
+            // Save checkpoint to rollback in case update fail
+            db_conn.setAutoCommit(false);
+            savepoint = db_conn.setSavepoint();
+
+            // Load the values into prepared statement
+            PreparedStatement pstmt = db_conn.prepareStatement(updateQuery);
+            for (int i = 0; i < updateFields.size(); i++) {
+                pstmt.setString((i+1), updateFields.get(i));
+            }
+            pstmt.setString(updateFields.size()+1, userID);
+            int result = pstmt.executeUpdate();
+            if (result < 1) {
+                throw new SQLException("User information update failed!");
+            }
+
+            db_conn.commit();
+            db_conn.setAutoCommit(true);
+            db_conn.close();
+
+            return true;
+        } catch (SQLException e) {
+            try {
+                if (db_conn != null && savepoint != null) {
+                    db_conn.rollback(savepoint); // Rollback the transaction if an exception occurs
+                    db_conn.setAutoCommit(true);
+                    db_conn.close();
+                }
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+            return false;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+
+            return false;
         }
     }
 }
