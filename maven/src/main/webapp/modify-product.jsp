@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page import="com.taptapgo.Product" %>
+<%@ page import="com.taptapgo.Warehouse" %>
 <%
     // only staff can access this page, redirect to login page otherwise
     session = request.getSession(false);
@@ -7,6 +9,13 @@
     }
 
     String slug = request.getParameter("slug");
+    // reference to warehouse
+    Warehouse warehouse = (Warehouse) application.getAttribute("warehouse");
+
+    // reference to product
+    Product product = (Product) warehouse.findProductBySlug(slug);
+    int inventory = warehouse.getProductInventoryBySlug(slug);
+
 %>
 <html>
 <head>
@@ -28,27 +37,27 @@
                 <div class="form-group mb-3">
                     <div class="mb-3">
                         <label for="name">Product Name</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Product Name">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="<%=product.getName()%>">
                     </div>
                     
                     <div class="mb-3">
                         <label for="desc">Description</label>
-                        <input type="text" class="form-control" id="desc" name="desc" placeholder="Product Description">
+                        <input type="text" class="form-control" id="desc" name="desc" placeholder="<%=product.getDescription()%>">
                     </div>
                     
                     <div class="mb-3">
                         <label for="vendor">Vendor</label>
-                        <input type="text" class="form-control" id="vendor" name="vendor" placeholder="Product Vendor">
+                        <input type="text" class="form-control" id="vendor" name="vendor" placeholder="<%=product.getVendor()%>">
                     </div>
       
                     <div class="mb-3">
                         <label for="price">Price</label>
-                        <input type="text" class="form-control" id="price" name="price" placeholder="Product Price">
+                        <input type="text" class="form-control" id="price" name="price" placeholder="<%=product.getPrice()%>">
                     </div>
 
                     <div class="mb-4">
                         <label for="amount">Amount</label>
-                        <input type="text" class="form-control" id="amount" name="amount" placeholder="Product Amount">
+                        <input type="text" class="form-control" id="amount" name="amount" placeholder="<%=inventory%>">
                     </div>
                     <div class="d-flex justify-content-between mb-3">
                         <a href="<%=request.getContextPath()%>/manage-product.jsp" class="btn btn-outline-secondary">Cancel</a>

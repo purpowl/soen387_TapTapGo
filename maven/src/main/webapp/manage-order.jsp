@@ -53,7 +53,7 @@
               <tr>
                 <td><span class="badge badge-success"><%=order.getOrderID()%></span></td>
                 <td><%=formatter.format(order.getPayDate())%></td>
-                <td>$<%=Product.roundPrice(order.getTotalPrice())%></td>
+                <td>$<%=Product.roundPrice(order.getTotalPrice() * 1.14975)%></td>
                 <td><%=order.getShippingAddress()%></td>
                 <!-- Ship Status -->
                 <td><%=order.shipStatusToString()%></td>

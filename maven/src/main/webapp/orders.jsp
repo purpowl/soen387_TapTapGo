@@ -77,7 +77,7 @@
               <tr>
                 <td><span class="badge badge-success"><%=order.getOrderID()%></span></td>
                 <td><%=formatter.format(order.getPayDate())%></td>
-                <td>$<%=Product.roundPrice(order.getTotalPrice())%></td>
+                <td>$<%=Product.roundPrice(order.getTotalPrice() * 1.14975)%></td>
                 <td><%=order.getShippingAddress()%></td>
                 <td><%=order.shipStatusToString()%></td>
                 <%
@@ -96,7 +96,7 @@
                 <!-- Registed user can see the link "Claim order" to claim order-->
                 <% if (session.getAttribute("isRegisteredUser") != null) { %>
                   <!-- Claim Order button -->
-                  <td> <a style="background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" class="btn btn-sm">Claim order</a></td> <!-- TODO: Add logic to Claim order button -->
+                  <td> <a style="background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" class="btn btn-sm">Claim order</a></td> <!-- TODO: Add logic to Claim -->
                 <% } %>
               </tr>
               <%
