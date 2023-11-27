@@ -467,7 +467,7 @@ public class OrderRepository{
      * @return true on success, false on failure.
      */
     public static synchronized boolean setOrderCustomerID(int orderID, String customerID) {
-        String updateOrderQuery = "UDPATE `order` SET UserID = ?, GuestID = ? WHERE OrderID = ?";
+        String updateOrderQuery = "UPDATE `order` SET UserID = ?,GuestID = ? WHERE OrderID = ?";
         Savepoint savepoint = null;
 
         try {

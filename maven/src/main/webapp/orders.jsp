@@ -107,7 +107,12 @@
                 <!-- Registed user can see the link "Claim order" to claim order-->
                 <% if (session.getAttribute("isRegisteredUser") != null) { %>
                   <!-- Claim Order button -->
-                  <td> <a style="background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" class="btn btn-sm">Claim order</a></td> <!-- TODO: Add logic to Claim -->
+                  <td> 
+                    <form action="<%=request.getContextPath()%>/orders/<%=order.getOrderID()%>" method="post">
+                      <input type="hidden" name="orderID" value="<%=order.getOrderID()%>">
+                      <button style="background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" class="btn btn-sm" type="submit">Claim order</button>
+                    </form>
+                  </td> <!-- TODO: Add logic to Claim -->
                 <% } %>
               </tr>
               <%
