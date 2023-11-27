@@ -1,5 +1,6 @@
 package com.taptapgo;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -61,7 +62,7 @@ public class Warehouse {
         if (amount_avail == null) {
             return false;
         } else {
-            boolean db_result = WarehouseRepository.modifyProductInventory(product, amount);
+            boolean db_result = WarehouseRepository.modifyProductInventory(product, amount, null);
             if (db_result) {
                 warehouse_instance.product_list.replace(product, amount);
                 return true;
@@ -157,7 +158,7 @@ public class Warehouse {
                 } else {
                     int amount_left = amount_avail - amount;
 
-                    boolean db_result = WarehouseRepository.modifyProductInventory(product, amount);
+                    boolean db_result = WarehouseRepository.modifyProductInventory(product, amount, null);
                     
                     if(db_result) {
                         warehouse_instance.product_list.replace(product, amount_left);
@@ -193,7 +194,7 @@ public class Warehouse {
                 } else {
                     int amount_left = amount_avail - amount;
 
-                    boolean db_result = WarehouseRepository.modifyProductInventory(product, amount);
+                    boolean db_result = WarehouseRepository.modifyProductInventory(product, amount, null);
                     if(db_result) {
                         warehouse_instance.product_list.replace(product, amount_left);
                         return true;
@@ -224,7 +225,37 @@ public class Warehouse {
         } else {
             int amount_left = amount_avail - amount;
 
-            boolean db_result = WarehouseRepository.modifyProductInventory(product, amount_left);
+            boolean db_result = WarehouseRepository.modifyProductInventory(product, amount_left, null);
+            if (db_result){
+                warehouse_instance.product_list.replace(product, amount_left);
+                return true;
+            }
+            
+            return false;
+        }
+    }
+
+    /**
+     * Removes a certain amount of a product (specified by Product object) from the warehouse.
+     * This function is used when the caller is another repository, which is also trying to write to database.
+     * The database connection can be passed in here to prevent opening another database connection.
+     *
+     * @param product the product to be removed
+     * @param amount the amount of product that you want to remove
+     * @param db_conn the existing database connection passed in from the caller
+     * @return False if the product is not found or there is not enough product left to remove. Else, return True on success.
+     */
+    public boolean removeProduct(Product product, int amount, Connection db_conn){
+        Integer amount_avail = warehouse_instance.product_list.get(product);
+
+        if (amount_avail == null) {
+            return false;
+        } else if (amount_avail < amount) {
+            return false;
+        } else {
+            int amount_left = amount_avail - amount;
+
+            boolean db_result = WarehouseRepository.modifyProductInventory(product, amount_left, db_conn);
             if (db_result){
                 warehouse_instance.product_list.replace(product, amount_left);
                 return true;

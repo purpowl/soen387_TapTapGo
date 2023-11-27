@@ -67,7 +67,7 @@ public class OrderRepository{
                 int amount = productEntry.getValue();
 
                 PreparedStatement pstmt2 = db_conn.prepareStatement(insertOrderItemQuery);
-                if (!Warehouse.getInstance().removeProduct(product, amount)) {
+                if (!Warehouse.getInstance().removeProduct(product, amount, db_conn)) {
                     throw new SQLException("Failed to remove product from Warehouse");
                 }
 

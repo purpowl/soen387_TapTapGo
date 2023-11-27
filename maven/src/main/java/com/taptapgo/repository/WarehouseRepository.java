@@ -127,30 +127,37 @@ public class WarehouseRepository {
     }
 
     
-    public static boolean modifyProductInventory(Product product, int amount) {
+    public static boolean modifyProductInventory(Product product, int amount, Connection external_db_conn) {
         String modifyQuery = "UPDATE warehouse SET Stock = ? WHERE ProductSKU = ?";
         Savepoint savepoint = null;
 
         try {
-            // Open DB connection
-            Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
-            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+            if (external_db_conn != null) {
+                // Use external database connection if it is passed in
+                db_conn = external_db_conn;
+            } else {
+                // Open DB connection
+                Class.forName("org.sqlite.JDBC");
+                URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+                db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
-            // Save checkpoint to rollback in case update fail
-            db_conn.setAutoCommit(false);
-            savepoint = db_conn.setSavepoint();
+                // Save checkpoint to rollback in case update fail
+                db_conn.setAutoCommit(false);
+                savepoint = db_conn.setSavepoint();
+            }
 
             PreparedStatement pstmt = db_conn.prepareStatement(modifyQuery);
             pstmt.setInt(1, amount);
             pstmt.setString(2, product.getSKU());
 
             pstmt.executeUpdate();
-            db_conn.commit();
 
-            db_conn.setAutoCommit(true);
-            db_conn.close();
-
+            // Commit and close the database connection if not using external db connection
+            if (external_db_conn == null) {
+                db_conn.commit();
+                db_conn.setAutoCommit(true);
+                db_conn.close();
+            }
             return true;
         } catch (SQLException e) {
             try {
