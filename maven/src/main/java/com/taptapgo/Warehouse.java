@@ -249,8 +249,12 @@ public class Warehouse {
         Integer amount_avail = warehouse_instance.product_list.get(product);
 
         if (amount_avail == null) {
+            System.out.println("WAREHOUSE ERROR: Product not found in warehouse!");
             return false;
         } else if (amount_avail < amount) {
+            System.out.println("WAREHOUSE ERROR: Amount available is less than amount to be removed!");
+            System.out.println("Amount available: " + Integer.toString(amount_avail));
+            System.out.println("Amount to be removed: " + Integer.toString(amount));
             return false;
         } else {
             int amount_left = amount_avail - amount;
@@ -261,6 +265,7 @@ public class Warehouse {
                 return true;
             }
             
+            System.out.println("WAREHOUSE ERROR: Failed to modify product in database!");
             return false;
         }
     }

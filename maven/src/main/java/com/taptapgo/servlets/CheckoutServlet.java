@@ -34,10 +34,9 @@ public class CheckoutServlet extends HttpServlet{
             String email = request.getParameter("email");
             String phone = request.getParameter("phone");
             userID = (String) currentSession.getAttribute("userID");
-            System.out.println("Checking-out User ID: " + userID);
 
             try {
-                user = UserIdentityMap.getUserByID(userID);
+                user = UserIdentityMap.getUserByID("gc" + userID);
             } catch (InvalidParameterException e) {
                 // Skip error in case user doesn't exist in database
             }

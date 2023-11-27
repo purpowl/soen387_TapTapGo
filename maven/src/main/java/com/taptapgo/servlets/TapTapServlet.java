@@ -37,7 +37,7 @@ public class TapTapServlet extends HttpServlet {
             }
             // create guest ID if they don't have one
             if (session.getAttribute("userID") == null){
-                session.setAttribute("userID", "gc" + session.getId());
+                session.setAttribute("userID", session.getId());
             } 
         } else {
             // else get their registered user ID
