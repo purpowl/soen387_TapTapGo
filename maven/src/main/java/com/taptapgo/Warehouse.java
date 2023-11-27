@@ -225,7 +225,13 @@ public class Warehouse {
         } else {
             int amount_left = amount_avail - amount;
 
-            boolean db_result = WarehouseRepository.modifyProductInventory(product, amount_left, null);
+            boolean db_result = false;
+            if(amount_left > 0) {
+                db_result = WarehouseRepository.modifyProductInventory(product, amount_left, null);
+            } else {
+                db_result = Warehouse.getInstance().deleteProduct(product);
+            }
+            
             if (db_result){
                 warehouse_instance.product_list.replace(product, amount_left);
                 return true;
@@ -259,7 +265,13 @@ public class Warehouse {
         } else {
             int amount_left = amount_avail - amount;
 
-            boolean db_result = WarehouseRepository.modifyProductInventory(product, amount_left, db_conn);
+            boolean db_result = false;
+            if (amount_left > 0) {
+                db_result = WarehouseRepository.modifyProductInventory(product, amount_left, db_conn);
+            } else {
+                db_result = Warehouse.getInstance().deleteProduct(product, db_conn);
+            }
+
             if (db_result){
                 warehouse_instance.product_list.replace(product, amount_left);
                 return true;
@@ -280,7 +292,7 @@ public class Warehouse {
         for (Map.Entry<Product, Integer> product_entry : warehouse_instance.product_list.entrySet()) {
             Product product = product_entry.getKey();
             if (product.getSKU().equals(SKU)) {
-                boolean db_result = WarehouseRepository.deleteProduct(product);
+                boolean db_result = WarehouseRepository.deleteProduct(product, null);
 
                 if (db_result) {
                     warehouse_instance.product_list.remove(product);
@@ -307,7 +319,31 @@ public class Warehouse {
             return false;
         }
 
-        boolean db_result = WarehouseRepository.deleteProduct(product);
+        boolean db_result = WarehouseRepository.deleteProduct(product, null);
+
+        if(db_result){
+            warehouse_instance.product_list.remove(product);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Completely deletes a product from the warehouse, regardless of the amount left
+     * This function is used when the caller is another repository, which is also trying to write to database.
+     * The database connection can be passed in here to prevent opening another database connection.
+     * 
+     * @param product the product to be deleted
+     * @return True if the operation succeed. False if the product was not found.
+     */
+    public boolean deleteProduct(Product product, Connection db_conn) {
+        // Make sure the product is in warehouse
+        Integer findProduct = warehouse_instance.product_list.get(product);
+        if (findProduct == null) {
+            return false;
+        }
+
+        boolean db_result = WarehouseRepository.deleteProduct(product, db_conn);
 
         if(db_result){
             warehouse_instance.product_list.remove(product);

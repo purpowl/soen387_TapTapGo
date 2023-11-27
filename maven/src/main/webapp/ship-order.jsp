@@ -42,11 +42,11 @@
                       <div class="row mb-3">
                           <div class="col-md-6">
                               <label class="small mb-1" for="ShipDate">ShipDate</label>
-                              <input class="form-control" id="ShipDate" type="date" name="ShipDate" value="TODO">
+                              <input class="form-control" id="ShipDate" type="date" name="ShipDate" placeholder="Pick a date">
                           </div>
                           <div class="col-md-6">
                               <label class="small mb-1" for="TrackingNumber">Tracking Number</label>
-                              <input class="form-control" id="TrackingNumber" type="text" name="TrackingNumber" value="TODO">
+                              <input class="form-control" id="TrackingNumber" type="text" name="TrackingNumber" placeholder="Enter tracking number">
                           </div>
                       </div>
                     <!-- Ship Order button-->

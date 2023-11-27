@@ -45,6 +45,17 @@
   <%
           }
       }
+
+      String reclaimStatus = request.getParameter("reclaim");
+      if(reclaimStatus != null && reclaimStatus.equals("fail")) {
+  %>
+  <div class="row">
+      <div class="col-12">
+          <p style="color: red;">Order reclaim failed!</p>
+      </div>
+  </div>
+  <%
+      }
   %>
   
   <!-- Container Wrapper -->

@@ -30,6 +30,23 @@
 
 <div class="container mb-4">
     <div class="card-header my-5 mb-4">Checkout</div>
+    <div class="row">
+    <%
+        String failureMessage = (String) request.getParameter("checkout");
+
+        if(failureMessage != null) {
+            if (failureMessage.equals("dborderfail") || failureMessage.equals("dbcustfail")) {
+    %>
+                <p style="color: red">There's currently some error with our database. Please try again later!</p>
+    <%
+            } else if (failureMessage.equals("ccinputfail")) {
+    %>
+                <p style="color: red">Please enter the correct credit card number!</p>
+    <%
+            }
+        }
+    %>
+    </div>
     <!-- Container Wrapper -->
     <div class="row">
         <!-- Right Section - Your Cart -->
@@ -142,7 +159,7 @@
                 <!-- Shipping same as billing address checkbox -->
                 <div class="form-group mb-4">
                     <div class="checkbox ">
-                        <input data-toggle="collapse" data-target="#collapseShipAddress" aria-expanded="true" aria-controls="collapseShipAddress" type="checkbox" checked/> Shipping address is the same as billing address.
+                        <input data-toggle="collapse" data-target="#collapseShipAddress" aria-expanded="true" aria-controls="collapseShipAddress" id="sameShippingAddress" name="sameShippingAddress" value="checked" type="checkbox" checked/> Shipping address is the same as billing address.
                     </div>
                 </div>
                 <!-- Collapsible section -->

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,8 +45,11 @@ public class OrderRepository{
                 pstmt1 = db_conn.prepareStatement(insertOrderGuestQuery);
             }
 
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+            String payDate = dateFormatter.format(order.getPayDate());
+
             pstmt1.setInt(1, order.getOrderID());
-            pstmt1.setDate(2, new Date(order.getPayDate().getTime()));
+            pstmt1.setString(2, payDate);
             pstmt1.setFloat(3, order.getTotalPrice());
             pstmt1.setString(4, order.getPaymentMethod());
             pstmt1.setInt(5, order.getCardNum());

@@ -23,7 +23,7 @@ public class CheckoutServlet extends HttpServlet{
         User user = null;
         String userID;
 
-        if(currentSession.getAttribute("registered_user") != null) {
+        if(currentSession.getAttribute("isRegisteredUser") != null) {
             isRegistered = true;
             user = (User) currentSession.getAttribute("registered_user");
         }
@@ -79,12 +79,21 @@ public class CheckoutServlet extends HttpServlet{
         String billCity = request.getParameter("billCity");
         String billCountry = request.getParameter("billCountry");
         String billPostalCode = request.getParameter("billPostalCode");
+        String sameShippingAddress = request.getParameter("sameShippingAddress");
         String shipAddress = request.getParameter("shipAddress");
         String shipCity = request.getParameter("shipCity");
         String shipCountry = request.getParameter("shipCountry");
         String shipPostalCode = request.getParameter("shipPostalCode");
         String paymentMethod = request.getParameter("paymentMethod");
         String ccNumber = request.getParameter("cc-number");
+
+        if (sameShippingAddress.equals("checked")) {
+            shipAddress = billAddress;
+            shipCity = billCity;
+            shipCountry = billCountry;
+            shipPostalCode = billPostalCode;
+        }
+        
         int ccNumberLast4Digits;
 
         // Handle bad inputs for credit card number

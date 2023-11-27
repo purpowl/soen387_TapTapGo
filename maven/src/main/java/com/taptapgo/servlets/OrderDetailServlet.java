@@ -3,6 +3,7 @@ package com.taptapgo.servlets;
 import java.io.IOException;
 
 import com.taptapgo.Order;
+import com.taptapgo.User;
 import com.taptapgo.repository.OrderIdentityMap;
 
 import jakarta.servlet.annotation.WebServlet;
@@ -52,6 +53,26 @@ public class OrderDetailServlet extends HttpServlet{
                 response.sendRedirect(request.getContextPath() + "/orders.jsp?search=success");
                 return;
             }
+        }
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession currentSession = request.getSession();
+        if(currentSession.getAttribute("isRegisteredUser") == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return;
+        }
+
+        User user = (User) currentSession.getAttribute("registered_user");
+        String userID = user.getUserID();
+        String orderID_str = request.getParameter("orderID");
+        int orderID = Integer.parseInt(orderID_str);
+
+        boolean db_result = OrderIdentityMap.reclaimOrder(orderID, userID);
+        if(!db_result) {
+            response.sendRedirect(request.getContextPath() + "/orders.jsp?reclaim=fail");
+        } else {
+            response.sendRedirect(request.getContextPath() + "/user-orders.jsp");
         }
     }
 }

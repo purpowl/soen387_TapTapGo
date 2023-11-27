@@ -6,10 +6,6 @@
 
 <% 
     HttpSession currentSession = request.getSession();
-    // redirect to index if staff is accessing customer cart
-    if (currentSession.getAttribute("isStaff") != null) {
-        response.sendRedirect("index.jsp");
-    }
     Object cart_object = currentSession.getAttribute("cart"); 
     Object cart_modified_object = currentSession.getAttribute("cart_modified");
     HashMap<Product, Integer> cart;

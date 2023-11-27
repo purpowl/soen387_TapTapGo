@@ -1,10 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ page import="java.lang.NumberFormatException" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Map" %>
 <%@ page import="com.taptapgo.Product" %>
 <%@ page import="com.taptapgo.Order" %>
+<%@ page import="com.taptapgo.User" %>
 <%@ page import="com.taptapgo.repository.OrderIdentityMap" %>
-<%@ page import="java.util.Map" %>
+<%@ page import="com.taptapgo.repository.UserIdentityMap" %>
+<%@ page import="com.taptapgo.exceptions.InvalidParameterException" %>
+
 <%
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -37,6 +41,18 @@
 
     Order order = OrderIdentityMap.getOrderByID(orderID);
     if (order == null) {
+        if (session.getAttribute("isStaff") != null) {
+            response.sendRedirect(request.getContextPath() + "/manage-order.jsp");
+        } else {
+            response.sendRedirect(request.getContextPath() + "/orders.jsp");
+        }
+    }
+
+    User customer = null;
+    try {
+        customer = UserIdentityMap.getUserByID(order.getCustomerID());
+    } catch(InvalidParameterException e) {
+        e.printStackTrace();
         if (session.getAttribute("isStaff") != null) {
             response.sendRedirect(request.getContextPath() + "/manage-order.jsp");
         } else {
@@ -143,7 +159,7 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="small mb-1" for="TotalAmt">Total Amount</label>
-                                <input class="form-control" id="TotalAmt" type="number" value="<%=Product.roundPrice((total * 1.14975))%>">
+                                <input class="form-control" id="TotalAmt" type="text" value="$<%=Product.roundPrice((total * 1.14975))%>">
                             </div>
                             <div class="col-md-6">
                                 <label class="small mb-1" for="OrderPayDate">Pay Date</label>
@@ -152,8 +168,8 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="small mb-1" for="CustomerID">Customer #</label>
-                            <input class="form-control" id="CustomerID" type="text" value="<%=order.getCustomerID()%>">
+                            <label class="small mb-1" for="CustomerID">Customer Name</label>
+                            <input class="form-control" id="CustomerID" type="text" value="<%=customer.getFirstName() + " " + customer.getLastName()%>">
                         </div>
 
                         <h4 class="mb-3">Payment</h4>
@@ -209,14 +225,28 @@
                         </div>
                         
                         <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="small mb-1" for="ShipDate">ShipDate</label>
-                                <input class="form-control" id="ShipDate" type="date" value="<%=order.getShipDate()%>">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="small mb-1" for="TrackingNumber">Tracking Number</label>
-                                <input class="form-control" id="TrackingNumber" type="text" value="<%=order.getTrackingNumber()%>">
-                            </div>
+                            <% if (order.getShipDate() == null) { %>
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="ShipDate">ShipDate</label>
+                                    <input class="form-control" id="ShipDate" type="text" value="TBD">
+                                </div>
+                            <% } else { %>
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="ShipDate">ShipDate</label>
+                                    <input class="form-control" id="ShipDate" type="text" value="<%=formatter.format(order.getShipDate())%>">
+                                </div>
+                            <% } %>
+                            <% if (order.getTrackingNumber() == null) { %>
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="TrackingNumber">Tracking Number</label>
+                                    <input class="form-control" id="TrackingNumber" type="text" value="TBD">
+                                </div>
+                            <% } else { %>
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="TrackingNumber">Tracking Number</label>
+                                    <input class="form-control" id="TrackingNumber" type="text" value="<%=order.getTrackingNumber()%>">
+                                </div>
+                            <% } %>
                         </div>
                     </fieldset>
                     </form>

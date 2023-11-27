@@ -180,20 +180,25 @@ public class WarehouseRepository {
     }
 
     
-    public static boolean deleteProduct(Product product) {
+    public static boolean deleteProduct(Product product, Connection external_db_conn) {
         String deleteInventoryQuery = "DELETE FROM warehouse WHERE productSKU = ?";
         String deleteProductQuery = "DELETE FROM product WHERE productSKU = ?";
         Savepoint savepoint = null;
 
         try {
-            // Open DB connection
-            Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
-            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+            if (external_db_conn != null) {
+                // Use external database connection if it is passed in
+                db_conn = external_db_conn;
+            } else {
+                // Open DB connection
+                Class.forName("org.sqlite.JDBC");
+                URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+                db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
-            // Save checkpoint to rollback in case update fail
-            db_conn.setAutoCommit(false);
-            savepoint = db_conn.setSavepoint();
+                // Save checkpoint to rollback in case update fail
+                db_conn.setAutoCommit(false);
+                savepoint = db_conn.setSavepoint();
+            }
 
             PreparedStatement pstmt1 = db_conn.prepareStatement(deleteInventoryQuery);
             pstmt1.setString(1, product.getSKU());
@@ -204,10 +209,13 @@ public class WarehouseRepository {
             pstmt2.setString(1, product.getSKU());
 
             pstmt2.executeUpdate();
-            db_conn.commit();
-
-            db_conn.setAutoCommit(true);
-            db_conn.close();
+            
+            // Commit and close the database connection if not using external db connection
+            if (external_db_conn == null) {
+                db_conn.commit();
+                db_conn.setAutoCommit(true);
+                db_conn.close();
+            }
 
             return true;
 

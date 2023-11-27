@@ -515,7 +515,7 @@ public class UserRepository {
         Savepoint savepoint = null;
 
         try {
-             // Open database connection
+            // Open database connection
             Class.forName("org.sqlite.JDBC");
             URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
