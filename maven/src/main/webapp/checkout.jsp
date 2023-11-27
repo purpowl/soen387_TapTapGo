@@ -83,6 +83,7 @@
                     <strong>$<%=Product.roundPrice(total)%></strong>
                 </li>
             </ul>
+            <a class="btn btn-outline-secondary btn-block" href="<%=request.getContextPath()%>/products.jsp">Continue Shopping</a>
         </div>
         <!-- Left Session - Billing Address -->
         <div class="col-md-8 order-md-1">

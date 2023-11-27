@@ -54,9 +54,6 @@
               <%
                 for (Map.Entry<String, User> user_entry : allUsers.entrySet()) {
                   User user = user_entry.getValue();
-                  if (user.getUserID().equals(currentUserID)) {
-                    continue;
-                  }
               %>
               <tr>
                 <td><%=user.getFirstName() + " " + user.getLastName()%></td>
@@ -70,7 +67,9 @@
                 <td><%=user.getEmail()%></td>
                 <td><%=user.getPhone()%></td>
                 <!-- Remove Staff/Make Staff button-->
-                <%  if (user.isStaff()) { %>
+                <% if (user.getUserID().equals(currentUserID)) { %>
+                  <td></td>
+                <% } else if (user.isStaff()) { %>
                 <td>
                   <form class="mb-0" action="<%=request.getContextPath()%>/staff" method="post">
                     <input type="hidden" name="userID" value="<%=user.getUserID()%>">
