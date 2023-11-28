@@ -24,27 +24,27 @@
                 <div class="form-group mb-3">
                     <div class="mb-3">
                         <label for="sku">Product SKU</label>
-                        <input type="text" class="form-control" id="sku" name="sku" placeholder="Product SKU">
+                        <input type="text" class="form-control" id="sku" name="sku" placeholder="Product SKU" required="">
                     </div>
                     <div class="mb-3">
                         <label for="name">Product Name</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Product Name">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Product Name" required="">
                     </div>
                     <div class="mb-3">
                         <label for="desc">Description</label>
-                        <input type="text" class="form-control" id="desc" name="desc" placeholder="Product Description">
+                        <input type="text" class="form-control" id="desc" name="desc" placeholder="Product Description" required="">
                     </div>
                     <div class="mb-3">
                         <label for="vendor">Vendor</label>
-                        <input type="text" class="form-control" id="vendor" name="vendor" placeholder="Product Vendor">
+                        <input type="text" class="form-control" id="vendor" name="vendor" placeholder="Product Vendor" required="">
                     </div>
                     <div class="mb-3">
                         <label for="price">Price</label>
-                        <input type="text" class="form-control" id="price" name="price" placeholder="Product Price">
+                        <input type="text" class="form-control" id="price" name="price" placeholder="Product Price" required="">
                     </div>
                     <div class="mb-4">
                         <label for="amount">Amount</label>
-                        <input type="text" class="form-control" id="amount" name="amount" placeholder="Product Amount">
+                        <input type="text" class="form-control" id="amount" name="amount" placeholder="Product Amount" required="">
                     </div>
                     <div class="d-flex justify-content-between mb-3">
                         <a href="<%=request.getContextPath()%>/manage-product.jsp" class="btn btn-outline-secondary">Cancel</a>

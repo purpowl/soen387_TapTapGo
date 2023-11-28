@@ -122,6 +122,7 @@
                 <div class="card-body">
                     <h5 class="card-title"><%=p.getName() %></h5>
                     <h6 class="price">Price: $<%=p.getPrice() %></h6>
+                    <h6 class="vendor">Vendor: <%=p.getVendor() %></h6>
                     <p class="category">Description: <%=p.getDescription() %></p>
                     <!-- Show different types of button for staff/user -->
                     <div class="mt-3 d-flex justify-content-between">
