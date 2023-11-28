@@ -87,7 +87,7 @@ public class CheckoutServlet extends HttpServlet{
         String paymentMethod = request.getParameter("paymentMethod");
         String ccNumber = request.getParameter("cc-number");
 
-        if (sameShippingAddress.equals("checked")) {
+        if (sameShippingAddress != null) {
             shipAddress = billAddress;
             shipCity = billCity;
             shipCountry = billCountry;
