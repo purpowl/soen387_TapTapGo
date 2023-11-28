@@ -41,6 +41,8 @@
                 <th scope="col">SHIP TO</th>
                 <th scope="col">ORDER STATUS</th>
                 <th scope="col">TRACKING #</th>
+                <th scope="col">ORDER TYPE</th>
+                <th scope="col"></th>
                 <th scope="col"></th>
                 <th scope="col"></th>
               </tr>
@@ -66,6 +68,23 @@
                   } else {
                 %>
                 <td><%=order.getTrackingNumber()%></td>
+                <% } %>
+                <!-- guest or registered user's order -->
+                <%
+                  if (order.getCustomerID().startsWith("rc")) {
+                %>
+                <td>Registered</td>
+                <td></td>
+                <%
+                } else {
+                %>
+                <td>Guest</td>
+                <td>
+                  <form action="<%=request.getContextPath()%>/orders/<%=order.getOrderID()%>" method="post">
+                    <input type="hidden" name="orderID" value="<%=order.getOrderID()%>">
+                    <button style="background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" class="btn btn-sm" type="submit">Claim order</button>
+                  </form>
+                </td>
                 <% } %>
                 <!-- Ship button -->
                 <%
