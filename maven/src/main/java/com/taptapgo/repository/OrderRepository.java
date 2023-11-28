@@ -428,7 +428,10 @@ public class OrderRepository{
 
             PreparedStatement pstmt = db_conn.prepareStatement(modifyOrderQuery);
             pstmt.setString(1, tracking);
-            pstmt.setDate(2, shipDate);
+
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+            String shipDateString = dateFormatter.format(shipDate);
+            pstmt.setString(2, shipDateString);
             pstmt.setString(3, shipStatus);
             pstmt.setInt(4, orderID);
 
