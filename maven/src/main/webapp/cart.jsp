@@ -162,11 +162,7 @@
                 <!-- Check Out button -->
                 <div class="col-sm">
                     <a href="<%=request.getContextPath()%>/checkout.jsp">
-                        <% if (cart.isEmpty()) {%>
-                        <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" class="btn btn-block btn-lg me-2" disabled>Check Out</button>
-                        <% } else {%>
-                        <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" type="submit" class="btn btn-block btn-lg me-2">Check Out</button>
-                        <% }%>
+                        <button style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" type="submit" class="btn btn-block btn-lg me-2">Check Out</button>                                                 
                     </a>
                 </div>
             </div>

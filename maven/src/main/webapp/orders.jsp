@@ -84,8 +84,6 @@
                   currentSession.removeAttribute("order");
 
                   Order order = (Order) order_object;
-
-                  if (order.getCustomerID().startsWith("gc")) {
               %>
               <tr>
                 <td><span class="badge badge-success"><%=order.getOrderID()%></span></td>
@@ -109,7 +107,7 @@
                 <!-- Registed user can see the link "Claim order" to claim order-->
                 <% if (session.getAttribute("isRegisteredUser") != null) { %>
                   <!-- Claim Order button -->
-                  <td>
+                  <td> 
                     <form action="<%=request.getContextPath()%>/orders/<%=order.getOrderID()%>" method="post">
                       <input type="hidden" name="orderID" value="<%=order.getOrderID()%>">
                       <button style="background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%);" class="btn btn-sm" type="submit">Claim order</button>
@@ -118,7 +116,6 @@
                 <% } %>
               </tr>
               <%
-                  }
                 }
               %>
             </tbody>
