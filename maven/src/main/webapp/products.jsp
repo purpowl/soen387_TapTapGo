@@ -26,8 +26,11 @@
         %>
         <div class="col-md-3 my-3">
             <div class="card w-100">
-                <img class="card-img-top" src="<%=request.getContextPath()%>/images/epomaker_alice.jpg"
-                     alt="Card image cap">
+                <% if (p.getImagePath() != null) { %>
+                    <img class="card-img-top" src="<%=request.getContextPath()%>/images/products/<%=p.getImagePath()%>" alt="Card image cap" width="200" height="150" style="object-fit: cover">
+                <% } else { %>
+                    <img class="card-img-top" src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="Card image cap" width="200" height="150" style="object-fit: cover">
+                <% } %>
                 <div class="card-body">
                     <h5 class="card-title"><%=p.getName() %></h5>
                     <h6 class="price">Price: $<%=p.getPrice() %></h6>

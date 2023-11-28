@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="com.taptapgo.Product" %>
 <html>
     <head>
         <%@include file="includes/header.jsp" %>
@@ -14,7 +15,14 @@
         <div class="container" style="min-height: 1000px;">
             <div class="card-header my-3">Product Details</div>
             <div class="product-center">
-                <img class="main-image" src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="keyboard">
+                <% 
+                    Product product = (Product) request.getAttribute("product");
+                    if (product.getImagePath() != null) { 
+                %>
+                    <img class="main-image" src="<%=request.getContextPath()%>/images/products/<%=product.getImagePath()%>" alt="keyboard">
+                <% } else { %>
+                    <img class="main-image" src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="keyboard">
+                <% } %>
                 <section class="content">
                     <h2>${product.getName()}</h2>
                     <h5 class="price">&#36;${product.getPrice()}</h5>

@@ -62,7 +62,13 @@
                     int amount = productEntry.getValue();
               %>
               <tr>
-                  <th colspan="2"><img src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="product" class="" width="150"></th>  <!-- TODO -->
+                  <td colspan="2">
+                    <% if (product.getImagePath() != null) { %>
+                      <img src="<%=request.getContextPath()%>/images/products<%=product.getImagePath()%>" alt="product" class="" width="150">
+                    <% } else { %>
+                      <img src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="product" class="" width="150">
+                    <% } %>
+                  </td>
                   <td colspan="1" style="vertical-align: middle;"><%=product.getName()%></td> <!-- TODO -->
                   <td colspan="1" style="vertical-align: middle;">x<span><%=amount%></span></td> <!-- TODO -->
                   <td colspan="2" style="vertical-align: middle;"><%=product.getDescription()%></td> <!-- TODO -->

@@ -100,7 +100,13 @@
                                     total += product.getPrice() * amount;
                             %>
                             <tr>
-                                <td colspan="2"><img src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="product" class="" width="150"></td>
+                                <td colspan="2">
+                                    <% if (product.getImagePath() != null) { %>
+                                        <img src="<%=request.getContextPath()%>/images/products/<%=product.getImagePath()%>" alt="product" class="" width="150">
+                                    <% } else { %>
+                                        <img src="<%=request.getContextPath()%>/images/epomaker_alice.jpg" alt="product" class="" width="150">
+                                    <% } %>
+                                </td>
                                 <td style="vertical-align: middle;"><%=product.getName()%></td>
                                 <td style="vertical-align: middle;">$<%=Product.roundPrice((total * 1.14975))%></td>
                                 <td style="vertical-align: middle;">x<span><%=amount%></span></td>
