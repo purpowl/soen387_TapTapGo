@@ -41,6 +41,7 @@
                 <th scope="col">SHIP TO</th>
                 <th scope="col">ORDER STATUS</th>
                 <th scope="col">TRACKING #</th>
+                <th scope="col">ORDER TYPE</th>
                 <th scope="col"></th>
                 <th scope="col"></th>
               </tr>
@@ -67,6 +68,16 @@
                 %>
                 <td><%=order.getTrackingNumber()%></td>
                 <% } %>
+                <!-- guest or registered user's order -->
+                <%
+                  if (order.getCustomerID().startsWith("rc")) {
+                %>
+                <td>Registered</td>
+                <%
+                } else {
+                %>
+                <td>Guest</td>
+                <% } %>
                 <!-- Ship button -->
                 <%
                 if (order.getTrackingNumber() == null) {
@@ -74,20 +85,20 @@
                 <td>
                   <a href="<%=request.getContextPath()%>/shipOrder/<%=order.getOrderID()%>" 
                       style=" background: hsl(221, 100%, 33%);color: hsl(221, 100%, 95%)" 
-                      class="btn btn-sm">Ship order
+                      class="btn btn-sm">Ship
                   </a>
                 </td>
                 <%
                   } else {
                 %>
                 <td>
-                  <button class="btn btn-sm btn-secondary">Shipped</button>
+<%--                  <button class="btn btn-sm btn-secondary">Shipped</button>--%>
                 </td>
                 <%
                   }
                 %>
                 <!-- View Order Detail button -->
-                <td> <a href="<%=request.getContextPath()%>/order-detail.jsp?orderID=<%=order.getOrderID()%>" class="btn btn-sm btn-outline-secondary">View order</a></td> 
+                <td> <a href="<%=request.getContextPath()%>/order-detail.jsp?orderID=<%=order.getOrderID()%>" class="btn btn-sm btn-outline-secondary">View</a></td>
               </tr>
             <%
               }

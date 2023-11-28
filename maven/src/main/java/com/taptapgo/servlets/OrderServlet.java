@@ -13,16 +13,6 @@ import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name = "orderServlet", value = "/orders")
 public class OrderServlet extends HttpServlet{
-    
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        HttpSession currentSession = request.getSession();
-
-        if (currentSession.getAttribute("isStaff") != null) {
-            response.sendRedirect(request.getContextPath() + "/ship-orders.jsp");
-        } else {
-            response.sendRedirect(request.getContextPath() + "/orders.jsp");
-        }
-    }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
         String orderID_str = request.getParameter("orderID");

@@ -28,11 +28,9 @@
         </li>
 
         <!-- Search order - all users can see this link to search for their order-->
-        <% if (session.getAttribute("isStaff") == null) { %>
         <li class="nav-item">
-          <a class="nav-link" href="<%=request.getContextPath()%>/orders">Search Order</a>
+          <a class="nav-link" href="<%=request.getContextPath()%>/orders.jsp">Search Order</a>
         </li>
-        <% } %>
 
         <!-- Create Product page - staff members can see a link to add new product -->
         <% if (session.getAttribute("isStaff") != null) { %>
