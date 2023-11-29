@@ -5,7 +5,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.taptapgo.repository.OrderIdentityMap;
 
 import java.sql.Date;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Order {
@@ -273,4 +275,95 @@ public class Order {
 
     public void setCustomerID(String customerID) {this.customerID = customerID;}
 
+    public static List<Order> sortOrdersBy(List<Order> orders, String sortCriteria, String sortOrder) {
+        boolean sortByPayDate = false;
+        boolean sortByID = false;
+        boolean sortByShipDate = false;
+        boolean ascending = false;
+        boolean descending = false;
+
+        switch(sortCriteria){
+            case "PayDate":
+                sortByPayDate = true;
+                break;
+            case "ID":
+                sortByID = true;
+                break;
+            case "ShipDate":
+                sortByShipDate = true;
+                break;
+            default:
+                System.out.println("ERROR: Order.SortOrderBy() : Invalid choice of sort criteria \"" + sortCriteria + "\"");
+                System.out.println("Available sort criteria: PayDate, ID, ShipDate");
+                return orders;
+        }
+
+        if(sortOrder.equals("ascending"))
+            ascending = true;
+        else if(sortOrder.equals("descending"))
+            descending = true;
+        else {
+            System.out.println("ERROR: Order.SortOrderBy() : Invalid choice of sort order \"" + sortOrder + "\"");
+            System.out.println("Available sort order: ascending, descending");
+            return orders;
+        }
+
+        int shipDateNotNullCounter = 0;
+        for(int i = 0; i < orders.size(); i++) {
+            Order currentItem = orders.get(i);
+            for(int k = i+1; k < orders.size(); k++) {
+                Order nextItem = orders.get(k);
+                if(ascending) {
+                    if(sortByPayDate) {
+                        if(nextItem.getPayDate().before(currentItem.getPayDate())) {
+                            Collections.swap(orders, i, k);
+                        }
+                    } else if(sortByID) {
+                        if(nextItem.getOrderID() < currentItem.getOrderID()) {
+                            Collections.swap(orders, i, k);
+                        }
+                    } else {
+                        if(nextItem.getShipDate() == null && currentItem.getShipDate() != null) {
+                            Collections.swap(orders, i, k);
+                            break;
+                        } else if (nextItem.getShipDate() != null && currentItem.getShipDate() != null && nextItem.getShipDate().before(currentItem.getShipDate())) {
+                            Collections.swap(orders, i, k);
+                        }
+                    }
+                } else if(descending) {
+                    if(sortByPayDate) {
+                        if(nextItem.getPayDate().after(currentItem.getPayDate())) {
+                            Collections.swap(orders, i, k);
+                        }
+                    } else if(sortByID) {
+                        if(nextItem.getOrderID() > currentItem.getOrderID()) {
+                            Collections.swap(orders, i, k);
+                        }
+                    } else {
+                        if (nextItem.getShipDate() != null && currentItem.getShipDate() != null && nextItem.getShipDate().after(currentItem.getShipDate())) {
+                            Collections.swap(orders, i, k);
+                        } else if(nextItem.getShipDate() != null && currentItem.getShipDate() == null) {
+                            Collections.swap(orders, i, k);
+                        }
+                    }
+                }
+            }
+
+            if(sortByShipDate && currentItem.getShipDate() != null) {
+                shipDateNotNullCounter++;
+            }
+        }
+
+        // if(sortByShipDate) {
+        //     if(ascending) {
+        //         List<Order> sublist = orders.subList(0, shipDateNotNullCounter);
+        //         Order.sortOrdersBy(sublist, "PayDate", sortOrder);
+        //     } else if(descending) {
+        //         List<Order> sublist = orders.subList(shipDateNotNullCounter, orders.size()-1);
+        //         Order.sortOrdersBy(sublist, "PayDate", sortOrder);
+        //     }
+        // }
+
+        return orders;
+    }
 }

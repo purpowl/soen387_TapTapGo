@@ -2,8 +2,9 @@
 <%@ page import="com.taptapgo.repository.OrderIdentityMap" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.HashMap" %>
-<%@ page import="java.util.Map" %>
-<%@ page import="com.taptapgo.Product" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.taptapgo.Product" %> 
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%
   // only staff can access this page, redirect to login page otherwise
@@ -48,8 +49,9 @@
             </thead>
             <tbody>
             <%
-              for (Map.Entry<Integer, Order> orderEntry : allOrders.entrySet()) {
-                Order order = orderEntry.getValue();
+              List<Order> orderList = new ArrayList<Order>(allOrders.values());
+              orderList = Order.sortOrdersBy(orderList, "ShipDate", "ascending");
+              for (Order order : orderList) {
             %>
               <tr>
                 <td><span class="badge badge-success"><%=order.getOrderID()%></span></td>
