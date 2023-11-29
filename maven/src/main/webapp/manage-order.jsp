@@ -91,14 +91,12 @@
                 <%
                   } else {
                 %>
-                <td>
-<%--                  <button class="btn btn-sm btn-secondary">Shipped</button>--%>
-                </td>
+                <td></td>
                 <%
                   }
                 %>
                 <!-- View Order Detail button -->
-                <td> <a href="<%=request.getContextPath()%>/order-detail.jsp?orderID=<%=order.getOrderID()%>" class="btn btn-sm btn-outline-secondary">View</a></td>
+                <td> <a href="<%=request.getContextPath()%>/order-detail.jsp?from=${pageContext.request.requestURI}&orderID=<%=order.getOrderID()%>" class="btn btn-sm btn-outline-secondary">View</a></td>
               </tr>
             <%
               }

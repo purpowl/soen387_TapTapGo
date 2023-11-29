@@ -41,6 +41,10 @@
         <servlet-name>signUpServlet</servlet-name>
         <servlet-class>com.taptapgo.servlets.SignUpServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>backServlet</servlet-name>
+        <servlet-class>com.taptapgo.servlets.BackServlet</servlet-class>
+    </servlet>
 
 
     <servlet-mapping>

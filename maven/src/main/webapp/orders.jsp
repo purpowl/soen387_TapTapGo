@@ -103,7 +103,7 @@
                   }
                 %>
                 <!-- View Order Detail button -->
-                <td> <a href="<%=request.getContextPath()%>/order-detail.jsp?orderID=<%=order.getOrderID()%>" class="btn btn-sm btn-outline-secondary">View order</a></td> 
+                <td> <a href="<%=request.getContextPath()%>/order-detail.jsp?from=${pageContext.request.requestURI}&orderID=<%=order.getOrderID()%>" class="btn btn-sm btn-outline-secondary">View order</a></td>
                 <!-- Registed user can see the link "Claim order" to claim order-->
                 <% if (session.getAttribute("isRegisteredUser") != null) { %>
                   <!-- Claim Order button -->
