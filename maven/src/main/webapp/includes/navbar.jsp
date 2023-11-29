@@ -69,7 +69,7 @@
           <a
           class="dropdown-toggle d-flex align-items-center hidden-arrow"
           <% if (session.getAttribute("isRegisteredUser") == null) { %>
-            href="${pageContext.request.contextPath}/login.jsp?from=${pageContext.request.requestURI}"
+            href="${pageContext.request.contextPath}/login.jsp?"
           <% } else { %>
             href="${pageContext.request.contextPath}/user-account.jsp"
           <% } %>

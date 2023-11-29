@@ -12,15 +12,13 @@
 <%
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-    // HttpSession session = request.getSession(false);
-
     session = request.getSession(false);
     if (session == null) {
         response.sendRedirect("/taptapgo");
     }
 
     // reference to order
-    String orderID_str = (String) request.getParameter("orderID");
+    String orderID_str = request.getParameter("orderID");
 
     if (orderID_str == null && session.getAttribute("isStaff") != null) {
         response.sendRedirect(request.getContextPath() + "/manage-order.jsp");
@@ -265,14 +263,12 @@
     <!-- Exit button-->
     <div class="row mb-3">
         <div class="col-sm-12">
-            <% if (session.getAttribute("isStaff") != null) { %>
-            <a href="<%=request.getContextPath()%>/manage-order.jsp" class="btn btn-secondary">Back</a>
-            <% } else if (session.getAttribute("isRegisteredUser") != null) { %>
-            <a href="<%=request.getContextPath()%>/user-orders.jsp" class="btn btn-secondary">Back</a>
-            <% } else { %>
-            <a href="<%=request.getContextPath()%>/orders.jsp" class="btn btn-secondary">Back</a>
-            <% } %>
-        </div>     
+            <form action="back" method="post">
+                <input type="hidden" name="from" value="${param.from}">
+                <input type="hidden" name="orderID" value="<%=orderID%>">
+                <button type="submit" class="btn btn-secondary">Back</button>
+            </form>
+        </div>
     </div>
 
 </div>
