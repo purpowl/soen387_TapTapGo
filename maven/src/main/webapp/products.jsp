@@ -55,7 +55,6 @@
                     products = Product.sortProductsBy(products, "Name", "ascending");
                 }
                 for (Product p : products) {
-                    System.out.println("Product: " + p.getName());
         %>
         <div class="col-md-3 my-3">
             <div class="card w-100">
