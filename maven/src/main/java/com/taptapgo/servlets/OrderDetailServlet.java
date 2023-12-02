@@ -19,7 +19,7 @@ public class OrderDetailServlet extends HttpServlet{
         HttpSession currentSession = request.getSession();
         boolean isStaff = currentSession.getAttribute("staff") != null;
 
-        Integer orderID = null;
+        Integer orderID;
         // Error handling for incorrect format orderID
         try {
             orderID = Integer.parseInt(orderID_str);
@@ -38,20 +38,16 @@ public class OrderDetailServlet extends HttpServlet{
         if (order == null) {
             if(isStaff) {
                 response.sendRedirect(request.getContextPath() + "/ship-orders.jsp?search=fail");
-                return;
             } else {
                 response.sendRedirect(request.getContextPath() + "/orders.jsp?search=fail");
-                return;
             }
         } else {
             currentSession.setAttribute("order", order);
 
             if(isStaff) {
                 response.sendRedirect(request.getContextPath() + "/ship-orders.jsp?search=success");
-                return;
             } else {
                 response.sendRedirect(request.getContextPath() + "/orders.jsp?search=success");
-                return;
             }
         }
     }
@@ -68,7 +64,7 @@ public class OrderDetailServlet extends HttpServlet{
         String orderID_str = request.getParameter("orderID");
         int orderID = Integer.parseInt(orderID_str);
 
-        boolean db_result = OrderIdentityMap.reclaimOrder(orderID, userID);
+        boolean db_result = OrderIdentityMap.setOrderOwner(orderID, userID);
         if(!db_result) {
             response.sendRedirect(request.getContextPath() + "/orders.jsp?reclaim=fail");
         } else {
