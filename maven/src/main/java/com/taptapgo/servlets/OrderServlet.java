@@ -51,7 +51,11 @@ public class OrderServlet extends HttpServlet{
                 } else {
                     response.sendRedirect(request.getContextPath() + "/orders.jsp?search=fail");
                 }
-            } else {
+            }
+            else if (order.getCustomerID().contains("rc")) {
+                response.sendRedirect(request.getContextPath() + "/orders.jsp?search=fail");
+            }
+            else {
                 currentSession.setAttribute("order", order);
 
                 if(isStaff) {

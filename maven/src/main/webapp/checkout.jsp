@@ -108,7 +108,7 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="phone">Email <span class="text-muted">(Optional)</span></label>
+                    <label for="phone">Phone <span class="text-muted">(Optional)</span></label>
                     <input type="text" class="form-control" id="phone" name="phone" placeholder="123-456-7890">
                     <div class="invalid-feedback"> Please enter a valid phone number for carrier's contact.</div>
                 </div>

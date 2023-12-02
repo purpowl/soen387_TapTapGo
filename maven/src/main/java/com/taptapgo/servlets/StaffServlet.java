@@ -16,10 +16,10 @@ public class StaffServlet extends HttpServlet{
         String userID = request.getParameter("userID");
         
         if (action.equals("revoke")) {
-            UserIdentityMap.setStaff(userID, false);
+            UserIdentityMap.changePermission(userID, false);
             response.sendRedirect(request.getContextPath() + "/manage-user.jsp");
         } else if (action.equals("promote")) {
-            UserIdentityMap.setStaff(userID, true);
+            UserIdentityMap.changePermission(userID, true);
             response.sendRedirect(request.getContextPath() + "/manage-user.jsp");
         }
     }

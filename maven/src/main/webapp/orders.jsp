@@ -84,6 +84,7 @@
                   currentSession.removeAttribute("order");
 
                   Order order = (Order) order_object;
+                  if (order.getCustomerID().startsWith("gc")) {
               %>
               <tr>
                 <td><span class="badge badge-success"><%=order.getOrderID()%></span></td>
@@ -116,6 +117,7 @@
                 <% } %>
               </tr>
               <%
+                  }
                 }
               %>
             </tbody>

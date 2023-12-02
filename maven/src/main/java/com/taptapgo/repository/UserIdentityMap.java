@@ -2,7 +2,6 @@ package com.taptapgo.repository;
 
 import java.util.HashMap;
 
-import com.taptapgo.Order;
 import com.taptapgo.User;
 import com.taptapgo.exceptions.InvalidParameterException;
 
@@ -159,7 +158,7 @@ public class UserIdentityMap {
         return instance.userMap;
     }
 
-    public static synchronized boolean setStaff(String userID, boolean isStaff) {
+    public static synchronized boolean changePermission(String userID, boolean isStaff) {
         User userInMemory = UserIdentityMap.getInstance().userMap.get(userID);
 
         if(userInMemory != null) {
