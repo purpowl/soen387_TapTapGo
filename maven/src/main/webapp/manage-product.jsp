@@ -1,6 +1,7 @@
 <%@ page import="com.taptapgo.Product" %>
 <%@ page import="com.taptapgo.Warehouse" %>
-<%@ page import="java.util.Set" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
     // only staff can access this page, redirect to login page otherwise
@@ -11,7 +12,7 @@
 
     // reference to warehouse and product list
     Warehouse warehouse = (Warehouse) application.getAttribute("warehouse");
-    Set<Product> products = warehouse.getProductList().keySet();
+    List<Product> products = new ArrayList<Product>(warehouse.getProductList().keySet());
 %>
 <html>
 <head>
@@ -49,10 +50,10 @@
             <span class="caret"></span>
         </button>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">Highest Price</a>
-            <a class="dropdown-item" href="#">Lowest Price</a>
-            <a class="dropdown-item" href="#">Product name ascending</a>
-            <a class="dropdown-item" href="#">Product name descending</a>
+            <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-product.jsp?sort=price_descending">Highest Price</a>
+            <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-product.jsp?sort=price_ascending">Lowest Price</a>
+            <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-product.jsp?sort=name_ascending">Product name ascending</a>
+            <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-product.jsp?sort=name_descending">Product name descending</a>
         </div>
         </div>
     </div>
@@ -132,6 +133,19 @@
         <%
             // if there are products in warehouse, create cards for them
             if (!products.isEmpty()) {
+                String sortParam = (String) request.getParameter("sort");
+
+                if(sortParam == null) {
+                    products = Product.sortProductsBy(products, "Name", "ascending");
+                } else if (sortParam.equals("name_descending")){
+                    products = Product.sortProductsBy(products, "Name", "descending");
+                } else if (sortParam.equals("price_ascending")) {
+                    products = Product.sortProductsBy(products, "Price", "ascending");
+                } else if (sortParam.equals("price_descending")) {
+                    products = Product.sortProductsBy(products, "Price", "descending");
+                } else {
+                    products = Product.sortProductsBy(products, "Name", "ascending");
+                }
                 for (Product p : products) {
         %>
         <div class="col-md-3 my-3">

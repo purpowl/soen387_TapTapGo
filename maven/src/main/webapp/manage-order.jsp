@@ -37,12 +37,12 @@
         <span class="caret"></span>
       </button>
       <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">Order ID descending</a>
-        <a class="dropdown-item" href="#">Order ID ascending</a>
-        <a class="dropdown-item" href="#">PayDate ascending</a>
-        <a class="dropdown-item" href="#">PayDate descending</a>
-        <!-- <a class="dropdown-item" href="#">ShipDate ascending</a>
-        <a class="dropdown-item" href="#">ShipDate descending</a> -->
+        <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-order.jsp?sort=id_descending">Order ID descending</a>
+        <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-order.jsp?sort=id_ascending">Order ID ascending</a>
+        <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-order.jsp?sort=pay_ascending">PayDate ascending</a>
+        <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-order.jsp?sort=pay_descending">PayDate descending</a>
+        <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-order.jsp?sort=ship_ascending">Shipped order first</a>
+        <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-order.jsp?sort=ship_descending">Unshipped order first</a>
       </div>
     </div>
   </div>
@@ -69,7 +69,24 @@
             <tbody>
             <%
               List<Order> orderList = new ArrayList<Order>(allOrders.values());
-              orderList = Order.sortOrdersBy(orderList, "ShipDate", "ascending");
+              String sortParam = (String) request.getParameter("sort");
+
+              if(sortParam == null){
+                orderList = Order.sortOrdersBy(orderList, "ShipDate", "ascending");
+              } else if (sortParam.equals("id_ascending")) {
+                orderList = Order.sortOrdersBy(orderList, "ID", "ascending");
+              } else if (sortParam.equals("id_descending")) {
+                orderList = Order.sortOrdersBy(orderList, "ID", "descending");
+              } else if (sortParam.equals("pay_ascending")) {
+                orderList = Order.sortOrdersBy(orderList, "PayDate", "ascending");
+              } else if (sortParam.equals("pay_descending")){
+                orderList = Order.sortOrdersBy(orderList, "PayDate", "descending");
+              } else if (sortParam.equals("ship_descending")){
+                orderList = Order.sortOrdersBy(orderList, "ShipDate", "descending");
+              } else {
+                orderList = Order.sortOrdersBy(orderList, "ShipDate", "ascending");
+              }
+              
               for (Order order : orderList) {
             %>
               <tr>

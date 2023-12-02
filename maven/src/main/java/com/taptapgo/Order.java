@@ -308,7 +308,6 @@ public class Order {
             return orders;
         }
 
-        int shipDateNotNullCounter = 0;
         for(int i = 0; i < orders.size(); i++) {
             Order currentItem = orders.get(i);
             for(int k = i+1; k < orders.size(); k++) {
@@ -317,10 +316,12 @@ public class Order {
                     if(sortByPayDate) {
                         if(nextItem.getPayDate().before(currentItem.getPayDate())) {
                             Collections.swap(orders, i, k);
+                            currentItem = nextItem;
                         }
                     } else if(sortByID) {
                         if(nextItem.getOrderID() < currentItem.getOrderID()) {
                             Collections.swap(orders, i, k);
+                            currentItem = nextItem;
                         }
                     } else {
                         if(nextItem.getShipDate() == null && currentItem.getShipDate() != null) {
@@ -328,29 +329,30 @@ public class Order {
                             break;
                         } else if (nextItem.getShipDate() != null && currentItem.getShipDate() != null && nextItem.getShipDate().before(currentItem.getShipDate())) {
                             Collections.swap(orders, i, k);
+                            currentItem = nextItem;
                         }
                     }
                 } else if(descending) {
                     if(sortByPayDate) {
                         if(nextItem.getPayDate().after(currentItem.getPayDate())) {
                             Collections.swap(orders, i, k);
+                            currentItem = nextItem;
                         }
                     } else if(sortByID) {
                         if(nextItem.getOrderID() > currentItem.getOrderID()) {
                             Collections.swap(orders, i, k);
+                            currentItem = nextItem;
                         }
                     } else {
                         if (nextItem.getShipDate() != null && currentItem.getShipDate() != null && nextItem.getShipDate().after(currentItem.getShipDate())) {
                             Collections.swap(orders, i, k);
+                            currentItem = nextItem;
                         } else if(nextItem.getShipDate() != null && currentItem.getShipDate() == null) {
                             Collections.swap(orders, i, k);
+                            currentItem = nextItem;
                         }
                     }
                 }
-            }
-
-            if(sortByShipDate && currentItem.getShipDate() != null) {
-                shipDateNotNullCounter++;
             }
         }
 
