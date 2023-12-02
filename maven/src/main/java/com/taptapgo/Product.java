@@ -2,6 +2,8 @@ package com.taptapgo;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Product
@@ -153,5 +155,66 @@ public class Product {
         double result = bd.doubleValue();
 
         return String.format("%.2f", result);
+    }
+
+    public static List<Product> sortProductsBy(List<Product> products, String sortCriteria, String sortOrder){
+        boolean sortByPrice = false;
+        boolean sortByName = false;
+        boolean ascending = false;
+        boolean descending = false;
+
+        if(sortCriteria.equals("Price")){
+            sortByPrice = true;
+        } else if (sortCriteria.equals("Name")){
+            sortByName = true;
+        } else {
+            System.out.println("ERROR: Product.sortProductsBy() : Invalid choice of sort criteria \"" + sortCriteria + "\"");
+            System.out.println("Available sort criteria: Name, Price");
+            return products;
+        }
+
+        if (sortOrder.equals("ascending")){
+            ascending = true;
+        } else if(sortOrder.equals("descending")){
+            descending = true;
+        } else {
+            System.out.println("ERROR: Product.sortProductsBy() : Invalid choice of sort order \"" + sortOrder + "\"");
+            System.out.println("Available sort order: ascending, descending");
+            return products;
+        }
+
+        for(int i = 0; i < products.size(); i++){
+            Product currentProduct = products.get(i);
+            for(int k = i+1; k < products.size(); k++) {
+                Product nextProduct = products.get(k);
+                if (ascending) {
+                    if (sortByName) {
+                        if(nextProduct.getName().compareToIgnoreCase(currentProduct.getName()) < 0) {
+                            Collections.swap(products, i, k);
+                            currentProduct = nextProduct;
+                        }
+                    } else if (sortByPrice) {
+                        if (nextProduct.getPrice() < currentProduct.getPrice()) {
+                            Collections.swap(products, i, k);
+                            currentProduct = nextProduct;
+                        }
+                    }
+                } else if(descending) {
+                    if (sortByName) {
+                        if(nextProduct.getName().compareToIgnoreCase(currentProduct.getName()) > 0) {
+                            Collections.swap(products, i, k);
+                            currentProduct = nextProduct;
+                        }
+                    } else if (sortByPrice) {
+                        if (nextProduct.getPrice() > currentProduct.getPrice()) {
+                            Collections.swap(products, i, k);
+                            currentProduct = nextProduct;
+                        }                        
+                    }
+                }
+            }
+        }
+
+        return products;
     }
 }
