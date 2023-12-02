@@ -29,8 +29,10 @@
 <%@include file="includes/navbar.jsp" %>
 
 <div class="container mb-4">
-    <div class="card-header my-5 mb-4">Checkout</div>
+    <div class="card-header my-5 mb-3">Checkout</div>
     <div class="row">
+    <!-- Error Handling -->
+    <div class="col-12">
     <%
         String failureMessage = (String) request.getParameter("checkout");
 
@@ -46,6 +48,7 @@
             }
         }
     %>
+    </div>
     </div>
     <!-- Container Wrapper -->
     <div class="row">
