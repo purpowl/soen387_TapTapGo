@@ -23,14 +23,6 @@
 
 <div class="container mb-5">
 
-  <!-- Search box -->
-  <div class="d-flex justify-content-end">
-    <form class="form-inline">
-      <input class="form-control mr-sm-2" type="search" placeholder="Enter User ID to search" aria-label="Search">
-      <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
-    </form>
-  </div>
-
   <!-- Page Indicator -->
   <div class="card-header my-3 ">All Users</div>
   
