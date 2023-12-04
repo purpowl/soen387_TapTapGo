@@ -85,7 +85,7 @@ public class SetOrderOwnerTest {
         assertThrows(InvalidParameterException.class, () ->
                 OrderIdentityMap.setOrderOwner(10001, null), "Customer ID can't be null.");
 
-        // case 4: claiming registered user's order
+        // case 4: guest user claiming order
         assertThrows(InvalidParameterException.class, () ->
                 OrderIdentityMap.setOrderOwner(10003, "gc123456"), "Only registered customers can claim orders.");
 
