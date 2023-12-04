@@ -3,24 +3,21 @@ package com.taptapgo;
 import com.taptapgo.exceptions.InvalidParameterException;
 import com.taptapgo.repository.OrderRepository;
 import com.taptapgo.repository.UserRepository;
-import com.taptapgo.repository.WarehouseRepository;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import java.net.URL;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SetPasscodeTest {
 
     static final String TEST_DB_NAME = "taptapgo_test.db";
-    static Connection db_conn;
+    static final String REG_DB_NAME = "taptapgo.db";
+
     static User testGuest;
     static User testRegisteredStaff;
     // 2nd user solely for the purpose of testing uniqueness of new passcode
@@ -33,8 +30,8 @@ class SetPasscodeTest {
         testRegisteredStaff = User.loadRegisteredUser("rc00001", "testS", "testS", "testS", "testS", true);
         testRegisteredNonStaff = User.loadRegisteredUser( "rc00002", "testC", "testC", "testC", "testC", false);
 
-        UserRepository.setDBName("taptapgo_test.db");
-        OrderRepository.setDBName("taptapgo_test.db");
+        UserRepository.setDBName(TEST_DB_NAME);
+        OrderRepository.setDBName(TEST_DB_NAME);
         UserRepository.clearUserTables();
         OrderRepository.clearOrderTables();
 
@@ -47,8 +44,8 @@ class SetPasscodeTest {
     public static synchronized void tearDown() throws SQLException, ClassNotFoundException {
         UserRepository.clearUserTables();
         OrderRepository.clearOrderTables();
-        UserRepository.setDBName("taptapgo.db");
-        OrderRepository.setDBName("taptapgo.db");
+        UserRepository.setDBName(REG_DB_NAME);
+        OrderRepository.setDBName(REG_DB_NAME);
     }
 
     @Test

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -21,7 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SetOrderOwnerTest {
 
     static final String TEST_DB_NAME = "taptapgo_test.db";
-    static Connection db_conn;
+    static final String REG_DB_NAME = "taptapgo.db";
+
     static Order testOrderGuest;
     static Order testOrderRegistered;
     static Order testOrderRegistered2;
@@ -44,8 +44,8 @@ public class SetOrderOwnerTest {
         testOrderRegistered = Order.createOrder("1234 Halley Street", "NU", "CA", "12345", "credit", 1234, "1234 Halley Street", "NU", "CA", "12345", testCart, "rc00001" );
         testOrderRegistered2 = Order.createOrder("1234 Halley Street", "NU", "CA", "12345", "credit", 1234, "1234 Halley Street", "NU", "CA", "12345", testCart, "rc00002" );
 
-        UserRepository.setDBName("taptapgo_test.db");
-        OrderRepository.setDBName("taptapgo_test.db");
+        UserRepository.setDBName(TEST_DB_NAME);
+        OrderRepository.setDBName(TEST_DB_NAME);
         UserRepository.clearUserTables();
         OrderRepository.clearOrderTables();
 
@@ -61,8 +61,8 @@ public class SetOrderOwnerTest {
     public static synchronized void tearDown() throws SQLException, ClassNotFoundException {
         UserRepository.clearUserTables();
         OrderRepository.clearOrderTables();
-        UserRepository.setDBName("taptapgo.db");
-        OrderRepository.setDBName("taptapgo.db");
+        UserRepository.setDBName(REG_DB_NAME);
+        OrderRepository.setDBName(REG_DB_NAME);
     }
 
     @Test
