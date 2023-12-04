@@ -115,6 +115,100 @@ public class OrderRepository{
         }
     }
 
+    public static boolean createOrder(Order order, String testDBName) {
+        String insertOrderRegisteredQuery = "INSERT INTO `order` (OrderID, OrderPayDate, TotalAmt, PayMethod, \"4CreditDigits\", BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, UserID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertOrderGuestQuery = "INSERT INTO `order` (OrderID, OrderPayDate, TotalAmt, PayMethod, \"4CreditDigits\", BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, GuestID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertOrderItemQuery = "INSERT INTO orderitem (OrderID, ProductSKU, Name, Description, Price, Vendor, Slug, ImagePath, Quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        Savepoint savepoint = null;
+
+        try {
+            // Open DB connection
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(testDBName);
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+
+            // Save checkpoint to rollback in case insert fail
+            db_conn.setAutoCommit(false);
+            savepoint = db_conn.setSavepoint();
+
+            PreparedStatement pstmt1;
+
+            if (UserIdentityMap.getUserByID(order.getCustomerID()).isRegisteredUser()) {
+                pstmt1 = db_conn.prepareStatement(insertOrderRegisteredQuery);
+            } else {
+                pstmt1 = db_conn.prepareStatement(insertOrderGuestQuery);
+            }
+
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+            String payDate = dateFormatter.format(order.getPayDate());
+
+            pstmt1.setInt(1, order.getOrderID());
+            pstmt1.setString(2, payDate);
+            pstmt1.setFloat(3, order.getTotalPrice());
+            pstmt1.setString(4, order.getPaymentMethod());
+            pstmt1.setInt(5, order.getCardNum());
+            pstmt1.setString(6, order.getBillAddress());
+            pstmt1.setString(7, order.getBillCity());
+            pstmt1.setString(8, order.getBillCountry());
+            pstmt1.setString(9, order.getBillPostalCode());
+            pstmt1.setString(10, order.shipStatusToString());
+            pstmt1.setString(11, order.getShippingAddress());
+            pstmt1.setString(12, order.getShippingCity());
+            pstmt1.setString(13, order.getShippingCountry());
+            pstmt1.setString(14, order.getShippingPostalCode());
+            pstmt1.setString(15, order.getCustomerID());
+
+            pstmt1.executeUpdate();
+
+            for (Map.Entry<Product, Integer> productEntry : order.getOrderProducts().entrySet()) {
+                Product product = productEntry.getKey();
+                int amount = productEntry.getValue();
+
+                PreparedStatement pstmt2 = db_conn.prepareStatement(insertOrderItemQuery);
+                if (!Warehouse.getInstance().removeProduct(product, amount, db_conn)) {
+                    throw new SQLException("Failed to remove product from Warehouse");
+                }
+
+                pstmt2.setInt(1, order.getOrderID());
+                pstmt2.setString(2, product.getSKU());
+                pstmt2.setString(3, product.getName());
+                pstmt2.setString(4, product.getDescription());
+                pstmt2.setFloat(5, product.getPrice());
+                pstmt2.setString(6, product.getVendor());
+                pstmt2.setString(7, product.getSlug());
+                pstmt2.setNull(8, java.sql.Types.VARCHAR);
+                pstmt2.setInt(9, amount);
+
+                pstmt2.executeUpdate();
+
+            }
+
+            db_conn.commit();
+
+            db_conn.setAutoCommit(true);
+            db_conn.close();
+
+            return true;
+
+        } catch(SQLException e) {
+            try {
+                if (db_conn != null && savepoint != null) {
+                    db_conn.rollback(savepoint); // Rollback the transaction if an exception occurs
+                    db_conn.setAutoCommit(true);
+                    db_conn.close();
+                }
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+            return false;
+        } catch (ClassNotFoundException | InvalidParameterException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     /**
      * Get an order given the order ID
@@ -477,6 +571,60 @@ public class OrderRepository{
             // Open DB connection
             Class.forName("org.sqlite.JDBC");
             URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+
+            // Save checkpoint to rollback in case update fail
+            db_conn.setAutoCommit(false);
+            savepoint = db_conn.setSavepoint();
+
+            PreparedStatement pstmt = db_conn.prepareStatement(updateOrderQuery);
+            pstmt.setString(1, customerID);
+            pstmt.setNull(2, java.sql.Types.VARCHAR);
+            pstmt.setInt(3, orderID);
+
+            pstmt.executeUpdate();
+            db_conn.commit();
+
+            db_conn.setAutoCommit(true);
+            db_conn.close();
+
+            return true;
+        } catch (SQLException e) {
+            try {
+                if (db_conn != null && savepoint != null) {
+                    db_conn.rollback(savepoint); // Rollback the transaction if an exception occurs
+                    db_conn.setAutoCommit(true);
+                    db_conn.close();
+                }
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+            return false;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+
+            return false;
+        }
+    }
+
+    /**
+     * Overloaded setOrderCustomerID for unit testing
+     * Set an order userID to a registered userID, in case a registered customer wants to claim their order.
+     * @param orderID The ID of the order to be reclaimed
+     * @param customerID The ID of the registered user to be put on the order
+     * @param testDBName name of SQLite database file
+     * @return true on success, false on failure.
+     */
+    public static synchronized boolean setOrderCustomerID(int orderID, String customerID, String testDBName) {
+        String updateOrderQuery = "UPDATE `order` SET UserID = ?,GuestID = ? WHERE OrderID = ?";
+        Savepoint savepoint = null;
+
+        try {
+            // Open DB connection
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(testDBName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Save checkpoint to rollback in case update fail

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.taptapgo.Order;
 import com.taptapgo.User;
+import com.taptapgo.exceptions.InvalidParameterException;
 import com.taptapgo.repository.OrderIdentityMap;
 
 import jakarta.servlet.annotation.WebServlet;
@@ -64,7 +65,13 @@ public class OrderDetailServlet extends HttpServlet{
         String orderID_str = request.getParameter("orderID");
         int orderID = Integer.parseInt(orderID_str);
 
-        boolean db_result = OrderIdentityMap.setOrderOwner(orderID, userID);
+        boolean db_result = false;
+        try {
+            db_result = OrderIdentityMap.setOrderOwner(orderID, userID);
+        } catch (InvalidParameterException e) {
+            e.printStackTrace();
+            response.sendRedirect(request.getContextPath() + "/orders.jsp?reclaim=fail");
+        }
         if(!db_result) {
             response.sendRedirect(request.getContextPath() + "/orders.jsp?reclaim=fail");
         } else {

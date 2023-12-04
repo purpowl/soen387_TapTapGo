@@ -145,7 +145,17 @@ public class OrderIdentityMap {
      * @param customerID the ID of the customer who is reclaiming the order
      * @return true on success, false on failure.
      */
-    public static synchronized boolean setOrderOwner(int orderID, String customerID) {
+    public static synchronized boolean setOrderOwner(int orderID, String customerID) throws InvalidParameterException {
+        if (orderID < 10000) {
+            throw new InvalidParameterException("Invalid order ID format.");
+        }
+        else if (customerID.isEmpty()) {
+            throw new InvalidParameterException("Customer ID can't be blank.");
+        }
+        else if (customerID.startsWith("rc")) {
+            throw new InvalidParameterException("Cannot claim an order from a registered user.");
+        }
+
         if(OrderIdentityMap.getInstance().orderMap.get(orderID) != null) {
             if (OrderRepository.setOrderCustomerID(orderID, customerID)) {
                 Order order = instance.orderMap.get(orderID);
@@ -157,6 +167,39 @@ public class OrderIdentityMap {
             }
         } else {
             return OrderRepository.setOrderCustomerID(orderID, customerID);
+        }
+    }
+
+    /**
+     * Overloaded setOrderOwner for unit testing
+     * Set the customer ID of an order to a registered customer, if they choose to reclaim the order
+     * @param testDBName name of test SQLite file
+     * @param orderID the ID of the order to be reclaimed
+     * @param customerID the ID of the customer who is reclaiming the order
+     * @return true on success, false on failure.
+     */
+    public static synchronized boolean setOrderOwner(int orderID, String customerID, String testDBName) throws InvalidParameterException {
+        if (orderID < 10000) {
+            throw new InvalidParameterException("Invalid order ID format.");
+        }
+        else if (customerID.isEmpty()) {
+            throw new InvalidParameterException("Customer ID can't be blank.");
+        }
+        else if (customerID.startsWith("rc")) {
+            throw new InvalidParameterException("Cannot claim an order from a registered user.");
+        }
+
+        if(OrderIdentityMap.getInstance().orderMap.get(orderID) != null) {
+            if (OrderRepository.setOrderCustomerID(orderID, customerID)) {
+                Order order = instance.orderMap.get(orderID);
+                order.setCustomerID(customerID);
+
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return OrderRepository.setOrderCustomerID(orderID, customerID, testDBName);
         }
     }
     
