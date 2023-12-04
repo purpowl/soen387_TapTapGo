@@ -67,8 +67,11 @@ public class SetOrderOwnerTest {
     public static synchronized void tearDown() throws SQLException, ClassNotFoundException {
         UserRepository.clearUserTables();
         OrderRepository.clearOrderTables();
+        WarehouseRepository.clearWarehouse();
+
         UserRepository.setDBName(REG_DB_NAME);
         OrderRepository.setDBName(REG_DB_NAME);
+        WarehouseRepository.setDBName(TEST_DB_NAME);
     }
 
     @Test
