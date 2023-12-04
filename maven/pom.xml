@@ -101,6 +101,7 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>taptapgo.db</include>
+                    <include>taptapgo_test.db</include>
                 </includes>
             </resource>
         </resources>

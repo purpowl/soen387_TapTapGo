@@ -526,7 +526,7 @@ public class OrderRepository{
             URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
-            String[] tables = {"orderitem", "order"};
+            String[] tables = {"orderitem", "`order`"};
 
 
             for (String table : tables) {
