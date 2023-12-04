@@ -51,7 +51,7 @@ class SetPasscodeTest {
 
         UserRepository.setDBName(REG_DB_NAME);
         OrderRepository.setDBName(REG_DB_NAME);
-        WarehouseRepository.setDBName(TEST_DB_NAME);
+        WarehouseRepository.setDBName(REG_DB_NAME);
     }
 
     @Test
