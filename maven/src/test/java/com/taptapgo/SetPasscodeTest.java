@@ -3,6 +3,7 @@ package com.taptapgo;
 import com.taptapgo.exceptions.InvalidParameterException;
 import com.taptapgo.repository.OrderRepository;
 import com.taptapgo.repository.UserRepository;
+import com.taptapgo.repository.WarehouseRepository;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,14 +27,16 @@ class SetPasscodeTest {
     @BeforeAll
     public static synchronized void setUp() throws InvalidParameterException, SQLException, ClassNotFoundException {
         // Set up any necessary test data or configurations
+        UserRepository.setDBName(TEST_DB_NAME);
+        OrderRepository.setDBName(TEST_DB_NAME);
+        WarehouseRepository.setDBName(TEST_DB_NAME);
+        UserRepository.clearUserTables();
+        OrderRepository.clearOrderTables();
+        WarehouseRepository.clearWarehouse();
+
         testGuest = User.createGuestUser("123456");
         testRegisteredStaff = User.loadRegisteredUser("rc00001", "testS", "testS", "testS", "testS", true);
         testRegisteredNonStaff = User.loadRegisteredUser( "rc00002", "testC", "testC", "testC", "testC", false);
-
-        UserRepository.setDBName(TEST_DB_NAME);
-        OrderRepository.setDBName(TEST_DB_NAME);
-        UserRepository.clearUserTables();
-        OrderRepository.clearOrderTables();
 
         UserRepository.createGuestUserInDatabase(testGuest);
         UserRepository.createRegisteredUserInDB(testRegisteredStaff, "staff");
@@ -56,25 +59,29 @@ class SetPasscodeTest {
 
         // case 2: registered user and new passcode is blank
         assertThrows(InvalidParameterException.class, () ->
-                testRegisteredStaff.setPasscode(null), "New passcode cannot be blank");
+                testRegisteredStaff.setPasscode(""), "New passcode cannot be blank");
 
-        // case 3: registered user and new passcode is <4 characters
+        // case 3: registered user and new passcode is blank
+        assertThrows(InvalidParameterException.class, () ->
+                testRegisteredStaff.setPasscode(null), "New passcode cannot be null");
+
+        // case 4: registered user and new passcode is <4 characters
         assertThrows(InvalidParameterException.class, () ->
                 testRegisteredStaff.setPasscode("one"), "New passcode must be longer than 4 characters");
 
-        // case 4: registered user and new passcode is non-alphanumeric
+        // case 5: registered user and new passcode is non-alphanumeric
         assertThrows(InvalidParameterException.class, () ->
                 testRegisteredStaff.setPasscode("!@#$%^&*()"), "New passcode must be alphanumeric");
 
-        // case 5: registered user and new passcode is the same as old passcode
+        // case 6: registered user and new passcode is the same as old passcode
         assertThrows(InvalidParameterException.class, () ->
                 testRegisteredStaff.setPasscode("staff"), "New passcode must be different from the old passcode");
 
-        // case 6: registered user and new passcode is the same as another user's passcode
+        // case 7: registered user and new passcode is the same as another user's passcode
         assertThrows(InvalidParameterException.class, () ->
                 testRegisteredStaff.setPasscode("nonstaff"), "New passcode must be different from the old passcode");
 
-        // case 7: registered user and valid new passcode
+        // case 8: registered user and valid new passcode
         assertTrue(testRegisteredStaff.setPasscode("newpasscode123"));
     }
 }

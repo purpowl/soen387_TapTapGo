@@ -149,11 +149,11 @@ public class OrderIdentityMap {
         if (orderID < 10000) {
             throw new InvalidParameterException("Invalid order ID format.");
         }
-        else if (customerID.isEmpty()) {
+        else if (customerID == null || customerID.isEmpty()) {
             throw new InvalidParameterException("Customer ID can't be blank.");
         }
-        else if (customerID.startsWith("rc")) {
-            throw new InvalidParameterException("Cannot claim an order from a registered user.");
+        else if (customerID.startsWith("gc")) {
+            throw new InvalidParameterException("Only registered users can claim orders.");
         }
 
         if(OrderIdentityMap.getInstance().orderMap.get(orderID) != null) {

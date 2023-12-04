@@ -15,6 +15,11 @@ import com.taptapgo.Product;
 
 public class WarehouseRepository {
     private static Connection db_conn;
+    private static String dbName = "taptapgo.db";
+
+    public static void setDBName(String newDBName) {
+        dbName = newDBName;
+    }
     
     public static boolean createProduct(Product product, int amount) {
         String insertProductQuery = "INSERT INTO product (ProductSKU, Name, Description, Price, Vendor, Slug, ImagePath) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -24,7 +29,7 @@ public class WarehouseRepository {
         try {
             // Open DB connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Save checkpoint to rollback in case insert fail
@@ -82,7 +87,7 @@ public class WarehouseRepository {
         try {
             // Open DB connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
             System.out.println("Database URL: " + dbUrl.toString());
 
@@ -138,7 +143,7 @@ public class WarehouseRepository {
             } else {
                 // Open DB connection
                 Class.forName("org.sqlite.JDBC");
-                URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+                URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
                 db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
                 // Save checkpoint to rollback in case update fail
@@ -192,7 +197,7 @@ public class WarehouseRepository {
             } else {
                 // Open DB connection
                 Class.forName("org.sqlite.JDBC");
-                URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+                URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
                 db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
                 // Save checkpoint to rollback in case update fail
@@ -285,7 +290,7 @@ public class WarehouseRepository {
         try {
             // Open DB connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Save checkpoint to rollback in case update fail
@@ -340,5 +345,28 @@ public class WarehouseRepository {
 
             return false;
         }
-    } 
+    }
+
+    public static synchronized boolean clearWarehouse() {
+        try {
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+
+            String[] tables = {"product", "warehouse"};
+
+
+            for (String table : tables) {
+                PreparedStatement pstmt = db_conn.prepareStatement("DELETE FROM " + table);
+                pstmt.executeUpdate();
+            }
+
+            return true;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
