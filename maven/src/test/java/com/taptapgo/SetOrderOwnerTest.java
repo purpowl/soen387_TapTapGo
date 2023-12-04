@@ -85,8 +85,8 @@ public class SetOrderOwnerTest {
         URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(TEST_DB_NAME);
         db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
-        for (int i = 0; i < TABLES.length; i++) {
-            PreparedStatement pstmt = db_conn.prepareStatement("DELETE FROM " + TABLES[i]);
+        for (String table : TABLES) {
+            PreparedStatement pstmt = db_conn.prepareStatement("DELETE FROM " + table);
             pstmt.executeUpdate();
         }
 

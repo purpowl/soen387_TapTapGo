@@ -117,7 +117,7 @@ public class UserIdentityMap {
      * @return true on success, false on failure
      */
     public static synchronized boolean changeUserPasscode(String userID, String newPasscode, String testDBName) throws InvalidParameterException {
-        return UserRepository.changeUserPasscodeInDB(userID, newPasscode);
+        return UserRepository.changeUserPasscodeInDB(userID, newPasscode, testDBName);
     }
 
     /**

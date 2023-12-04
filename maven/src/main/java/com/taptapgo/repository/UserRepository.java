@@ -251,7 +251,7 @@ public class UserRepository {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(testDBName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             db_conn.setAutoCommit(false);
