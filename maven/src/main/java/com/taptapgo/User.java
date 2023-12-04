@@ -4,6 +4,7 @@ import com.taptapgo.exceptions.InsufficientInventoryException;
 import com.taptapgo.exceptions.InvalidParameterException;
 import com.taptapgo.exceptions.ProductNotFoundException;
 import com.taptapgo.repository.UserIdentityMap;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -25,7 +26,7 @@ public class User {
      * @param sessionID string
      * @throws InvalidParameterException from Customer constructor if unable to create guest customer
      */
-    private User(String sessionID) throws InvalidParameterException {
+    private User(String sessionID) {
         this.userID = "gc" + sessionID;
         this.firstName = null;
         this.lastName = null;
@@ -44,7 +45,7 @@ public class User {
      * @param email string
      * @throws InvalidParameterException from Customer constructor if unable to create guest customer
      */
-    private User(String sessionID, String firstName, String lastName, String phone, String email) throws InvalidParameterException {
+    private User(String sessionID, String firstName, String lastName, String phone, String email)  {
         this.userID = "gc" + sessionID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -64,7 +65,7 @@ public class User {
      * @param isStaff boolean
      * @throws InvalidParameterException from Customer constructor if unable to create registered customer
      */
-    private User(String firstName, String lastName, String phone, String email, boolean isStaff) throws InvalidParameterException {
+    private User(String firstName, String lastName, String phone, String email, boolean isStaff) {
         registeredIDGen.incrementAndGet();
         this.userID = "rc" + String.format("%05d", registeredIDGen.get());
         this.firstName = firstName;
@@ -85,7 +86,7 @@ public class User {
      * @param isStaff boolean
      * @throws InvalidParameterException from Customer constructor if unable to create registered customer
      */
-    private User(String userID, String firstName, String lastName, String phone, String email, boolean isStaff) throws InvalidParameterException {
+    private User(String userID, String firstName, String lastName, String phone, String email, boolean isStaff) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -188,6 +189,15 @@ public class User {
         // only registered customer can change passcode, guest customer must go through sign up
         if (!this.isRegisteredUser()) {
             throw new InvalidParameterException("User must be registered to change passcode");
+        }
+        else if (newPasscode == null || newPasscode.isEmpty()) {
+            throw new InvalidParameterException("New passcode cannot be blank");
+        }
+        else if (newPasscode.length() < 4) {
+            throw new InvalidParameterException("New passcode must be 4 characters or more");
+        }
+        else if (!(StringUtils.isAlphanumeric(newPasscode))) {
+            throw new InvalidParameterException("New passcode must be alphanumeric");
         }
 
         // change the user passcode

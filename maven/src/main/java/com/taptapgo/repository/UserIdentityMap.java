@@ -108,7 +108,6 @@ public class UserIdentityMap {
         return UserRepository.changeUserPasscodeInDB(userID, newPasscode);
     }
 
-
     /**
      * Update the information for a user
      * 

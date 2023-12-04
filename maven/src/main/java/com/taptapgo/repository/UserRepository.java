@@ -18,6 +18,11 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public class UserRepository {
     private static Connection db_conn;
+    private static String dbName = "taptapgo.db";
+
+    public static void setDBName(String newDBName) {
+        dbName = newDBName;
+    }
     
     /**
      * private helper method to create a new guest user in the database
@@ -25,7 +30,7 @@ public class UserRepository {
      * @return boolean true if success, false if not
      * @throws InvalidParameterException if user is not guest
      */
-    protected static synchronized boolean createGuestUserInDatabase(User user) throws InvalidParameterException {
+    public static synchronized boolean createGuestUserInDatabase(User user) throws InvalidParameterException {
 
         // check if user is guest
         if (user.isRegisteredUser()) {
@@ -37,7 +42,7 @@ public class UserRepository {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             db_conn.setAutoCommit(false);
@@ -87,7 +92,7 @@ public class UserRepository {
      * @return boolean true if success, false if not
      * @throws InvalidParameterException if user is not registered or passcode provided is not unique
      */
-    protected static synchronized boolean createRegisteredUserInDB(User user, String passcode) throws InvalidParameterException {
+    public static synchronized boolean createRegisteredUserInDB(User user, String passcode) throws InvalidParameterException {
         // check if user is registered
         if (!user.isRegisteredUser()) {
             throw new InvalidParameterException("Registered user required.");
@@ -111,7 +116,7 @@ public class UserRepository {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             db_conn.setAutoCommit(false);
@@ -179,7 +184,7 @@ public class UserRepository {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             PreparedStatement pstmt = db_conn.prepareStatement(query);
@@ -225,7 +230,7 @@ public class UserRepository {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             Statement stmt = db_conn.createStatement();
@@ -282,7 +287,7 @@ public class UserRepository {
         try {
             // Open DB connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Save checkpoint to rollback in case update fail
@@ -335,7 +340,7 @@ public class UserRepository {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             PreparedStatement pstmt = db_conn.prepareStatement(getPasscodeQuery);
@@ -414,7 +419,7 @@ public class UserRepository {
         try {
             // Open DB connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Save checkpoint to rollback in case update fail
@@ -466,7 +471,7 @@ public class UserRepository {
         try {
             // Open database connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Query the database to get all orders of this customer
@@ -517,7 +522,7 @@ public class UserRepository {
         try {
             // Open database connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Save checkpoint to rollback in case update fail
@@ -556,6 +561,29 @@ public class UserRepository {
             e.printStackTrace();
 
             return false;
+        }
+    }
+
+    public static synchronized boolean clearUserTables() {
+        try {
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+
+            String[] tables = {"registereduser", "guestuser"};
+
+
+            for (String table : tables) {
+                PreparedStatement pstmt = db_conn.prepareStatement("DELETE FROM " + table);
+                pstmt.executeUpdate();
+            }
+
+            return true;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 }

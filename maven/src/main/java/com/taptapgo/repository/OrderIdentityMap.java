@@ -145,7 +145,17 @@ public class OrderIdentityMap {
      * @param customerID the ID of the customer who is reclaiming the order
      * @return true on success, false on failure.
      */
-    public static synchronized boolean setOrderOwner(int orderID, String customerID) {
+    public static synchronized boolean setOrderOwner(int orderID, String customerID) throws InvalidParameterException {
+        if (orderID < 10000) {
+            throw new InvalidParameterException("Invalid order ID format.");
+        }
+        else if (customerID == null || customerID.isEmpty()) {
+            throw new InvalidParameterException("Customer ID can't be blank.");
+        }
+        else if (customerID.startsWith("gc")) {
+            throw new InvalidParameterException("Only registered users can claim orders.");
+        }
+
         if(OrderIdentityMap.getInstance().orderMap.get(orderID) != null) {
             if (OrderRepository.setOrderCustomerID(orderID, customerID)) {
                 Order order = instance.orderMap.get(orderID);

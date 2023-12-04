@@ -20,6 +20,11 @@ import com.taptapgo.exceptions.InvalidParameterException;
 
 public class OrderRepository{
     private static Connection db_conn;
+    private static String dbName = "taptapgo.db";
+
+    public static void setDBName(String newDBName) {
+        dbName = newDBName;
+    }
 
     public static boolean createOrder(Order order) {
         String insertOrderRegisteredQuery = "INSERT INTO `order` (OrderID, OrderPayDate, TotalAmt, PayMethod, \"4CreditDigits\", BillAddress, BillCity, BillCountry, BillPostalCode, ShippingStatus, ShipAddress, ShipCity, ShipCountry, ShipPostalCode, UserID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -30,7 +35,7 @@ public class OrderRepository{
         try {
             // Open DB connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Save checkpoint to rollback in case insert fail
@@ -128,7 +133,7 @@ public class OrderRepository{
         try {
             // Open database connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Get an order that has this orderID
@@ -213,7 +218,7 @@ public class OrderRepository{
         try {
             // Open database connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Query the database to get all orders of this customer
@@ -295,7 +300,7 @@ public class OrderRepository{
         try {
             // Open database connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Query the database to get the maximum orderID
@@ -332,7 +337,7 @@ public class OrderRepository{
         try {
             // Open database connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Query the database to get all orders of this customer
@@ -419,7 +424,7 @@ public class OrderRepository{
         try {
             // Open DB connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Save checkpoint to rollback in case update fail
@@ -476,7 +481,7 @@ public class OrderRepository{
         try {
             // Open DB connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Save checkpoint to rollback in case update fail
@@ -512,6 +517,29 @@ public class OrderRepository{
             e.printStackTrace();
 
             return false;
+        }
+    }
+
+    public static synchronized boolean clearOrderTables() {
+        try {
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+
+            String[] tables = {"orderitem", "`order`"};
+
+
+            for (String table : tables) {
+                PreparedStatement pstmt = db_conn.prepareStatement("DELETE FROM " + table);
+                pstmt.executeUpdate();
+            }
+
+            return true;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 }
