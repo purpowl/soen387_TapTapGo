@@ -109,18 +109,6 @@ public class UserIdentityMap {
     }
 
     /**
-     * Overloaded changeUserPasscode with testDBName for unit testing purposes
-     *
-     * @param userID user we want to change passcode for
-     * @param newPasscode new passcode to set
-     * @param testDBName name of the test SQLite database file
-     * @return true on success, false on failure
-     */
-    public static synchronized boolean changeUserPasscode(String userID, String newPasscode, String testDBName) throws InvalidParameterException {
-        return UserRepository.changeUserPasscodeInDB(userID, newPasscode, testDBName);
-    }
-
-    /**
      * Update the information for a user
      * 
      * @param userID user we want to update information for

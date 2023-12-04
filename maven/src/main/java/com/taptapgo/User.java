@@ -204,31 +204,31 @@ public class User {
         return UserIdentityMap.changeUserPasscode(this.userID, newPasscode);
     }
 
-    /**
-     * Overloaded setPasscode with the testDBName for unit testing purposes
-     * @param newPasscode the passcode we want to set
-     * @param testDBName name of the test SQLite database file
-     * @return true if successfully set, false if not
-     * @throws InvalidParameterException if user is not registered, or unable to set new passcode
-     */
-    public boolean setPasscode(String newPasscode, String testDBName) throws InvalidParameterException {
-        // only registered customer can change passcode, guest customer must go through sign up
-        if (!this.isRegisteredUser()) {
-            throw new InvalidParameterException("User must be registered to change passcode");
-        }
-        else if (newPasscode.isEmpty()) {
-            throw new InvalidParameterException("New passcode cannot be blank");
-        }
-        else if (newPasscode.length() < 4) {
-            throw new InvalidParameterException("New passcode must be 4 characters or more");
-        }
-        else if (!(StringUtils.isAlphanumeric(newPasscode))) {
-            throw new InvalidParameterException("New passcode must be alphanumeric");
-        }
-
-        // change the user passcode
-        return UserIdentityMap.changeUserPasscode(this.userID, newPasscode, testDBName);
-    }
+//    /**
+//     * Overloaded setPasscode with the testDBName for unit testing purposes
+//     * @param newPasscode the passcode we want to set
+//     * @param testDBName name of the test SQLite database file
+//     * @return true if successfully set, false if not
+//     * @throws InvalidParameterException if user is not registered, or unable to set new passcode
+//     */
+//    public boolean setPasscode(String newPasscode, String testDBName) throws InvalidParameterException {
+//        // only registered customer can change passcode, guest customer must go through sign up
+//        if (!this.isRegisteredUser()) {
+//            throw new InvalidParameterException("User must be registered to change passcode");
+//        }
+//        else if (newPasscode.isEmpty()) {
+//            throw new InvalidParameterException("New passcode cannot be blank");
+//        }
+//        else if (newPasscode.length() < 4) {
+//            throw new InvalidParameterException("New passcode must be 4 characters or more");
+//        }
+//        else if (!(StringUtils.isAlphanumeric(newPasscode))) {
+//            throw new InvalidParameterException("New passcode must be alphanumeric");
+//        }
+//
+//        // change the user passcode
+//        return UserIdentityMap.changeUserPasscode(this.userID, newPasscode, testDBName);
+//    }
 
 
 

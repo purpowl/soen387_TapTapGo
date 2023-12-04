@@ -18,6 +18,11 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public class UserRepository {
     private static Connection db_conn;
+    private static String dbName = "taptapgo.db";
+
+    public static void setDBName(String newDBName) {
+        dbName = newDBName;
+    }
     
     /**
      * private helper method to create a new guest user in the database
@@ -25,7 +30,7 @@ public class UserRepository {
      * @return boolean true if success, false if not
      * @throws InvalidParameterException if user is not guest
      */
-    protected static synchronized boolean createGuestUserInDatabase(User user) throws InvalidParameterException {
+    public static synchronized boolean createGuestUserInDatabase(User user) throws InvalidParameterException {
 
         // check if user is guest
         if (user.isRegisteredUser()) {
@@ -37,70 +42,7 @@ public class UserRepository {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
-            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
-
-            db_conn.setAutoCommit(false);
-            savepoint = db_conn.setSavepoint();
-
-            PreparedStatement pstmt = db_conn.prepareStatement(insertQuery);
-
-            pstmt.setString(1, user.getUserID());
-            pstmt.setString(2, user.getFirstName());
-            pstmt.setString(3, user.getLastName());
-            pstmt.setString(4, user.getPhone());
-            pstmt.setString(5, user.getEmail());
-
-            int result = pstmt.executeUpdate();
-
-            db_conn.commit();
-            db_conn.setAutoCommit(true);
-            db_conn.close();
-
-            return result == 1;
-        }
-        catch(SQLException | ClassNotFoundException e) {
-            try {
-                if (db_conn != null && savepoint != null) {
-                    db_conn.rollback(savepoint);
-                    db_conn.setAutoCommit(true);
-                    db_conn.close();
-                }
-
-            }
-            catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-
-            e.printStackTrace();
-            return false;
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * Overloaded createGuestUserInDatabase for unit testing
-     * @param user a User object
-     * @param testDBName name of test SQLite file
-     * @return boolean true if success, false if not
-     * @throws InvalidParameterException if user is not guest
-     */
-    public static synchronized boolean createGuestUserInDatabase(User user, String testDBName) throws InvalidParameterException {
-
-        // check if user is guest
-        if (user.isRegisteredUser()) {
-            throw new InvalidParameterException("Guest user required.");
-        }
-
-        String insertQuery = "INSERT INTO guestuser (GuestID, FirstName, LastName, Phone, Email) VALUES (?, ?, ?, ?, ?)";
-        Savepoint savepoint = null;
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(testDBName);
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             db_conn.setAutoCommit(false);
@@ -150,7 +92,7 @@ public class UserRepository {
      * @return boolean true if success, false if not
      * @throws InvalidParameterException if user is not registered or passcode provided is not unique
      */
-    protected static synchronized boolean createRegisteredUserInDB(User user, String passcode) throws InvalidParameterException {
+    public static synchronized boolean createRegisteredUserInDB(User user, String passcode) throws InvalidParameterException {
         // check if user is registered
         if (!user.isRegisteredUser()) {
             throw new InvalidParameterException("Registered user required.");
@@ -174,84 +116,7 @@ public class UserRepository {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
-            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
-
-            db_conn.setAutoCommit(false);
-            savepoint = db_conn.setSavepoint();
-
-            PreparedStatement pstmt = db_conn.prepareStatement(insertQuery);
-
-            pstmt.setString(1, user.getUserID());
-            pstmt.setString(2, user.getFirstName());
-            pstmt.setString(3, user.getLastName());
-            pstmt.setString(4, user.getPhone());
-            pstmt.setString(5, user.getEmail());
-            pstmt.setString(6, hashedPasscode);
-            pstmt.setInt(7, (user.isStaff()) ? 1 : 0);
-
-            int result = pstmt.executeUpdate();
-
-            db_conn.commit();
-            db_conn.setAutoCommit(true);
-            db_conn.close();
-
-            return result == 1;
-        }
-        catch(SQLException | ClassNotFoundException e) {
-            try {
-                if (db_conn != null && savepoint != null) {
-                    db_conn.rollback(savepoint);
-                    db_conn.setAutoCommit(true);
-                    db_conn.close();
-                }
-
-            }
-            catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-
-            e.printStackTrace();
-            return false;
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * Overloaded createRegisteredUserInDB for unit testing
-     * @param user a User object
-     * @param testDBName name of test SQLite file
-     * @return boolean true if success, false if not
-     * @throws InvalidParameterException if user is not registered or passcode provided is not unique
-     */
-    public static synchronized boolean createRegisteredUserInDB(User user, String passcode, String testDBName) throws InvalidParameterException {
-        // check if user is registered
-        if (!user.isRegisteredUser()) {
-            throw new InvalidParameterException("Registered user required.");
-        }
-
-        // check if passcode exists in database
-        String passcodeOwner = authenticate(passcode);
-
-        // if passcode already exists
-        if (passcodeOwner != null) {
-            // the new passcode coincide with another user's passcode
-            throw new InvalidParameterException("Invalid passcode.");
-        }
-
-        // hash passcode
-        String hashedPasscode = BCrypt.withDefaults().hashToString(12, passcode.toCharArray());
-
-        Savepoint savepoint = null;
-
-        String insertQuery = "INSERT INTO registereduser (UserID, FirstName, LastName, Phone, Email, Passcode, isStaff) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(testDBName);
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             db_conn.setAutoCommit(false);
@@ -319,7 +184,7 @@ public class UserRepository {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             PreparedStatement pstmt = db_conn.prepareStatement(query);
@@ -365,7 +230,7 @@ public class UserRepository {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             Statement stmt = db_conn.createStatement();
@@ -422,79 +287,7 @@ public class UserRepository {
         try {
             // Open DB connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
-            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
-
-            // Save checkpoint to rollback in case update fail
-            db_conn.setAutoCommit(false);
-            savepoint = db_conn.setSavepoint();
-
-            // make SQL statement to update user passcode
-            PreparedStatement pstmt = db_conn.prepareStatement(changePasscodeQuery);
-            pstmt.setString(1, hashedPasscode);
-            pstmt.setString(2, userID);
-
-            pstmt.executeUpdate();
-            db_conn.commit();
-
-            db_conn.setAutoCommit(true);
-            db_conn.close();
-
-            return true;
-        } catch (SQLException | ClassNotFoundException e) {
-            try {
-                if (db_conn != null && savepoint != null) {
-                    db_conn.rollback(savepoint); // Rollback the transaction if an exception occurs
-                    db_conn.setAutoCommit(true);
-                    db_conn.close();
-                }
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-
-            e.printStackTrace();
-            return false;
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * Overloaded changeUserPasscodeInDB with testDBName for unit testing purposes
-     * @param userID user we want to change passcode for
-     * @param newPasscode new passcode to set
-     * @param testDBName name of the test SQLite database file
-     * @return true on success, false on failure
-     */
-    protected static synchronized boolean changeUserPasscodeInDB(String userID, String newPasscode, String testDBName) throws InvalidParameterException {
-        // check if passcode exists in database
-        String passcodeOwner = authenticate(newPasscode);
-
-        // if passcode already exists
-        if (passcodeOwner != null) {
-            // the new passcode is the same as the user's current one
-            if (passcodeOwner.equals(userID)) {
-                throw new InvalidParameterException("You cannot set the same password.");
-            }
-            // the new passcode coincide with another user's passcode
-            else {
-                throw new InvalidParameterException("Invalid passcode.");
-            }
-        }
-
-        // hash the passcode
-        String hashedPasscode = BCrypt.withDefaults().hashToString(12, newPasscode.toCharArray());
-
-        String changePasscodeQuery = "UPDATE `registereduser` SET Passcode = ? WHERE UserID = ?";
-        Savepoint savepoint = null;
-
-        try {
-            // Open DB connection
-            Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(testDBName);
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Save checkpoint to rollback in case update fail
@@ -547,7 +340,7 @@ public class UserRepository {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             PreparedStatement pstmt = db_conn.prepareStatement(getPasscodeQuery);
@@ -626,7 +419,7 @@ public class UserRepository {
         try {
             // Open DB connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Save checkpoint to rollback in case update fail
@@ -678,7 +471,7 @@ public class UserRepository {
         try {
             // Open database connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Query the database to get all orders of this customer
@@ -729,7 +522,7 @@ public class UserRepository {
         try {
             // Open database connection
             Class.forName("org.sqlite.JDBC");
-            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource("taptapgo.db");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
             db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
 
             // Save checkpoint to rollback in case update fail
@@ -768,6 +561,29 @@ public class UserRepository {
             e.printStackTrace();
 
             return false;
+        }
+    }
+
+    public static synchronized boolean clearUserTables() {
+        try {
+            Class.forName("org.sqlite.JDBC");
+            URL dbUrl = WarehouseRepository.class.getClassLoader().getResource(dbName);
+            db_conn = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);
+
+            String[] tables = {"registereduser", "guestuser"};
+
+
+            for (String table : tables) {
+                PreparedStatement pstmt = db_conn.prepareStatement("DELETE FROM " + table);
+                pstmt.executeUpdate();
+            }
+
+            return true;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 }
