@@ -41,8 +41,8 @@
         <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-order.jsp?sort=id_ascending">Order ID ascending</a>
         <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-order.jsp?sort=pay_ascending">PayDate ascending</a>
         <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-order.jsp?sort=pay_descending">PayDate descending</a>
-        <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-order.jsp?sort=ship_ascending">Shipped order first</a>
-        <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-order.jsp?sort=ship_descending">Unshipped order first</a>
+        <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-order.jsp?sort=ship_descending">Shipped order first</a>
+        <a class="dropdown-item" href="<%=request.getContextPath()%>/manage-order.jsp?sort=ship_ascending">Unshipped order first</a>
       </div>
     </div>
   </div>
